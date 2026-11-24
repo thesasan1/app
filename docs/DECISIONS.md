@@ -27,7 +27,7 @@ Architecture Decision Records (ADRs) and decisions pending the project owner. Fo
 
 ### ADR-004 — Client-generated UUIDv7 identifiers
 
-- **Status:** Proposed
+- **Status:** Accepted, implemented in `:core:common` (ADR-017)
 - **Decision:** IDs created on device so offline creation needs no server round trip; v7 for index locality.
 - **Consequences:** Server must validate format and ownership; collisions practically impossible.
 
@@ -127,6 +127,20 @@ Architecture Decision Records (ADRs) and decisions pending the project owner. Fo
   - **Dependency review** (`actions/dependency-review-action`) on every PR fails on moderate or worse vulnerabilities and on GPL/AGPL licenses. **Dependabot** opens weekly grouped updates for Gradle, npm and GitHub Actions.
 - **Alternatives:** the ktlint Gradle plugin (Spotless also covers other formats later); detekt 2.0 alpha (not stable).
 - **Revisit:** when detekt 2.0 is stable, drop the Kotlin pin.
+
+### ADR-017 — Local database foundation
+
+- **Status:** Accepted (agent decision, 2026-11-24)
+- **Decision:**
+  - **Room 2.7.2 with KSP**, in a new `:core:database` module, set up by the `app.android.room` convention plugin. Kotlin code generation is on. Room 2.7 is the newest line that works with the current AGP 8 / compileSdk 35 toolchain.
+  - **Schemas are exported** to `android/core/database/schemas/` and committed. CI fails when the exported schema differs from the committed one.
+  - **Migrations:** there is no destructive fallback. Every version bump adds a `Migration` to `DatabaseMigrations` and a case to `DatabaseMigrationTest` (Room `MigrationTestHelper` on Robolectric).
+  - **Version 1 tables:** `projects`, `tags`, `categories` and the sync support tables `sync_outbox` and `sync_cursor` (DATABASE.md §3.8, §5). Feature tables arrive in Phase 2.
+  - **Sync columns:** `created_at`, `updated_at` and `deleted_at` are UTC epoch milliseconds. Also stored: server `version`, `sync_state` and `last_synced_version`, all through the embedded `SyncColumns`. The hybrid logical clock for cross-device ordering (ADR-005) will be its own column, added with the sync engine. This refines DATABASE.md §1, which described `updated_at` as an HLC string.
+  - **Tags** are unique by `name_key` (trimmed, lower-cased with the root locale). The unique index includes tombstones, so re-creating a deleted tag restores the old row.
+  - **Atomic writes:** repositories write a change and its outbox entry through `TransactionRunner` (one Room transaction).
+  - **IDs:** `UuidV7Generator` in `:core:common` (RFC 9562), injected as `IdGenerator`. ADR-004 is now implemented.
+- **Not decided here:** at-rest encryption (ADR-010) stays open for the owner.
 
 ---
 

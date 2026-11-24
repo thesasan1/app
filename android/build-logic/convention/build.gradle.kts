@@ -18,6 +18,7 @@ dependencies {
     compileOnly(libs.kotlin.gradlePlugin)
     compileOnly(libs.compose.gradlePlugin)
     compileOnly(libs.ksp.gradlePlugin)
+    compileOnly(libs.room.gradlePlugin)
     implementation(libs.detekt.gradlePlugin)
     implementation(libs.spotless.gradlePlugin)
 }
@@ -43,6 +44,10 @@ gradlePlugin {
         register("hilt") {
             id = "app.hilt"
             implementationClass = "HiltConventionPlugin"
+        }
+        register("androidRoom") {
+            id = "app.android.room"
+            implementationClass = "AndroidRoomConventionPlugin"
         }
         register("jvmLibrary") {
             id = "app.jvm.library"

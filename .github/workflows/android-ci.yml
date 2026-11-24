@@ -23,6 +23,9 @@ jobs:
     name: Build, lint and unit test
     runs-on: ubuntu-latest
     timeout-minutes: 30
+    env:
+      # SDK 34 runs the tests; SDK 35 (compileSdk) is loaded for app resources.
+      ROBOLECTRIC_JARS: android-all-instrumented-14-robolectric-10818077-i7 android-all-instrumented-15-robolectric-12650502-i7
     defaults:
       run:
         working-directory: android
@@ -36,11 +39,32 @@ jobs:
 
       - uses: gradle/actions/setup-gradle@v6
 
+      # Robolectric's Android runtimes (~180 MB each) are cached and fetched with retries; tests then
+      # run offline (KI-010). Update ROBOLECTRIC_JARS when Robolectric, the test SDK or compileSdk change.
+      - name: Cache Robolectric runtime
+        uses: actions/cache@v4
+        with:
+          path: ~/robolectric-deps
+          key: robolectric-${{ env.ROBOLECTRIC_JARS }}
+
+      - name: Fetch Robolectric runtime
+        run: |
+          mkdir -p ~/robolectric-deps
+          for jar in $ROBOLECTRIC_JARS; do
+            if [ ! -s ~/robolectric-deps/$jar.jar ]; then
+              curl --fail --silent --show-error --location --retry 5 --retry-all-errors \
+                -o ~/robolectric-deps/$jar.jar \
+                https://repo1.maven.org/maven2/org/robolectric/android-all-instrumented/${jar#android-all-instrumented-}/$jar.jar
+            fi
+          done
+          ls -la ~/robolectric-deps
+          echo "ROBOLECTRIC_DEPS_DIR=$HOME/robolectric-deps" >> "$GITHUB_ENV"
+
       - name: Formatting and static analysis
         run: ./gradlew spotlessCheck detekt --stacktrace
 
       - name: Unit tests
-        run: ./gradlew testDebugUnitTest :core:common:test --stacktrace
+        run: ./gradlew testDebugUnitTest :core:common:test --continue --stacktrace
 
       - name: Record design-system screenshots
         run: ./gradlew :core:designsystem:recordRoborazziDebug --stacktrace
@@ -57,6 +81,27 @@ jobs:
 
       - name: Assemble debug APK
         run: ./gradlew assembleDebug --stacktrace
+
+      - name: Upload Room schemas
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: room-schemas
+          path: android/core/database/schemas/
+          if-no-files-found: ignore
+
+      - name: Room schemas are committed
+        if: always()
+        # The build exports each schema version to core/database/schemas (ADR-017). A difference
+        # means the entities changed without bumping the version or committing the new schema.
+        run: |
+          if [ -n "$(git status --porcelain -- core/database/schemas)" ]; then
+            git status --porcelain -- core/database/schemas
+            git diff -- core/database/schemas
+            for f in $(git ls-files --others --exclude-standard -- core/database/schemas); do echo "--- $f"; cat "$f"; echo; done
+            echo "::error::Room schema changed. Commit core/database/schemas (bump the version for released schemas)."
+            exit 1
+          fi
 
       - name: Upload reports
         if: always()

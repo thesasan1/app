@@ -25,5 +25,6 @@ rootProject.name = "personal-os"
 
 include(":app")
 include(":core:common")
+include(":core:database")
 include(":core:designsystem")
 include(":feature:dashboard")

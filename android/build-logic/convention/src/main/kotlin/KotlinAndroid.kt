@@ -1,5 +1,7 @@
 import com.android.build.api.dsl.CommonExtension
 import org.gradle.api.Project
+import org.gradle.api.tasks.testing.logging.TestExceptionFormat
+import org.gradle.api.tasks.testing.logging.TestLogEvent
 import org.gradle.api.artifacts.VersionCatalog
 import org.gradle.api.artifacts.VersionCatalogsExtension
 import org.gradle.api.tasks.testing.Test
@@ -64,5 +66,16 @@ private fun Project.configureUnitTests() {
     }
     tasks.withType<Test>().configureEach {
         useJUnitPlatform()
+        testLogging {
+            events(TestLogEvent.FAILED)
+            exceptionFormat = TestExceptionFormat.FULL
+            showStandardStreams = false
+        }
+        // CI pre-fetches Robolectric's Android runtime with retries and runs tests offline, so a
+        // network error during a test can't fail the build (KI-010). Locally Robolectric downloads it.
+        System.getenv("ROBOLECTRIC_DEPS_DIR")?.let { dir ->
+            systemProperty("robolectric.offline", "true")
+            systemProperty("robolectric.dependency.dir", dir)
+        }
     }
 }
