@@ -19,6 +19,7 @@ internal val Project.libs: VersionCatalog
 internal fun Project.configureKotlinAndroid(commonExtension: CommonExtension) {
     commonExtension.apply {
         compileSdk = ProjectConfig.COMPILE_SDK
+        compileSdkMinor = ProjectConfig.COMPILE_SDK_MINOR
         defaultConfig.apply {
             minSdk = ProjectConfig.MIN_SDK
             testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"

@@ -44,7 +44,7 @@ docs/        Product and technical documentation
 
 ### Android
 
-Requirements: JDK 21, Android SDK with platform 37 (`ANDROID_HOME` or `android/local.properties`).
+Requirements: JDK 21, Android SDK with platform 37.2 (`ANDROID_HOME` or `android/local.properties`).
 
 ```bash
 cd android

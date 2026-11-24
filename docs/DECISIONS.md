@@ -159,7 +159,7 @@ Architecture Decision Records (ADRs) and decisions pending the project owner. Fo
 - **Context:** The skeleton's toolchain (AGP 8.7, Kotlin 2.1) blocked current AndroidX releases: Dependabot #11, #15, #16 and #18 all failed CI. Google Play also requires a newer targetSdk (KI-005).
 - **Decision:**
   - Gradle 9.9.2, AGP 9.5.2 with built-in Kotlin (the `org.jetbrains.kotlin.android` plugin is no longer applied), Kotlin 2.4.21, KSP 2.3.14.
-  - compileSdk 37 (current AndroidX releases require it), targetSdk 36, minSdk 26. compileSdk only unlocks APIs; targetSdk 37 behaviour is a separate later bump.
+  - compileSdk 37.2 (Compose 1.13 and current AndroidX require 37.1+), targetSdk 36, minSdk 26. compileSdk only unlocks APIs; targetSdk 37 behaviour is a separate later bump.
   - Libraries: Hilt 2.60.1, Compose BOM 2026.11.01, Navigation 2.10.2, hilt-navigation-compose 1.4.0, Lifecycle 2.11.1, Activity 1.13.0, Core 1.19.1, Room 2.8.5, coroutines 1.11.0, serialization 1.13.0, Robolectric 4.18.1, Roborazzi 1.79.0, Spotless 8.12.0.
   - JDK 21 toolchain, still emitting Java 17 bytecode. Robolectric's SDK 36+ runtimes need JDK 21, and CI uses JDK 21.
   - AGP 9 DSL: `CommonExtension` has no type parameters, and nested blocks are configured through their properties (`defaultConfig.apply { }`).
