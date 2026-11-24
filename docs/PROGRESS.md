@@ -7,8 +7,8 @@ The GitHub repository is the source of truth. A checkpoint is added at the end o
 | Field | Value |
 |---|---|
 | Current phase | **Phase 1 — Engineering Foundation** |
-| Status | NestJS 12 / Node 26 upgrade in review; PR 5b waits for ADR-007 approval |
-| Code status | Android skeleton (#2), backend skeleton (#3) design-system foundation (#4), CI hardening (#5) and local database (#14) and logging foundation (#19) merged. toolchain upgrade (#20) merged. Backend NestJS 12 / Node 26 in review |
+| Status | Debug APK pre-release PR in review; PR 5b waits for ADR-007 approval |
+| Code status | Android skeleton (#2), backend skeleton (#3) design-system foundation (#4), CI hardening (#5) and local database (#14) and logging foundation (#19) merged. toolchain upgrade (#20) merged. backend NestJS 12 / Node 26 (#21) merged. Debug APK pre-release in review |
 | Build status | `android-ci` and `backend-ci` green on `main` after #5 and the Dependabot action bumps |
 | Test status | Backend: 13 unit + 12 e2e (CI green). Android: unit tests, lint, screenshots run in CI |
 | Blockers | ADR-007 (Prisma) needs owner approval before PR 5b; ADR-010 (local DB encryption) before Phase 2. D-03…D-09 pending for later phases |
@@ -24,10 +24,11 @@ The GitHub repository is the source of truth. A checkpoint is added at the end o
 - Local database — merged (PR #14).
 - Logging foundation — merged (PR #19).
 - Android toolchain upgrade — merged (PR #20).
+- Backend NestJS 12 / Node 26 — merged (PR #21).
 
 ## Features In Progress
 
-- Backend NestJS 12 on Node 26 LTS (ADR-020).
+- Debug APK pre-release for testers (ADR-021).
 
 ## Merged Pull Requests
 
@@ -41,6 +42,7 @@ The GitHub repository is the source of truth. A checkpoint is added at the end o
 - #17 JUnit 6.1.3 (Dependabot) — merged 2026-11-24.
 - #19 Logging foundation — merged 2026-11-24 (squash `f92ac60`).
 - #20 Android toolchain upgrade — merged 2026-11-24 (squash `7a8f4a8`); Dependabot #11, #15, #16, #18 closed as superseded.
+- #21 NestJS 12 on Node 26 — merged 2026-11-24 (squash `f1b8939`); Dependabot #12 closed.
 
 ---
 
@@ -127,10 +129,16 @@ The GitHub repository is the source of truth. A checkpoint is added at the end o
 
 **Recommended next task:** PR 5b after ADR-007 approval.
 
-### Checkpoint 1.8 — 2026-11-24 — NestJS 12 on Node 26 submitted
+### Checkpoint 1.8 — 2026-11-24 — NestJS 12 on Node 26 merged (#21)
 
-**Completed (in review):** NestJS 12.6 / @nestjs/swagger 12.1 (from Dependabot #12); backend runtime and CI on Node.js 26 LTS via `backend/.nvmrc`; Jest started with `--experimental-vm-modules` so it can load ESM-only packages. ADR-020; KI-011 resolved.
+**Completed:** NestJS 12.6 / @nestjs/swagger 12.1 (from Dependabot #12); backend runtime and CI on Node.js 26 LTS via `backend/.nvmrc`; Jest started with `--experimental-vm-modules` so it can load ESM-only packages. ADR-020; KI-011 resolved.
 
 **Tested (local, Node 26.13.1):** lint, format:check, typecheck, unit tests (13), e2e tests (12), openapi:check, build, and a production start answering `/v1/health/live` and `/v1/health/ready` → Passed.
 
 **Recommended next task:** PR 5b after ADR-007 approval.
+
+### Checkpoint 1.9 — 2026-11-24 — Debug APK pre-release submitted
+
+**Completed (in review):** `publish-debug-apk` job in `android-ci` (main only, plus manual dispatch) that refreshes the `debug-latest` pre-release with the newest debug APK. ADR-021; README install steps.
+
+**Tested:** workflow YAML parses → Passed. Publishing runs only after merge to `main` and is verified then.

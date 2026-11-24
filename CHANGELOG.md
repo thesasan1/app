@@ -6,6 +6,7 @@ All notable changes are documented here. Format based on [Keep a Changelog](http
 
 ### Added
 
+- `debug-latest` pre-release with the newest debug APK from `main`, for testers.
 - Redacting logger (`AppLogger`) and stable error codes (`AppError.code`).
 - Local database module (Room schema v1: projects, tags, categories, sync outbox and cursor), migration test harness, and UUIDv7 id generator.
 - Kotlin formatting (Spotless + ktlint) and static analysis (detekt) for all Android modules, enforced in `android-ci`; dependency review on pull requests; Dependabot for Gradle, npm and GitHub Actions.
