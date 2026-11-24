@@ -44,7 +44,8 @@ PR: #1 (`docs/phase-0-foundation`)
 4. `feature/design-system-foundation` — tokens, typography (Inter + Vazirmatn), theme (light/dark, accents, RTL), first components (`AppButton`, `AppCard`, `EmptyState`), Roborazzi screenshot rendering in CI. — Merged (PR #4)
 5. `feature/local-database` — Room setup, base entities (projects, tags, categories), migration test harness, outbox table. — Merged (PR #14)
 5b. `feature/backend-database` — PostgreSQL via Prisma (ADR-007), migrations, docker-compose for local infra, readiness check, worker process skeleton. — Waiting for owner approval of ADR-007
-6. `feature/error-logging-foundation` — `AppError`, `Result`, logger abstraction, dispatchers, clock. (`AppError`, `Outcome`, dispatchers and clock landed with PR #2; this PR adds the redacting logger and error codes.) — In review (PR #19)
+6. `feature/error-logging-foundation` — `AppError`, `Result`, logger abstraction, dispatchers, clock. (`AppError`, `Outcome`, dispatchers and clock landed with PR #2; this PR adds the redacting logger and error codes.) — Merged (PR #19)
+7. `chore/toolchain-upgrade` — AGP 9.5, Kotlin 2.4, SDK 36, JDK 21 (ADR-019; added to unblock Dependabot and KI-005). — In review
 
 **Exit:** green CI on both stacks; documented commands in README.
 

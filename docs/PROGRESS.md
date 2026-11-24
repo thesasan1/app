@@ -7,12 +7,12 @@ The GitHub repository is the source of truth. A checkpoint is added at the end o
 | Field | Value |
 |---|---|
 | Current phase | **Phase 1 — Engineering Foundation** |
-| Status | PR #19 `feature/error-logging-foundation` in review; PR 5b waits for ADR-007 approval |
-| Code status | Android skeleton (#2), backend skeleton (#3) design-system foundation (#4), CI hardening (#5) and local database (#14) merged. Logging foundation in PR #19 |
+| Status | Android toolchain upgrade PR in review; PR 5b waits for ADR-007 approval |
+| Code status | Android skeleton (#2), backend skeleton (#3) design-system foundation (#4), CI hardening (#5) and local database (#14) and logging foundation (#19) merged. Toolchain upgrade (AGP 9, SDK 36) in review |
 | Build status | `android-ci` and `backend-ci` green on `main` after #5 and the Dependabot action bumps |
 | Test status | Backend: 13 unit + 12 e2e (CI green). Android: unit tests, lint, screenshots run in CI |
 | Blockers | ADR-007 (Prisma) needs owner approval before PR 5b; ADR-010 (local DB encryption) before Phase 2. D-03…D-09 pending for later phases |
-| Next task | Phase 1 PR 5b once ADR-007 is approved; otherwise the Android toolchain upgrade (KI-011) |
+| Next task | Phase 1 PR 5b once ADR-007 is approved; otherwise Phase 2 prerequisites (ADR-010) |
 
 ## Completed Features
 
@@ -22,10 +22,11 @@ The GitHub repository is the source of truth. A checkpoint is added at the end o
 - Design-system foundation — merged (PR #4).
 - CI hardening — merged (PR #5).
 - Local database — merged (PR #14).
+- Logging foundation — merged (PR #19).
 
 ## Features In Progress
 
-- Logging foundation (redacting `AppLogger`, `AppError.code`) — PR #19.
+- Android toolchain upgrade (AGP 9.5, Kotlin 2.4, SDK 36, JDK 21; ADR-019).
 
 ## Merged Pull Requests
 
@@ -36,6 +37,8 @@ The GitHub repository is the source of truth. A checkpoint is added at the end o
 - #5 CI hardening — merged 2026-11-24 (squash `bdb5035`) after the owner enabled the dependency graph.
 - Dependabot #6–#10 (GitHub Actions bumps) and #13 (backend lint/test tooling) — merged 2026-11-24 with green CI. #11 and #12 left open (KI-011).
 - #14 Local database — merged 2026-11-24 (squash `5281ef2`), `android-ci` green.
+- #17 JUnit 6.1.3 (Dependabot) — merged 2026-11-24.
+- #19 Logging foundation — merged 2026-11-24 (squash `f92ac60`).
 
 ---
 
@@ -108,8 +111,16 @@ The GitHub repository is the source of truth. A checkpoint is added at the end o
 
 ### Checkpoint 1.6 — 2026-11-24 — Logging foundation submitted
 
-**Completed (in review, PR #19):** `AppLogger` with lazy messages, `RedactingLogger` (emails, tokens, secrets, long numbers incl. Persian digits; UUIDs kept), `LogSink`, `AppError.code`; Logcat sink and Hilt `LoggingModule` (debug: DEBUG + stack traces; release: WARN+ without throwables); README commands; ADR-018.
+**Completed (merged, PR #19):** `AppLogger` with lazy messages, `RedactingLogger` (emails, tokens, secrets, long numbers incl. Persian digits; UUIDs kept), `LogSink`, `AppError.code`; Logcat sink and Hilt `LoggingModule` (debug: DEBUG + stack traces; release: WARN+ without throwables); README commands; ADR-018.
 
 **Tested (local):** `:core:common:test` (26 tests, incl. 8 redaction cases and 4 logger tests) → Passed; `spotlessCheck detekt` → Passed. App module compile → CI.
 
 **Recommended next task:** PR 5b after the owner approves ADR-007; otherwise the Android toolchain upgrade.
+
+### Checkpoint 1.7 — 2026-11-24 — Android toolchain upgrade submitted
+
+**Completed (in review):** Gradle 9.9.2, AGP 9.5.2 (built-in Kotlin), Kotlin 2.4.21, KSP 2.3.14, compileSdk/targetSdk 36, JDK 21 toolchain, plus every AndroidX/Hilt/Room/Robolectric/Roborazzi bump from Dependabot #11/#15/#16/#18. Convention plugins moved to the AGP 9 DSL. CI on JDK 21 with the SDK 36 Robolectric runtime. ADR-019.
+
+**Tested (local, with a manually installed SDK 36):** configuration, Kotlin compile of every module including `:app` and KSP (Room schema unchanged), `:core:common:test`, `spotlessCheck`, `detekt` → Passed. Robolectric tests, lint, APK → CI (aapt2 and memory limits locally, KI-002).
+
+**Recommended next task:** PR 5b after ADR-007 approval.

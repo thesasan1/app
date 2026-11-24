@@ -1,5 +1,6 @@
 import com.android.build.api.dsl.CommonExtension
 import org.gradle.api.Project
+import org.gradle.api.plugins.JavaPluginExtension
 import org.gradle.api.tasks.testing.logging.TestExceptionFormat
 import org.gradle.api.tasks.testing.logging.TestLogEvent
 import org.gradle.api.artifacts.VersionCatalog
@@ -15,25 +16,25 @@ import org.jetbrains.kotlin.gradle.dsl.KotlinJvmProjectExtension
 internal val Project.libs: VersionCatalog
     get() = extensions.getByType<VersionCatalogsExtension>().named("libs")
 
-internal fun Project.configureKotlinAndroid(commonExtension: CommonExtension<*, *, *, *, *, *>) {
+internal fun Project.configureKotlinAndroid(commonExtension: CommonExtension) {
     commonExtension.apply {
         compileSdk = ProjectConfig.COMPILE_SDK
-        defaultConfig {
+        defaultConfig.apply {
             minSdk = ProjectConfig.MIN_SDK
             testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         }
-        compileOptions {
+        compileOptions.apply {
             sourceCompatibility = ProjectConfig.JAVA_VERSION
             targetCompatibility = ProjectConfig.JAVA_VERSION
         }
-        lint {
+        lint.apply {
             abortOnError = true
             warningsAsErrors = false
             checkDependencies = true
             xmlReport = true
             htmlReport = true
         }
-        testOptions {
+        testOptions.apply {
             unitTests.isReturnDefaultValues = true
         }
     }
@@ -48,8 +49,14 @@ internal fun Project.configureKotlinAndroid(commonExtension: CommonExtension<*, 
 }
 
 internal fun Project.configureKotlinJvm() {
+    // Built with the JDK 21 toolchain but emitting Java 17 bytecode, like the Android modules that consume it.
+    extensions.configure(JavaPluginExtension::class.java) {
+        sourceCompatibility = ProjectConfig.JAVA_VERSION
+        targetCompatibility = ProjectConfig.JAVA_VERSION
+    }
     extensions.configure(KotlinJvmProjectExtension::class.java) {
         jvmToolchain(ProjectConfig.JVM_TOOLCHAIN)
+        compilerOptions.jvmTarget.set(JvmTarget.JVM_17)
     }
     configureUnitTests()
 }

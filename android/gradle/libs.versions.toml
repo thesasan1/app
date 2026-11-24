@@ -1,28 +1,28 @@
 [versions]
-agp = "8.7.3"
-kotlin = "2.1.0"
-ksp = "2.1.0-1.0.29"
-hilt = "2.53.1"
-androidxHiltNavigationCompose = "1.2.0"
-composeBom = "2024.12.01"
-androidxCore = "1.15.0"
-androidxActivity = "1.9.3"
-androidxLifecycle = "2.8.7"
-androidxNavigation = "2.8.5"
-kotlinxCoroutines = "1.9.0"
-kotlinxSerialization = "1.7.3"
+agp = "9.5.2"
+kotlin = "2.4.21"
+ksp = "2.3.14"
+hilt = "2.60.1"
+androidxHiltNavigationCompose = "1.4.0"
+composeBom = "2026.11.01"
+androidxCore = "1.19.1"
+androidxActivity = "1.13.0"
+androidxLifecycle = "2.11.1"
+androidxNavigation = "2.10.2"
+kotlinxCoroutines = "1.11.0"
+kotlinxSerialization = "1.13.0"
 junit5 = "6.1.3"
-turbine = "1.2.0"
-mockk = "1.13.14"
+turbine = "1.2.1"
+mockk = "1.14.12"
 junit4 = "4.13.2"
-robolectric = "4.14.1"
-room = "2.7.2"
-androidxTestCore = "1.6.1"
-roborazzi = "1.39.0"
+robolectric = "4.18.1"
+room = "2.8.5"
+androidxTestCore = "1.7.0"
+roborazzi = "1.79.0"
 detekt = "1.23.8"
 # detekt 1.23.8 is compiled against this Kotlin version; its classpath is pinned to it (ADR-016).
 detektKotlin = "2.0.21"
-spotless = "7.2.1"
+spotless = "8.12.0"
 ktlint = "1.5.0"
 
 [libraries]
@@ -75,7 +75,6 @@ ksp-gradlePlugin = { module = "com.google.devtools.ksp:com.google.devtools.ksp.g
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
 android-library = { id = "com.android.library", version.ref = "agp" }
-kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
 kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }

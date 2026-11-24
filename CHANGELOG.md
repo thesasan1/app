@@ -21,4 +21,5 @@ All notable changes are documented here. Format based on [Keep a Changelog](http
 
 ### Changed
 
+- Android toolchain: Gradle 9.9, AGP 9.5, Kotlin 2.4, compileSdk/targetSdk 36, JDK 21, plus current AndroidX libraries.
 - `android-ci` uses v5 of the checkout, setup-java, setup-gradle and upload-artifact actions.
