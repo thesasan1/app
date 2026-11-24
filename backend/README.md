@@ -4,7 +4,7 @@ NestJS + TypeScript API for the Personal OS (see `../docs/ARCHITECTURE.md` §4).
 
 ## Requirements
 
-Node.js 22+ and npm.
+Node.js 26 LTS (see `.nvmrc`; 24.9+ works) and npm. Jest runs with `--experimental-vm-modules` so it can load NestJS 12, which ships as ES modules; the npm scripts pass the flag.
 
 ## Commands
 

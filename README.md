@@ -59,7 +59,7 @@ CI runs the same commands on every pull request touching `android/` (`.github/wo
 
 ### Backend
 
-Requirements: Node.js 22+.
+Requirements: Node.js 26 LTS (24.9+ works).
 
 ```bash
 cd backend
