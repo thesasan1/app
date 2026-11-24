@@ -1,6 +1,6 @@
 # Contributing
 
-All work reaches `main` through a reviewed Pull Request. Only the project owner merges.
+All work reaches `main` through a Pull Request. The project owner has delegated merging to the agent (ADR-012): PRs are squash-merged once checks are green.
 
 ## Branches
 
@@ -27,7 +27,7 @@ Branches start from the latest `main`. A `develop` branch is not used until para
 - Reference requirement IDs from `docs/PRD.md` (e.g., `TASK-03`).
 - Update `docs/PROGRESS.md`, `CHANGELOG.md`, and any affected docs in the same PR.
 - CI must be green before review is requested (from Phase 1).
-- Squash-merge by the project owner after approval.
+- Squash-merge after checks pass (by the agent under ADR-012, or by the owner).
 
 ## Recommended repository settings (owner)
 

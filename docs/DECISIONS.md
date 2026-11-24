@@ -71,6 +71,13 @@ Architecture Decision Records (ADRs) and decisions pending the project owner. Fo
 - **Status:** Proposed
 - **Decision:** `main` protected and always releasable; short-lived `feature/*`, `fix/*`, `refactor/*`, `docs/*`, `hotfix/*` branches off `main`; no `develop` branch until parallel release trains justify it. Squash-merge by the owner only.
 
+### ADR-012 — Agent merge authority
+
+- **Status:** Accepted (project-owner instruction, 2026-11-24)
+- **Context:** `AGENTS.md` §12.2 reserves merging for the project owner. On 2026-11-24 the owner instructed: "from now on, you can merge and handle all pull requests."
+- **Decision:** The agent may mark PRs ready, merge them (squash), and manage them, once CI is green (where CI exists) and the PR description is complete. All other §12.2 restrictions still apply: no direct pushes to `main`, no bypassing branch protection or required checks, no force-pushing shared branches, no permission or security-setting changes, no production release without owner approval.
+- **Consequences:** The owner can revoke this at any time; PRs remain the review record.
+
 ---
 
 ## Pending Decisions (owner input required)
