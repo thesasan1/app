@@ -43,7 +43,7 @@ jobs:
       # Robolectric's Android runtimes (~180 MB each) are cached and fetched with retries; tests then
       # run offline (KI-010). Update ROBOLECTRIC_JARS when Robolectric, the test SDK or compileSdk change.
       - name: Cache Robolectric runtime
-        uses: actions/cache@v4
+        uses: actions/cache@v6
         with:
           path: ~/robolectric-deps
           key: robolectric-${{ env.ROBOLECTRIC_JARS }}
