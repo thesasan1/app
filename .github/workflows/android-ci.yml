@@ -54,13 +54,14 @@ jobs:
               -o ~/robolectric-deps/$ROBOLECTRIC_JAR.jar \
               https://repo1.maven.org/maven2/org/robolectric/android-all-instrumented/${ROBOLECTRIC_JAR#android-all-instrumented-}/$ROBOLECTRIC_JAR.jar
           fi
+          ls -la ~/robolectric-deps
           echo "ROBOLECTRIC_DEPS_DIR=$HOME/robolectric-deps" >> "$GITHUB_ENV"
 
       - name: Formatting and static analysis
         run: ./gradlew spotlessCheck detekt --stacktrace
 
       - name: Unit tests
-        run: ./gradlew testDebugUnitTest :core:common:test --stacktrace
+        run: ./gradlew testDebugUnitTest :core:common:test --continue --stacktrace
 
       - name: Record design-system screenshots
         run: ./gradlew :core:designsystem:recordRoborazziDebug --stacktrace
