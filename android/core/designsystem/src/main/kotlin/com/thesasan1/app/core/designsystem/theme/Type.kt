@@ -2,6 +2,7 @@ package com.thesasan1.app.core.designsystem.theme
 
 import androidx.compose.material3.Typography
 import androidx.compose.runtime.Immutable
+import androidx.compose.ui.text.ExperimentalTextApi
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
@@ -13,6 +14,8 @@ import com.thesasan1.app.core.designsystem.R
 
 private val UiWeights = listOf(FontWeight.Normal, FontWeight.Medium, FontWeight.SemiBold, FontWeight.Bold)
 
+// Variable-font weight selection is still marked experimental in Compose (stable on API 26+).
+@OptIn(ExperimentalTextApi::class)
 private fun variableFamily(resId: Int): FontFamily = FontFamily(
     UiWeights.map { weight ->
         Font(
