@@ -6,7 +6,8 @@
 |---|---|---|
 | KI-001 | Backend code does not exist yet; the Android app is a skeleton with only a dashboard shell. | Expected — Phase 1/2 |
 | KI-002 | The agent sandbox is linux/arm64: pure-JVM modules build and test locally, but Android modules cannot (Android build-tools/aapt2 are x86-64 only on Linux). Android build, lint and tests are verified by GitHub Actions CI. | Environment limitation; mitigated by CI |
-| KI-003 | Android CI exists (`android-ci`) but is not yet a required status check on `main`; backend CI does not exist yet. | Owner action (required checks); backend CI in Phase 1 |
+| KI-003 | `android-ci` and `backend-ci` exist but are not required status checks on `main`. | Owner action (branch protection) |
+| KI-007 | Backend has no database, auth, or worker yet; readiness reports no dependency checks. | Phase 1 PR 5b / Phase 6 |
 | KI-005 | targetSdk is 35; Google Play requires raising targetSdk annually (36 expected for new uploads). Bump with a newer AGP before the first Play upload. | Phase 9 at the latest |
 | KI-006 | No launcher icon yet (lint `MissingApplicationIcon` warning). | Design-system PR |
 | KI-004 | Branch protection and secret scanning on `main` are not confirmed enabled (requires owner action in repository settings). | Owner action |

@@ -7,24 +7,26 @@ The GitHub repository is the source of truth. A checkpoint is added at the end o
 | Field | Value |
 |---|---|
 | Current phase | **Phase 1 — Engineering Foundation** |
-| Status | PR #2 `feature/android-skeleton` in review (not merged) |
-| Code status | Android skeleton: `:app`, `:core:common`, `:core:designsystem`, `:feature:dashboard`; no backend yet |
-| Build status | Verified by `android-ci` on PR #2 (see PR); local Android builds impossible in the arm64 sandbox (KI-002) |
-| Test status | `:core:common` 7 unit tests passed locally; dashboard tests run in CI |
+| Status | PR #3 `feature/backend-skeleton` in review (not merged) |
+| Code status | Android skeleton merged (#2). Backend skeleton with health endpoints in PR #3 |
+| Build status | `android-ci` green on `main` after #2; `backend-ci` runs on PR #3 |
+| Test status | Backend: 13 unit + 12 e2e tests passed locally; Android: CI green |
 | Blockers | None for Phase 1. D-03…D-09 pending for later phases |
-| Next task | Phase 1 PR 2 — `feature/backend-skeleton` |
+| Next task | Phase 1 PR 4 — `feature/design-system-foundation` |
 
 ## Completed Features
 
 - Phase 0 foundation documentation — merged (PR #1).
+- Android engineering skeleton + `android-ci` — merged (PR #2).
 
 ## Features In Progress
 
-- Android engineering skeleton + Android CI — PR #2.
+- Backend skeleton + `backend-ci` — PR #3.
 
 ## Merged Pull Requests
 
 - #1 Phase 0: Product and architecture foundation — merged 2026-11-24 (squash `d92d349`).
+- #2 Android engineering skeleton + Android CI — merged 2026-11-24 (squash `d69a475`), `android-ci` green.
 
 ---
 
@@ -42,13 +44,14 @@ The GitHub repository is the source of truth. A checkpoint is added at the end o
 
 **Remains:** Owner review; decisions D-01…D-09; enabling branch protection on `main`.
 
-**Pull Request:** #1 (https://github.com/thesasan1/app/pull/1) — merged 2026-11-24 under ADR-012.
+**Pull Request:** [#1](https://github.com/thesasan1/app/pull/1) — merged 2026-11-24 under ADR-012.
 
 **Recommended next task:** Phase 1 — Android project skeleton with version catalog and convention plugins.
 
 ### Checkpoint 1.1 — 2026-11-24 — Android skeleton submitted
 
 **Completed (in review, PR #2):**
+
 - Gradle multi-module Android project in `android/`: version catalog, `build-logic` convention plugins, Gradle 8.11.1 wrapper.
 - `:core:common` (pure JVM): `Outcome`, `AppError`, dispatcher qualifiers.
 - `:core:designsystem`: base light/dark color schemes from DESIGN_SYSTEM tokens, spacing scale, `AppTheme`.
@@ -56,8 +59,16 @@ The GitHub repository is the source of truth. A checkpoint is added at the end o
 - `:app`: Hilt application, edge-to-edge `MainActivity`, `AppNavHost`, `AppModule` (Clock, dispatchers), RTL enabled, backup rules exclude preferences, R8 for release.
 - `.github/workflows/android-ci.yml`: unit tests, lint, debug APK artifact.
 
-**Tested:** `./gradlew :core:common:test` → Passed locally (7 tests). Android modules → verified in CI (PR #2).
+**Tested:** `./gradlew :core:common:test` → Passed locally (7 tests). `android-ci` on PR #2 → Passed (unit tests, lint, debug APK). Merged 2026-11-24.
 
 **Remains in Phase 1:** backend skeleton, backend CI + static analysis, full design-system foundation, Room + outbox, logging/error foundation.
 
 **Recommended next task:** `feature/backend-skeleton`.
+
+### Checkpoint 1.2 — 2026-11-24 — Backend skeleton submitted
+
+**Completed (in review, PR #3):** NestJS 11 backend in `backend/` with validated config, `/v1/health/live` and `/v1/health/ready`, pino logging (redaction, request ids), RFC 9457 errors incl. body-parser 413, global validation, helmet, OpenAPI generation with drift check, `backend-ci` workflow. Android CI actions bumped to v5.
+
+**Tested (local):** lint, format check, typecheck → Passed; `npm test` → Passed (13); `npm run test:e2e` → Passed (12); `openapi:check` → Passed; `npm audit` → 0 vulnerabilities; production start smoke test → `/v1/health/ready` 200, `/v1/docs` 404 in production.
+
+**Recommended next task:** `feature/design-system-foundation`.

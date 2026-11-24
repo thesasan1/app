@@ -92,6 +92,20 @@ Architecture Decision Records (ADRs) and decisions pending the project owner. Fo
 - **Alternatives:** Waiting for owner input (rejected: blocks all of Phase 1 for a reversible choice); newest-available library versions (deferred: bump deliberately with Dependabot once CI is green, targetSdk 36 tracked in KI-005).
 - **Consequences:** Changing the applicationId later is a one-line change plus package rename before release; after release it is effectively permanent.
 
+### ADR-014 — Backend skeleton conventions
+
+- **Status:** Accepted (agent decision, 2026-11-24)
+- **Decision:**
+  - NestJS 11 on Node.js 22, TypeScript 5.7 `strict` + `noUncheckedIndexedAccess`, CommonJS output.
+  - Environment validated with **zod** at startup; invalid config stops the process.
+  - Logging with **nestjs-pino**; request id from a valid `x-request-id` header or a new UUID, echoed in the response and in problem bodies; authorization, cookies and token-like fields redacted; request bodies never logged.
+  - All errors as RFC 9457 `application/problem+json` with a stable `code`; unknown errors return a generic 500 and are logged server-side only.
+  - Global `ValidationPipe` (whitelist, forbid unknown, transform) with field-level errors.
+  - `helmet` security headers, `x-powered-by` disabled, 1 MB JSON limit, CORS off unless `CORS_ORIGINS` is set.
+  - Swagger UI and JSON only outside production; committed `openapi/openapi.v1.json` checked for drift in CI.
+  - Tooling: ESLint 10 flat config with type-aware `typescript-eslint`, Prettier, Jest 29 + ts-jest, supertest.
+- **Alternatives:** `@nestjs/config` + Joi (zod chosen for typed inference shared with future DTO/AI schema work); Fastify adapter (Express kept for ecosystem compatibility; revisit if throughput requires).
+
 ---
 
 ## Pending Decisions (owner input required)
