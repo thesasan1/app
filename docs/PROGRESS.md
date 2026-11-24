@@ -7,7 +7,7 @@ The GitHub repository is the source of truth. A checkpoint is added at the end o
 | Field | Value |
 |---|---|
 | Current phase | **Phase 0 — Product and Architecture Foundation** |
-| Status | In review — Pull Request pending project-owner approval (not merged, not integrated) |
+| Status | In review — PR #1 pending project-owner approval (not merged, not integrated) |
 | Branch | `docs/phase-0-foundation` |
 | Code status | No application or backend code yet |
 | Build status | Not applicable (no code); Android toolchain unavailable in the Phase 0 environment |
@@ -21,7 +21,7 @@ None yet (documentation only, pending review).
 
 ## Features In Progress
 
-- Phase 0 foundation documentation — in review.
+- Phase 0 foundation documentation — in review (PR #1).
 
 ## Merged Pull Requests
 
@@ -43,6 +43,6 @@ None yet.
 
 **Remains:** Owner review; decisions D-01…D-09; enabling branch protection on `main`.
 
-**Pull Request:** see the Phase 0 PR from `docs/phase-0-foundation`.
+**Pull Request:** #1 (https://github.com/thesasan1/app/pull/1) — pending approval.
 
 **Recommended next task:** Phase 1 — Android project skeleton with version catalog and convention plugins.

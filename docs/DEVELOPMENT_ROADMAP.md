@@ -4,7 +4,7 @@ The roadmap is an implementation **sequence**, not a reduction in scope (`AGENTS
 
 | Phase | Name | Status |
 |---|---|---|
-| 0 | Product and Architecture Foundation | In review (pending PR) |
+| 0 | Product and Architecture Foundation | In review (PR #1) |
 | 1 | Engineering Foundation | Not started |
 | 2 | Core Productivity | Not started |
 | 3 | Smart Capture | Not started |
@@ -21,7 +21,7 @@ Backend foundation and security design may start earlier when architecture depen
 
 ## Phase 0 — Product and Architecture Foundation
 
-PR: `docs/phase-0-foundation`
+PR: #1 (`docs/phase-0-foundation`)
 
 - [x] Review all requirements in `AGENTS.md`
 - [x] PRD with requirement IDs (`docs/PRD.md`)
