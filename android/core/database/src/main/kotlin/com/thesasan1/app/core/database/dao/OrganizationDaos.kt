@@ -1,7 +1,9 @@
 package com.thesasan1.app.core.database.dao
 
 import androidx.room.Dao
+import androidx.room.Insert
 import androidx.room.Query
+import androidx.room.Update
 import androidx.room.Upsert
 import com.thesasan1.app.core.database.entity.CategoryEntity
 import com.thesasan1.app.core.database.entity.CategoryScope
@@ -34,8 +36,16 @@ interface ProjectDao {
 
 @Dao
 interface TagDao {
-    @Upsert
-    suspend fun upsert(tag: TagEntity)
+    /**
+     * Fails with a constraint error when another tag already has the same `name_key`. Tags have no
+     * upsert on purpose: Room's upsert would turn that conflict into a silent no-op.
+     */
+    @Insert
+    suspend fun insert(tag: TagEntity)
+
+    /** Returns the number of rows changed (0 when the id doesn't exist). */
+    @Update
+    suspend fun update(tag: TagEntity): Int
 
     @Query("SELECT * FROM tags WHERE id = :id")
     suspend fun getById(id: String): TagEntity?

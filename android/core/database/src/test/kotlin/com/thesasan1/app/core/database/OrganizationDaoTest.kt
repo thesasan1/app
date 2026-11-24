@@ -62,20 +62,31 @@ class OrganizationDaoTest {
     @Test
     fun tagNamesAreUniqueIgnoringCaseAndSpaces() = runTest {
         val dao = database.db.tagDao()
-        dao.upsert(TagEntity(id = "t1", name = "Work", sync = SyncColumns.new(now)))
+        dao.insert(TagEntity(id = "t1", name = "Work", sync = SyncColumns.new(now)))
 
         assertEquals("t1", dao.getByNameKey(TagEntity.nameKeyOf("  wORK "))?.id)
         assertThrows(SQLiteConstraintException::class.java) {
             kotlinx.coroutines.runBlocking {
-                dao.upsert(TagEntity(id = "t2", name = "work ", sync = SyncColumns.new(now)))
+                dao.insert(TagEntity(id = "t2", name = "work ", sync = SyncColumns.new(now)))
             }
         }
     }
 
     @Test
+    fun tagRenameGoesThroughUpdate() = runTest {
+        val dao = database.db.tagDao()
+        val tag = TagEntity(id = "t1", name = "Work", sync = SyncColumns.new(now))
+        dao.insert(tag)
+
+        assertEquals(1, dao.update(tag.copy(name = "Office", nameKey = TagEntity.nameKeyOf("Office"))))
+        assertEquals("Office", dao.getById("t1")?.name)
+        assertNull(dao.getByNameKey("work"))
+    }
+
+    @Test
     fun persianTagNamesAreStoredUnchanged() = runTest {
         val dao = database.db.tagDao()
-        dao.upsert(TagEntity(id = "fa", name = "کار", sync = SyncColumns.new(now)))
+        dao.insert(TagEntity(id = "fa", name = "کار", sync = SyncColumns.new(now)))
         assertEquals("کار", dao.observeActive().first().single().name)
     }
 
