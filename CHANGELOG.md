@@ -6,6 +6,7 @@ All notable changes are documented here. Format based on [Keep a Changelog](http
 
 ### Added
 
+- Notes repository with the rich-text document format (ADR-009), autosave-safe saving, trash, and sync outbox entries.
 - Notes storage (Room schema v2) with Persian-aware full-text search, archive, trash and purge.
 - `debug-latest` pre-release with the newest debug APK from `main`, for testers.
 - Redacting logger (`AppLogger`) and stable error codes (`AppError.code`).

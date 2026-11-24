@@ -18,6 +18,13 @@ complexity:
     ignoreAnnotated: ['Composable']
   LongMethod:
     ignoreAnnotated: ['Composable']
+  TooManyFunctions:
+    # Repository interfaces, their implementations and Room DAOs are wide by nature: one function
+    # per operation. Their fakes in tests follow them.
+    thresholdInClasses: 25
+    thresholdInInterfaces: 25
+    thresholdInObjects: 20
+    excludes: ['**/test/**']
 
 style:
   MagicNumber:

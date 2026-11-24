@@ -7,6 +7,7 @@ import com.thesasan1.app.core.database.DatabaseMigrations
 import com.thesasan1.app.core.database.RoomTransactionRunner
 import com.thesasan1.app.core.database.TransactionRunner
 import com.thesasan1.app.core.database.dao.CategoryDao
+import com.thesasan1.app.core.database.dao.NoteDao
 import com.thesasan1.app.core.database.dao.OutboxDao
 import com.thesasan1.app.core.database.dao.ProjectDao
 import com.thesasan1.app.core.database.dao.SyncCursorDao
@@ -39,6 +40,8 @@ object DatabaseModule {
     @Provides fun provideOutboxDao(db: AppDatabase): OutboxDao = db.outboxDao()
 
     @Provides fun provideSyncCursorDao(db: AppDatabase): SyncCursorDao = db.syncCursorDao()
+
+    @Provides fun provideNoteDao(db: AppDatabase): NoteDao = db.noteDao()
 }
 
 @Module
