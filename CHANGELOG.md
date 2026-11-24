@@ -6,6 +6,7 @@ All notable changes are documented here. Format based on [Keep a Changelog](http
 
 ### Added
 
+- Design-system foundation: semantic color tokens with six accent options, bundled Inter and Vazirmatn variable fonts with a locale-aware type scale, spacing, radius and motion tokens, `AppButton`, `AppCard` and `EmptyState`, and Roborazzi screenshot rendering in CI.
 - Backend skeleton (`backend/`): NestJS 11, zod-validated environment, `/v1/health/live` and `/v1/health/ready`, structured logging with redaction and request ids, RFC 9457 problem details, global validation, security headers, OpenAPI document with drift check, unit and e2e tests.
 - `backend-ci` GitHub Actions workflow.
 - README instructions for installing the CI-built debug APK.

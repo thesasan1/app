@@ -106,6 +106,17 @@ Architecture Decision Records (ADRs) and decisions pending the project owner. Fo
   - Tooling: ESLint 10 flat config with type-aware `typescript-eslint`, Prettier, Jest 29 + ts-jest, supertest.
 - **Alternatives:** `@nestjs/config` + Joi (zod chosen for typed inference shared with future DTO/AI schema work); Fastify adapter (Express kept for ecosystem compatibility; revisit if throughput requires).
 
+### ADR-015 — Design-system foundation implementation
+
+- **Status:** Accepted (agent decision, 2026-11-24)
+- **Decision:**
+  - Tokens live in `:core:designsystem` under `theme/`: `AppColors` (semantic roles), six `AccentColor` options, `AppTypography`, `Spacing`, `Radii`, `Motion`. Feature code reads `AppTheme.colors` and `AppTheme.typography`; the Material 3 scheme is derived from the same tokens so stock components match.
+  - Accent values for Ocean, Emerald, Amber, Rose and Graphite are new (Indigo is from DESIGN_SYSTEM §2.1). All pass 4.5:1 against on-accent text and 3:1 against the canvas; `ColorContrastTest` enforces this.
+  - Fonts bundled as variable TTFs from google/fonts (Inter, Vazirmatn; SIL OFL 1.1, licenses in `third_party/licenses/`). Locale picks the family: `fa`/`ar`/`ur` use Vazirmatn (which also carries Latin glyphs) with +2sp line height; everything else uses Inter. Adds about 1.1 MB to the APK.
+  - Screenshot testing: **Roborazzi 1.39 on Robolectric 4.14 (native graphics)**, JUnit 4 tests run through the JUnit Platform vintage engine. Chosen over Paparazzi for its Robolectric base (shared with future UI tests) and active Compose support.
+  - Icon family (Lucide vs Material Symbols) is deferred to the first PR that needs icons.
+- **Alternatives:** downloadable Google Fonts (rejected: needs Play services and network on first run, conflicts with offline-first); Paparazzi.
+
 ---
 
 ## Pending Decisions (owner input required)

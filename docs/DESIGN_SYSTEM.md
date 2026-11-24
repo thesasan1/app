@@ -2,7 +2,7 @@
 
 | Field | Value |
 |---|---|
-| Status | Draft v0.1 — Phase 0 foundation, pending approval. Tokens are implemented in `:core:designsystem` in Phase 1. |
+| Status | Draft v0.1 — Phase 0 foundation, pending approval. Foundation tokens and first components implemented in `:core:designsystem` (ADR-015). |
 | Direction | Premium Minimalism + Modern Productivity + Refined Motion Design |
 | Base | Material 3 (for accessibility, theming and component behavior), with product-specific tokens and components on top |
 

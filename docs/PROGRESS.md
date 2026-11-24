@@ -7,26 +7,28 @@ The GitHub repository is the source of truth. A checkpoint is added at the end o
 | Field | Value |
 |---|---|
 | Current phase | **Phase 1 — Engineering Foundation** |
-| Status | PR #3 `feature/backend-skeleton` in review (not merged) |
-| Code status | Android skeleton merged (#2). Backend skeleton with health endpoints in PR #3 |
-| Build status | `android-ci` green on `main` after #2; `backend-ci` runs on PR #3 |
-| Test status | Backend: 13 unit + 12 e2e tests passed locally; Android: CI green |
+| Status | PR #4 `feature/design-system-foundation` in review |
+| Code status | Android skeleton (#2) and backend skeleton (#3) merged. Design-system foundation in PR #4 |
+| Build status | `android-ci` and `backend-ci` green on `main` after #3 |
+| Test status | Backend: 13 unit + 12 e2e (CI green). Android: unit tests, lint, screenshots run in CI |
 | Blockers | None for Phase 1. D-03…D-09 pending for later phases |
-| Next task | Phase 1 PR 4 — `feature/design-system-foundation` |
+| Next task | Phase 1 PR 3 — `feature/ci` (dependency review, Android static analysis) |
 
 ## Completed Features
 
 - Phase 0 foundation documentation — merged (PR #1).
 - Android engineering skeleton + `android-ci` — merged (PR #2).
+- Backend skeleton + `backend-ci` — merged (PR #3).
 
 ## Features In Progress
 
-- Backend skeleton + `backend-ci` — PR #3.
+- Design-system foundation — PR #4.
 
 ## Merged Pull Requests
 
 - #1 Phase 0: Product and architecture foundation — merged 2026-11-24 (squash `d92d349`).
 - #2 Android engineering skeleton + Android CI — merged 2026-11-24 (squash `d69a475`), `android-ci` green.
+- #3 Backend skeleton + backend CI — merged 2026-11-24 (squash `bc6aafb`), `backend-ci` and `android-ci` green.
 
 ---
 
@@ -67,8 +69,16 @@ The GitHub repository is the source of truth. A checkpoint is added at the end o
 
 ### Checkpoint 1.2 — 2026-11-24 — Backend skeleton submitted
 
-**Completed (in review, PR #3):** NestJS 11 backend in `backend/` with validated config, `/v1/health/live` and `/v1/health/ready`, pino logging (redaction, request ids), RFC 9457 errors incl. body-parser 413, global validation, helmet, OpenAPI generation with drift check, `backend-ci` workflow. Android CI actions bumped to v5.
+**Completed (merged, PR #3):** NestJS 11 backend in `backend/` with validated config, `/v1/health/live` and `/v1/health/ready`, pino logging (redaction, request ids), RFC 9457 errors incl. body-parser 413, global validation, helmet, OpenAPI generation with drift check, `backend-ci` workflow. Android CI actions bumped to v5.
 
 **Tested (local):** lint, format check, typecheck → Passed; `npm test` → Passed (13); `npm run test:e2e` → Passed (12); `openapi:check` → Passed; `npm audit` → 0 vulnerabilities; production start smoke test → `/v1/health/ready` 200, `/v1/docs` 404 in production.
 
 **Recommended next task:** `feature/design-system-foundation`.
+
+### Checkpoint 1.3 — 2026-11-24 — Design-system foundation submitted
+
+**Completed (in review, PR #4):** semantic color tokens with six accents, Inter/Vazirmatn variable fonts with locale-aware type scale, spacing/radius/motion tokens, `AppTheme` with token accessors, `AppButton` (4 variants, 3 sizes, loading), `AppCard`, `EmptyState`; dashboard moved to tokens; Roborazzi screenshots (light, dark, Persian RTL, 200% font scale) recorded in CI.
+
+**Tested:** contrast and typography unit tests, screenshot rendering → verified in CI only (KI-002). Golden comparison not yet enabled (KI-008).
+
+**Recommended next task:** `feature/ci` — dependency review and Android static analysis.
