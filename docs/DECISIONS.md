@@ -57,8 +57,10 @@ Architecture Decision Records (ADRs) and decisions pending the project owner. Fo
 
 ### ADR-009 — Rich-text storage as portable JSON block model
 
-- **Status:** Proposed
+- **Status:** Accepted (agent decision, 2026-11-24; format v1 implemented in `NoteDocumentCodec`)
 - **Decision:** Note bodies stored as a versioned JSON block list (paragraph, heading, list, checklist, quote, code, image ref) with inline marks; `body_plain` derived for search.
+- **Format v1:** `{"v":1,"blocks":[…]}`. Block `type` is `p`, `heading` (`level` 1–3), `ul`/`ol` and `check` (`checked`, optional `indent` 0–6), `quote`, `code` (`text`, `lang`), or `image` (`attachment`, `alt`). Text blocks carry `spans` of `{"text", "marks"}`, with marks `b`, `i`, `s`, `code` or `{"link": url}`. Lists are one block per item, so edits and sync merges stay line-based.
+- **Compatibility:** readers keep unknown block types verbatim and write them back, ignore unknown keys and marks, clamp out-of-range values, and read a body that isn't a document as plain text. Adjacent spans with equal marks merge, so equal content encodes to equal JSON.
 - **Alternatives:** HTML (hard to sanitize/diff), Markdown (lossy for some formatting, but readable). Export will offer Markdown.
 
 ### ADR-010 — Local database encryption

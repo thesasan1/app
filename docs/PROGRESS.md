@@ -7,12 +7,12 @@ The GitHub repository is the source of truth. A checkpoint is added at the end o
 | Field | Value |
 |---|---|
 | Current phase | **Phase 2 — Core Productivity** (Phase 1 done except PR 5b, waiting on ADR-007) |
-| Status | Notes data layer (Room v2, full-text search) in review |
-| Code status | Phase 1 merged: Android skeleton (#2), backend skeleton (#3), design system (#4), CI hardening (#5), local database (#14), logging (#19), toolchain upgrade (#20), NestJS 12 / Node 26 (#21), debug APK pre-release (#22). Notes data layer in review |
+| Status | Notes repository and document format (ADR-009) in review |
+| Code status | Phase 1 merged: Android skeleton (#2), backend skeleton (#3), design system (#4), CI hardening (#5), local database (#14), logging (#19), toolchain upgrade (#20), NestJS 12 / Node 26 (#21), debug APK pre-release (#22). notes data layer (#23) merged. Notes repository in review |
 | Build status | `android-ci` and `backend-ci` green on `main` after #5 and the Dependabot action bumps |
 | Test status | Backend: 13 unit + 12 e2e (CI green). Android: unit tests, lint, screenshots run in CI |
 | Blockers | ADR-007 (Prisma) needs owner approval before PR 5b; ADR-010 (local DB encryption) before the first release with real content. D-03…D-09 pending for later phases |
-| Next task | Notes repository and block document model (ADR-009); PR 5b once ADR-007 is approved |
+| Next task | Notes list and editor UI with autosave (NOTE-01); PR 5b once ADR-007 is approved |
 
 ## Completed Features
 
@@ -145,8 +145,14 @@ The GitHub repository is the source of truth. A checkpoint is added at the end o
 
 **Tested:** workflow YAML parses → Passed. Publishing runs only after merge to `main` and is verified then.
 
-### Checkpoint 2.1 — 2026-11-24 — Notes data layer submitted
+### Checkpoint 2.1 — 2026-11-24 — Notes data layer merged (#23)
 
-**Completed (in review):** Room schema v2 (`notes`, `notes_fts`) via AutoMigration; `NoteDao` (active list with pinned first, project filter, archive, trash, restore, search, purge); `SearchText` normaliser and safe MATCH builder for Persian and English. ADR-022. Phase 2 started while PR 5b waits on ADR-007.
+**Completed:** Room schema v2 (`notes`, `notes_fts`) via AutoMigration; `NoteDao` (active list with pinned first, project filter, archive, trash, restore, search, purge); `SearchText` normaliser and safe MATCH builder for Persian and English. ADR-022. Phase 2 started while PR 5b waits on ADR-007.
 
-**Tested:** compile and KSP schema export (local) → Passed; `SearchTextTest` 4/4 (local) → Passed; `spotlessCheck`, `detekt` (local) → Passed. `NoteDaoTest` (10) and the v1→v2 migration test run on Robolectric → CI.
+**Tested:** compile and KSP schema export (local) → Passed; `SearchTextTest` 4/4 (local) → Passed; `spotlessCheck`, `detekt` (local) → Passed. `NoteDaoTest` (10) and the v1→v2 migration test (Robolectric, CI) → Passed.
+
+### Checkpoint 2.2 — 2026-11-24 — Notes repository submitted
+
+**Completed (in review):** `:feature:notes` module. `NoteDocument` block model and `NoteDocumentCodec` (ADR-009 format v1, forward-compatible). `NoteRepository` / `OfflineNoteRepository`: create, autosave-safe `saveContent` (no write when unchanged), organize, pin, archive, trash, restore, delete forever (trash only), 30-day purge, search. Every write queues a sync outbox entry in the same transaction. Hilt binding; app depends on the module.
+
+**Tested:** `NoteDocumentCodecTest` 7/7 and `OfflineNoteRepositoryTest` 10/10 (local, JVM fakes) → Passed; `spotlessCheck`, `detekt` (local) → Passed. App build with the Hilt graph → CI.

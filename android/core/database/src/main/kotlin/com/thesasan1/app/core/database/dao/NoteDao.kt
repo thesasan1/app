@@ -13,7 +13,6 @@ import kotlinx.coroutines.flow.Flow
  * Deleting is soft (`sync.deleted(now)`); trashed notes stay searchable only through [observeTrash].
  */
 @Dao
-@Suppress("TooManyFunctions") // one Room DAO: its queries plus the index helpers its transactions call
 interface NoteDao {
     /** Writes the note and re-indexes it, in one transaction. */
     @Transaction
@@ -61,6 +60,13 @@ interface NoteDao {
     )
     fun search(matchQuery: String): Flow<List<NoteEntity>>
 
+    /** Hard-deletes one note and its index row (NOTE-04 "delete forever"). */
+    @Transaction
+    suspend fun deletePermanently(id: String) {
+        deleteIndex(id)
+        deleteRow(id)
+    }
+
     /** Hard-deletes notes trashed before [cutoffMillis] and their index rows. Returns the count. */
     @Transaction
     suspend fun purgeDeletedBefore(cutoffMillis: Long): Int {
@@ -82,6 +88,9 @@ interface NoteDao {
             "(SELECT id FROM notes WHERE deleted_at IS NOT NULL AND deleted_at < :cutoffMillis)",
     )
     suspend fun deleteIndexForDeletedBefore(cutoffMillis: Long)
+
+    @Query("DELETE FROM notes WHERE id = :id")
+    suspend fun deleteRow(id: String)
 
     @Query("DELETE FROM notes WHERE deleted_at IS NOT NULL AND deleted_at < :cutoffMillis")
     suspend fun deleteRowsDeletedBefore(cutoffMillis: Long): Int
