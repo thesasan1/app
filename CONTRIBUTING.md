@@ -29,6 +29,20 @@ Branches start from the latest `main`. A `develop` branch is not used until para
 - CI must be green before review is requested (from Phase 1).
 - Squash-merge after checks pass (by the agent under ADR-012, or by the owner).
 
+## Checks before pushing
+
+Android (from `android/`):
+
+```bash
+./gradlew spotlessApply      # format Kotlin and Gradle scripts with ktlint
+./gradlew detekt             # static analysis (config/detekt/detekt.yml)
+./gradlew testDebugUnitTest :core:common:test lintDebug
+```
+
+Backend (from `backend/`): `npm run lint && npm run format:check && npm run typecheck && npm test && npm run test:e2e`.
+
+CI also runs dependency review on every pull request; it fails on known vulnerabilities (moderate or worse) and on GPL/AGPL licenses.
+
 ## Recommended repository settings (owner)
 
 - Protect `main`: require PR, 1 approval, required status checks (`android-ci`, `backend-ci` once added), linear history, no force pushes, no deletions.

@@ -5,7 +5,10 @@ package com.thesasan1.app.core.common
  * failure is handled explicitly (no silent catch blocks, see AGENTS.md §18).
  */
 sealed interface AppError {
-    /** Device has no connectivity; the operation can be retried later. Not a user-facing failure for local-first data. */
+    /**
+     * Device has no connectivity; the operation can be retried later.
+     * Not a user-facing failure for local-first data.
+     */
     data object Offline : AppError
 
     /** Local persistence failed. */

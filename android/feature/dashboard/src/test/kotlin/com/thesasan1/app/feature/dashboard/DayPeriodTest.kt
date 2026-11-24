@@ -1,9 +1,9 @@
 package com.thesasan1.app.feature.dashboard
 
+import java.time.LocalTime
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.CsvSource
-import java.time.LocalTime
 
 class DayPeriodTest {
 

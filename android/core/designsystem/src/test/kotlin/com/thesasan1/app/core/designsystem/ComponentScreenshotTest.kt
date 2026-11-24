@@ -93,7 +93,12 @@ class ComponentScreenshotTest {
                 Text(strings.cardTitle, style = AppTheme.typography.titleMedium)
                 Text(strings.cardBody, style = AppTheme.typography.bodySmall, color = AppTheme.colors.textSecondary)
             }
-            EmptyState(title = strings.emptyTitle, body = strings.emptyBody, actionLabel = strings.primary, onAction = {})
+            EmptyState(
+                title = strings.emptyTitle,
+                body = strings.emptyBody,
+                actionLabel = strings.primary,
+                onAction = {},
+            )
         }
     }
 

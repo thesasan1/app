@@ -8,6 +8,7 @@ class AndroidLibraryConventionPlugin : Plugin<Project> {
         with(target) {
             pluginManager.apply("com.android.library")
             pluginManager.apply("org.jetbrains.kotlin.android")
+            configureStaticAnalysis()
             extensions.configure<LibraryExtension> {
                 configureKotlinAndroid(this)
                 testOptions.targetSdk = ProjectConfig.TARGET_SDK

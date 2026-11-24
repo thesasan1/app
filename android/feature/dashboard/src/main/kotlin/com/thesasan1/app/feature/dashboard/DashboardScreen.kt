@@ -26,19 +26,14 @@ import java.time.format.DateTimeFormatter
 import java.time.format.FormatStyle
 
 @Composable
-internal fun DashboardRoute(
-    viewModel: DashboardViewModel = hiltViewModel(),
-) {
+internal fun DashboardRoute(viewModel: DashboardViewModel = hiltViewModel()) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     LifecycleEventEffect(Lifecycle.Event.ON_RESUME) { viewModel.refresh() }
     DashboardScreen(uiState = uiState)
 }
 
 @Composable
-internal fun DashboardScreen(
-    uiState: DashboardUiState,
-    modifier: Modifier = Modifier,
-) {
+internal fun DashboardScreen(uiState: DashboardUiState, modifier: Modifier = Modifier) {
     Scaffold(modifier = modifier) { innerPadding ->
         Column(
             modifier = Modifier

@@ -18,10 +18,7 @@ import com.thesasan1.app.core.designsystem.theme.Spacing
  * dark theme relies on the surface tone alone.
  */
 @Composable
-fun AppCard(
-    modifier: Modifier = Modifier,
-    content: @Composable ColumnScope.() -> Unit,
-) {
+fun AppCard(modifier: Modifier = Modifier, content: @Composable ColumnScope.() -> Unit) {
     val colors = AppTheme.colors
     Card(
         modifier = modifier,
