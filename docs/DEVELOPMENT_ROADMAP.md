@@ -4,8 +4,8 @@ The roadmap is an implementation **sequence**, not a reduction in scope (`AGENTS
 
 | Phase | Name | Status |
 |---|---|---|
-| 0 | Product and Architecture Foundation | In review (PR #1) |
-| 1 | Engineering Foundation | Not started |
+| 0 | Product and Architecture Foundation | Merged (PR #1) |
+| 1 | Engineering Foundation | In progress |
 | 2 | Core Productivity | Not started |
 | 3 | Smart Capture | Not started |
 | 4 | Personal Growth | Not started |
@@ -32,15 +32,15 @@ PR: #1 (`docs/phase-0-foundation`)
 - [x] Testing strategy, security model
 - [x] Risks, dependencies, decisions log (`docs/DECISIONS.md`, `docs/KNOWN_ISSUES.md`)
 - [x] GitHub workflow: branch/PR conventions, PR template, issue templates, `CONTRIBUTING.md`
-- [ ] Project-owner approval of pending decisions D-01 … D-09
+- [x] Merged 2026-11-24 (owner delegated merging, ADR-012). D-01/D-02 adopted provisionally (ADR-013); D-03…D-09 still pending
 
 **Exit:** PR merged by owner; blocking decisions for Phase 1 (D-01, D-02) answered.
 
 ## Phase 1 — Engineering Foundation (planned PRs)
 
-1. `feature/android-skeleton` — Gradle (version catalog, convention plugins in `build-logic`), `:app` + core modules, Kotlin/Compose, Hilt, Navigation, empty Dashboard screen; `./gradlew assembleDebug test lint` passing.
+1. `feature/android-skeleton` — Gradle (version catalog, convention plugins in `build-logic`), `:app`, `:core:common`, `:core:designsystem` (base theme), `:feature:dashboard` shell, Hilt, type-safe Navigation, JUnit 5; **includes `android-ci.yml`** (pulled forward from PR 3 so the skeleton is verified by real builds). — In review (PR #2)
 2. `feature/backend-skeleton` — NestJS app + worker, config validation, health endpoints, pino logging, Problem Details filter, docker-compose (Postgres, Redis, MinIO), Jest + e2e harness.
-3. `feature/ci` — `.github/workflows/android-ci.yml`, `backend-ci.yml` (build, test, lint, type-check, dependency review).
+3. `feature/ci` — `backend-ci.yml`, dependency review, static analysis (detekt/ktlint via Spotless) for Android. (`android-ci.yml` landed in PR 1.)
 4. `feature/design-system-foundation` — tokens, typography (Inter + Vazirmatn), theme (light/dark, accents, RTL), first components, screenshot tests.
 5. `feature/local-database` — Room setup, base entities (projects, tags, categories), migration test harness, outbox table.
 6. `feature/error-logging-foundation` — `AppError`, `Result`, logger abstraction, dispatchers, clock.

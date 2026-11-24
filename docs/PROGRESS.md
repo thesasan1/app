@@ -6,26 +6,25 @@ The GitHub repository is the source of truth. A checkpoint is added at the end o
 
 | Field | Value |
 |---|---|
-| Current phase | **Phase 0 — Product and Architecture Foundation** |
-| Status | In review — PR #1 pending project-owner approval (not merged, not integrated) |
-| Branch | `docs/phase-0-foundation` |
-| Code status | No application or backend code yet |
-| Build status | Not applicable (no code); Android toolchain unavailable in the Phase 0 environment |
-| Test status | Not applicable (no code) |
-| Blockers | Owner decisions D-01 (name/applicationId) and D-02 (minSdk) before Phase 1 starts |
-| Next task | After merge: Phase 1 PR 1 — `feature/android-skeleton` |
+| Current phase | **Phase 1 — Engineering Foundation** |
+| Status | PR #2 `feature/android-skeleton` in review (not merged) |
+| Code status | Android skeleton: `:app`, `:core:common`, `:core:designsystem`, `:feature:dashboard`; no backend yet |
+| Build status | Verified by `android-ci` on PR #2 (see PR); local Android builds impossible in the arm64 sandbox (KI-002) |
+| Test status | `:core:common` 7 unit tests passed locally; dashboard tests run in CI |
+| Blockers | None for Phase 1. D-03…D-09 pending for later phases |
+| Next task | Phase 1 PR 2 — `feature/backend-skeleton` |
 
 ## Completed Features
 
-None yet (documentation only, pending review).
+- Phase 0 foundation documentation — merged (PR #1).
 
 ## Features In Progress
 
-- Phase 0 foundation documentation — in review (PR #1).
+- Android engineering skeleton + Android CI — PR #2.
 
 ## Merged Pull Requests
 
-None yet.
+- #1 Phase 0: Product and architecture foundation — merged 2026-11-24 (squash `d92d349`).
 
 ---
 
@@ -43,6 +42,22 @@ None yet.
 
 **Remains:** Owner review; decisions D-01…D-09; enabling branch protection on `main`.
 
-**Pull Request:** #1 (https://github.com/thesasan1/app/pull/1) — pending approval.
+**Pull Request:** #1 (https://github.com/thesasan1/app/pull/1) — merged 2026-11-24 under ADR-012.
 
 **Recommended next task:** Phase 1 — Android project skeleton with version catalog and convention plugins.
+
+### Checkpoint 1.1 — 2026-11-24 — Android skeleton submitted
+
+**Completed (in review, PR #2):**
+- Gradle multi-module Android project in `android/`: version catalog, `build-logic` convention plugins, Gradle 8.11.1 wrapper.
+- `:core:common` (pure JVM): `Outcome`, `AppError`, dispatcher qualifiers.
+- `:core:designsystem`: base light/dark color schemes from DESIGN_SYSTEM tokens, spacing scale, `AppTheme`.
+- `:feature:dashboard`: time-of-day greeting, localized date, honest empty state; EN + FA strings; type-safe route.
+- `:app`: Hilt application, edge-to-edge `MainActivity`, `AppNavHost`, `AppModule` (Clock, dispatchers), RTL enabled, backup rules exclude preferences, R8 for release.
+- `.github/workflows/android-ci.yml`: unit tests, lint, debug APK artifact.
+
+**Tested:** `./gradlew :core:common:test` → Passed locally (7 tests). Android modules → verified in CI (PR #2).
+
+**Remains in Phase 1:** backend skeleton, backend CI + static analysis, full design-system foundation, Room + outbox, logging/error foundation.
+
+**Recommended next task:** `feature/backend-skeleton`.

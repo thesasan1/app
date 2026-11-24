@@ -78,14 +78,28 @@ Architecture Decision Records (ADRs) and decisions pending the project owner. Fo
 - **Decision:** The agent may mark PRs ready, merge them (squash), and manage them, once CI is green (where CI exists) and the PR description is complete. All other §12.2 restrictions still apply: no direct pushes to `main`, no bypassing branch protection or required checks, no force-pushing shared branches, no permission or security-setting changes, no production release without owner approval.
 - **Consequences:** The owner can revoke this at any time; PRs remain the review record.
 
+### ADR-013 — Android project skeleton baseline
+
+- **Status:** Accepted (agent decision under the owner's "continue" instruction, 2026-11-24; reversible)
+- **Context:** D-01 and D-02 were unanswered; Phase 1 cannot start without some value. Both are cheap to change before the first release.
+- **Decision:**
+  - `applicationId`/namespace `com.thesasan1.app` (debug suffix `.debug`), display name "Personal OS" / «سیستم‌عامل شخصی» — provisional.
+  - minSdk 26, compileSdk/targetSdk 35, JDK 17 toolchain.
+  - Toolchain set known to be mutually compatible: Gradle 8.11.1, AGP 8.7.3, Kotlin 2.1.0 (K2, Compose compiler plugin), KSP 2.1.0-1.0.29, Hilt 2.53.1, Compose BOM 2024.12.01, Navigation 2.8.5 (type-safe routes), Lifecycle 2.8.7.
+  - JUnit 5 for local unit tests (parameterized tests, clearer assertions); MockK and Turbine available.
+  - `:core:common` is a pure Kotlin/JVM module (no Android), so `Outcome`/`AppError` and dispatcher qualifiers are reusable by domain code.
+  - Convention plugins: `app.android.application`, `app.android.library`, `app.android.compose`, `app.android.feature`, `app.hilt`, `app.jvm.library`.
+- **Alternatives:** Waiting for owner input (rejected: blocks all of Phase 1 for a reversible choice); newest-available library versions (deferred: bump deliberately with Dependabot once CI is green, targetSdk 36 tracked in KI-005).
+- **Consequences:** Changing the applicationId later is a one-line change plus package rename before release; after release it is effectively permanent.
+
 ---
 
 ## Pending Decisions (owner input required)
 
 | ID | Decision | Recommendation | Blocks |
 |---|---|---|---|
-| D-01 | Product name and `applicationId` (e.g., `com.<org>.<name>`) | Choose before Phase 1 (package name is hard to change after release) | Phase 1 PR 1 |
-| D-02 | minSdk | **26** (Android 8.0): ~97% device reach, notification channels, adaptive icons. Alternative 28 simplifies some APIs | Phase 1 PR 1 |
+| D-01 | Product name and `applicationId` | **Provisional:** `com.thesasan1.app`, display name "Personal OS" (ADR-013). Must be final before the first Play upload | First release |
+| D-02 | minSdk | **Adopted provisionally: 26** (ADR-013); owner may still change it before release | — |
 | D-03 | AI provider(s) (paid) | Start with one major LLM API behind the adapter; choose by Persian quality, cost, data-retention terms | Phase 5 |
 | D-04 | Cloud hosting (API, Postgres, Redis, object storage, KMS) | Managed Postgres + container hosting from one provider | Phase 6 (staging earlier) |
 | D-05 | Crash reporting / telemetry | Privacy-respecting, opt-in; e.g., self-hosted Sentry or Firebase Crashlytics (data-sharing implications) | Phase 1 (abstraction only), Phase 6 |
