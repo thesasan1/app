@@ -24,7 +24,8 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 30
     env:
-      ROBOLECTRIC_JAR: android-all-instrumented-14-robolectric-10818077-i7
+      # SDK 34 runs the tests; SDK 35 (compileSdk) is loaded for app resources.
+      ROBOLECTRIC_JARS: android-all-instrumented-14-robolectric-10818077-i7 android-all-instrumented-15-robolectric-12650502-i7
     defaults:
       run:
         working-directory: android
@@ -38,22 +39,24 @@ jobs:
 
       - uses: gradle/actions/setup-gradle@v6
 
-      # Robolectric's Android runtime (~180 MB) is cached and fetched with retries; tests then run
-      # offline (KI-010). Update ROBOLECTRIC_JAR when Robolectric or the test SDK (34) changes.
+      # Robolectric's Android runtimes (~180 MB each) are cached and fetched with retries; tests then
+      # run offline (KI-010). Update ROBOLECTRIC_JARS when Robolectric, the test SDK or compileSdk change.
       - name: Cache Robolectric runtime
         uses: actions/cache@v4
         with:
           path: ~/robolectric-deps
-          key: robolectric-${{ env.ROBOLECTRIC_JAR }}
+          key: robolectric-${{ env.ROBOLECTRIC_JARS }}
 
       - name: Fetch Robolectric runtime
         run: |
           mkdir -p ~/robolectric-deps
-          if [ ! -s ~/robolectric-deps/$ROBOLECTRIC_JAR.jar ]; then
-            curl --fail --silent --show-error --location --retry 5 --retry-all-errors \
-              -o ~/robolectric-deps/$ROBOLECTRIC_JAR.jar \
-              https://repo1.maven.org/maven2/org/robolectric/android-all-instrumented/${ROBOLECTRIC_JAR#android-all-instrumented-}/$ROBOLECTRIC_JAR.jar
-          fi
+          for jar in $ROBOLECTRIC_JARS; do
+            if [ ! -s ~/robolectric-deps/$jar.jar ]; then
+              curl --fail --silent --show-error --location --retry 5 --retry-all-errors \
+                -o ~/robolectric-deps/$jar.jar \
+                https://repo1.maven.org/maven2/org/robolectric/android-all-instrumented/${jar#android-all-instrumented-}/$jar.jar
+            fi
+          done
           ls -la ~/robolectric-deps
           echo "ROBOLECTRIC_DEPS_DIR=$HOME/robolectric-deps" >> "$GITHUB_ENV"
 

@@ -12,7 +12,7 @@
 | KI-005 | targetSdk is 35; Google Play requires raising targetSdk annually (36 expected for new uploads). Bump with a newer AGP before the first Play upload. | Phase 9 at the latest |
 | KI-006 | No launcher icon yet (lint `MissingApplicationIcon` warning). | Design-system PR |
 | KI-009 | The Room database is protected only by Android file-based encryption. Whether to add SQLCipher is open (ADR-010) and should be settled before Phase 2 stores real notes and journal entries. | Owner decision |
-| KI-010 | Robolectric downloaded its Android runtime from Maven Central during CI tests, and rate limiting (HTTP 429) failed runs. CI now caches the runtime, fetches it with retries, and runs tests offline. All Robolectric tests use SDK 34; changing that or the Robolectric version means updating `ROBOLECTRIC_JAR` in `android-ci.yml`. | Mitigated (PR #14) |
+| KI-010 | Robolectric downloaded its Android runtime from Maven Central during CI tests, and rate limiting (HTTP 429) failed runs. CI now caches the runtime, fetches it with retries, and runs tests offline. Tests run on SDK 34 and Robolectric also loads the compileSdk (35) runtime; changing either, or the Robolectric version, means updating `ROBOLECTRIC_JARS` in `android-ci.yml`. | Mitigated (PR #14) |
 | KI-011 | Dependabot PRs #11 (Compose BOM 2026.11, Navigation 2.10, needs AGP 9.1+ and compileSdk 36+) and #12 (NestJS 12, ESM-only) fail CI and are left open. Each needs a deliberate upgrade PR. | Phase 1 follow-up |
 | KI-004 | Branch protection and secret scanning on `main` are not confirmed enabled (requires owner action in repository settings). | Owner action |
 
