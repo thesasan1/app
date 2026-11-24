@@ -7,12 +7,12 @@ The GitHub repository is the source of truth. A checkpoint is added at the end o
 | Field | Value |
 |---|---|
 | Current phase | **Phase 1 — Engineering Foundation** |
-| Status | PR #14 `feature/local-database` in review |
-| Code status | Android skeleton (#2), backend skeleton (#3) design-system foundation (#4) and CI hardening (#5) merged. Local database in PR #14 |
+| Status | PR #19 `feature/error-logging-foundation` in review; PR 5b waits for ADR-007 approval |
+| Code status | Android skeleton (#2), backend skeleton (#3) design-system foundation (#4), CI hardening (#5) and local database (#14) merged. Logging foundation in PR #19 |
 | Build status | `android-ci` and `backend-ci` green on `main` after #5 and the Dependabot action bumps |
 | Test status | Backend: 13 unit + 12 e2e (CI green). Android: unit tests, lint, screenshots run in CI |
-| Blockers | None for Phase 1. D-03…D-09 pending for later phases |
-| Next task | Phase 1 PR 5b — `feature/backend-database` (Prisma, docker-compose, worker) |
+| Blockers | ADR-007 (Prisma) needs owner approval before PR 5b; ADR-010 (local DB encryption) before Phase 2. D-03…D-09 pending for later phases |
+| Next task | Phase 1 PR 5b once ADR-007 is approved; otherwise the Android toolchain upgrade (KI-011) |
 
 ## Completed Features
 
@@ -21,10 +21,11 @@ The GitHub repository is the source of truth. A checkpoint is added at the end o
 - Backend skeleton + `backend-ci` — merged (PR #3).
 - Design-system foundation — merged (PR #4).
 - CI hardening — merged (PR #5).
+- Local database — merged (PR #14).
 
 ## Features In Progress
 
-- Local database (Room v1, outbox, migration harness, UUIDv7) — PR #14.
+- Logging foundation (redacting `AppLogger`, `AppError.code`) — PR #19.
 
 ## Merged Pull Requests
 
@@ -34,6 +35,7 @@ The GitHub repository is the source of truth. A checkpoint is added at the end o
 - #4 Design-system foundation — merged 2026-11-24 (squash `8e301d6`), `android-ci` green after one compile fix.
 - #5 CI hardening — merged 2026-11-24 (squash `bdb5035`) after the owner enabled the dependency graph.
 - Dependabot #6–#10 (GitHub Actions bumps) and #13 (backend lint/test tooling) — merged 2026-11-24 with green CI. #11 and #12 left open (KI-011).
+- #14 Local database — merged 2026-11-24 (squash `5281ef2`), `android-ci` green.
 
 ---
 
@@ -98,8 +100,16 @@ The GitHub repository is the source of truth. A checkpoint is added at the end o
 
 ### Checkpoint 1.5 — 2026-11-24 — Local database submitted
 
-**Completed (in review, PR #14):** `:core:database` with Room 2.7.2 (KSP, exported schema v1): `projects`, `tags`, `categories`, `sync_outbox`, `sync_cursor`; embedded `SyncColumns`; DAOs with soft delete, active queries and trash purge; `TransactionRunner` for atomic change + outbox writes; Hilt `DatabaseModule`; migration harness; CI check that the schema is committed; Robolectric runtime cached and used offline in CI (KI-010). `UuidV7Generator` in `:core:common`. ADR-017.
+**Completed (merged, PR #14):** `:core:database` with Room 2.7.2 (KSP, exported schema v1): `projects`, `tags`, `categories`, `sync_outbox`, `sync_cursor`; embedded `SyncColumns`; DAOs with soft delete, active queries and trash purge; `TransactionRunner` for atomic change + outbox writes; Hilt `DatabaseModule`; migration harness; CI check that the schema is committed; Robolectric runtime cached and used offline in CI (KI-010). `UuidV7Generator` in `:core:common`. ADR-017.
 
 **Tested:** `:core:common:test` (incl. 5 UUIDv7 tests), `spotlessCheck`, `detekt` → Passed locally. Robolectric DAO, outbox and migration tests → CI (KI-002).
 
 **Recommended next task:** `feature/backend-database`.
+
+### Checkpoint 1.6 — 2026-11-24 — Logging foundation submitted
+
+**Completed (in review, PR #19):** `AppLogger` with lazy messages, `RedactingLogger` (emails, tokens, secrets, long numbers incl. Persian digits; UUIDs kept), `LogSink`, `AppError.code`; Logcat sink and Hilt `LoggingModule` (debug: DEBUG + stack traces; release: WARN+ without throwables); README commands; ADR-018.
+
+**Tested (local):** `:core:common:test` (26 tests, incl. 8 redaction cases and 4 logger tests) → Passed; `spotlessCheck detekt` → Passed. App module compile → CI.
+
+**Recommended next task:** PR 5b after the owner approves ADR-007; otherwise the Android toolchain upgrade.

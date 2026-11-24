@@ -42,9 +42,9 @@ PR: #1 (`docs/phase-0-foundation`)
 2. `feature/backend-skeleton` — NestJS app, zod-validated config, `/v1` health endpoints, pino logging with redaction and request ids, RFC 9457 filter, global validation, helmet, 1 MB body limit, OpenAPI generation + drift check, Jest unit + supertest e2e, **`backend-ci.yml`**. Worker process and docker-compose (Postgres, Redis, MinIO) move to the PR that introduces the database (PR 5b). — Merged (PR #3)
 3. `feature/ci` — dependency review, Android static analysis (detekt/ktlint via Spotless). (`android-ci.yml` landed in PR 1, `backend-ci.yml` in PR 2.) Also adds Dependabot. — Merged (PR #5)
 4. `feature/design-system-foundation` — tokens, typography (Inter + Vazirmatn), theme (light/dark, accents, RTL), first components (`AppButton`, `AppCard`, `EmptyState`), Roborazzi screenshot rendering in CI. — Merged (PR #4)
-5. `feature/local-database` — Room setup, base entities (projects, tags, categories), migration test harness, outbox table. — In review (PR #14)
-5b. `feature/backend-database` — PostgreSQL via Prisma (ADR-007), migrations, docker-compose for local infra, readiness check, worker process skeleton.
-6. `feature/error-logging-foundation` — `AppError`, `Result`, logger abstraction, dispatchers, clock.
+5. `feature/local-database` — Room setup, base entities (projects, tags, categories), migration test harness, outbox table. — Merged (PR #14)
+5b. `feature/backend-database` — PostgreSQL via Prisma (ADR-007), migrations, docker-compose for local infra, readiness check, worker process skeleton. — Waiting for owner approval of ADR-007
+6. `feature/error-logging-foundation` — `AppError`, `Result`, logger abstraction, dispatchers, clock. (`AppError`, `Outcome`, dispatchers and clock landed with PR #2; this PR adds the redacting logger and error codes.) — In review (PR #19)
 
 **Exit:** green CI on both stacks; documented commands in README.
 

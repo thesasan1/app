@@ -13,7 +13,7 @@
 | KI-006 | No launcher icon yet (lint `MissingApplicationIcon` warning). | Design-system PR |
 | KI-009 | The Room database is protected only by Android file-based encryption. Whether to add SQLCipher is open (ADR-010) and should be settled before Phase 2 stores real notes and journal entries. | Owner decision |
 | KI-010 | Robolectric downloaded its Android runtime from Maven Central during CI tests, and rate limiting (HTTP 429) failed runs. CI now caches the runtime, fetches it with retries, and runs tests offline. Tests run on SDK 34 and Robolectric also loads the compileSdk (35) runtime; changing either, or the Robolectric version, means updating `ROBOLECTRIC_JARS` in `android-ci.yml`. | Mitigated (PR #14) |
-| KI-011 | Dependabot PRs #11 (Compose BOM 2026.11, Navigation 2.10, needs AGP 9.1+ and compileSdk 36+) and #12 (NestJS 12, ESM-only) fail CI and are left open. Each needs a deliberate upgrade PR. | Phase 1 follow-up |
+| KI-011 | Dependabot PRs that fail CI are left open: #11 (Compose BOM 2026.11, Navigation 2.10; needs AGP 9.1+ and compileSdk 36+), #15 (Kotlin 2.4 group), #16 (Hilt 2.60), #18 (Roborazzi 1.79), and #12 (NestJS 12, ESM-only). The Android ones belong in one toolchain-upgrade PR (AGP 9, Kotlin, KSP, compileSdk 36, which also covers KI-005). NestJS 12 needs its own PR. | Phase 1 follow-up |
 | KI-004 | Branch protection and secret scanning on `main` are not confirmed enabled (requires owner action in repository settings). | Owner action |
 
 ## Technical Risks
