@@ -4,7 +4,7 @@
 
 A premium, offline-first personal operating system for Android that unifies smart capture, notes, tasks, reminders, habits, goals, planning and an AI assistant — in English and Persian (RTL).
 
-**Status:** Phase 1 — Engineering Foundation in progress. The Android app is a skeleton (dashboard shell only); see [docs/PROGRESS.md](docs/PROGRESS.md).
+**Status:** Phase 1 — Engineering Foundation in progress. The Android app is a skeleton (dashboard shell only) and the backend serves health endpoints only; see [docs/PROGRESS.md](docs/PROGRESS.md).
 
 ## Stack
 
@@ -57,4 +57,17 @@ CI runs the same commands on every pull request touching `android/` (`.github/wo
 
 ### Backend
 
-Not created yet (Phase 1, `feature/backend-skeleton`).
+Requirements: Node.js 22+.
+
+```bash
+cd backend
+npm ci
+npm run start:dev     # http://localhost:3000/v1/health/live, Swagger at /v1/docs
+npm test && npm run test:e2e
+```
+
+See [backend/README.md](backend/README.md) for every command. CI: `.github/workflows/backend-ci.yml`.
+
+### Trying the Android app
+
+Every CI run uploads a debug APK. Open the latest green `android-ci` run under the repository's **Actions** tab, download the `app-debug-apk` artifact (GitHub sign-in required), unzip it, and install the `.apk` on an Android 8.0+ device (allow installs from unknown sources) or drag it onto an Android Studio emulator.
