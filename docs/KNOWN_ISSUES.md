@@ -1,0 +1,38 @@
+# Known Issues, Risks and Dependencies
+
+## Known Issues
+
+| ID | Issue | Status |
+|---|---|---|
+| KI-001 | No application or backend code exists yet; nothing is buildable or testable. | Expected — Phase 1 |
+| KI-002 | The Phase 0 execution environment had no JDK, Gradle, or Android SDK, so Android builds could not be attempted. | Environment limitation; CI will provide builds from Phase 1 |
+| KI-003 | No CI workflows exist yet; `main` has no required status checks. | Phase 1 |
+| KI-004 | Branch protection and secret scanning on `main` are not confirmed enabled (requires owner action in repository settings). | Owner action |
+
+## Technical Risks
+
+| ID | Risk | Impact | Likelihood | Mitigation |
+|---|---|---|---|---|
+| R-01 | Android background limits / OEM battery killers delay reminders | High (P2 trust) | High | Exact alarms when granted, alarm rebuild on boot/time change, battery-optimization guidance screen, reliability telemetry (opt-in), OEM matrix testing |
+| R-02 | Exact-alarm permission restrictions (Android 12+/14+) | High | Medium | `USE_EXACT_ALARM` only if eligible under Play policy (alarm/reminder app); otherwise `SCHEDULE_EXACT_ALARM` with user consent; inexact fallback stated in UI |
+| R-03 | Floating overlay (`SYSTEM_ALERT_WINDOW`) and foreground-service-type policy on Play | Medium | Medium | Overlay optional; in-app FAB, tile, widget as primary; review Play policy before Phase 3 |
+| R-04 | Persian speech-to-text quality on-device | Medium | High | D-07: server STT fallback; user review before save |
+| R-05 | Persian NLP for dates/intents (Jalali, colloquial forms, digits) | Medium | High | Deterministic EN/FA parser with extensive test corpus; LLM fallback |
+| R-06 | Sync conflicts causing perceived data loss | High | Medium | Conflict copies, conflict log, sync history UI, scenario tests |
+| R-07 | Scope breadth (20+ modules) vs. quality | High | High | Strict phase gating, focused PRs, shared design system and data patterns |
+| R-08 | AI cost overruns / provider outage | Medium | Medium | Quotas, caching, circuit breaker, deterministic fallbacks |
+| R-09 | Google API verification for sensitive scopes (Calendar) takes weeks | Medium | High | Start OAuth consent-screen verification early in Phase 6; minimal scopes |
+| R-10 | Rich-text editor in Compose lacks a mature first-party solution | Medium | Medium | Evaluate libraries in Phase 2 spike; build on `BasicTextField` + span model if needed |
+| R-11 | Room FTS tokenization for Persian | Low–Medium | Medium | Verify ICU tokenizer availability; fall back to normalized-text LIKE search with Persian normalization (ی/ي, ک/ك) |
+| R-12 | Privacy regulations (GDPR-like) for EU users, data of Iranian users and sanctions-related service availability (Google APIs, AI providers, Play billing) | High | Unknown | **Legal/compliance review required by owner** before launch markets are decided |
+
+## External Dependencies
+
+| Dependency | Needed for | Owner action |
+|---|---|---|
+| Android SDK / JDK 17+ in CI | Builds and tests | Provided by GitHub Actions runners (Phase 1) |
+| Google Cloud project + OAuth consent screen | Google Sign-In, Calendar, Tasks | Owner creates project and credentials (secrets stored in CI/secret manager) |
+| AI provider account (paid) | Phase 5 | Owner selects (D-03) and provisions key |
+| Cloud hosting account | Phase 6 | Owner selects (D-04) |
+| Play Console account + signing | Release | Owner |
+| Font licenses (Inter, Vazirmatn — OFL) | Design system | Verify and include license texts |
