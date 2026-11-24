@@ -16,6 +16,8 @@ turbine = "1.2.0"
 mockk = "1.13.14"
 junit4 = "4.13.2"
 robolectric = "4.14.1"
+room = "2.7.2"
+androidxTestCore = "1.6.1"
 roborazzi = "1.39.0"
 detekt = "1.23.8"
 # detekt 1.23.8 is compiled against this Kotlin version; its classpath is pinned to it (ADR-016).
@@ -49,6 +51,11 @@ turbine = { module = "app.cash.turbine:turbine", version.ref = "turbine" }
 mockk = { module = "io.mockk:mockk", version.ref = "mockk" }
 junit4 = { module = "junit:junit", version.ref = "junit4" }
 junit-vintage-engine = { module = "org.junit.vintage:junit-vintage-engine" }
+room-runtime = { module = "androidx.room:room-runtime", version.ref = "room" }
+room-ktx = { module = "androidx.room:room-ktx", version.ref = "room" }
+room-compiler = { module = "androidx.room:room-compiler", version.ref = "room" }
+room-testing = { module = "androidx.room:room-testing", version.ref = "room" }
+androidx-test-core = { module = "androidx.test:core", version.ref = "androidxTestCore" }
 robolectric = { module = "org.robolectric:robolectric", version.ref = "robolectric" }
 roborazzi = { module = "io.github.takahirom.roborazzi:roborazzi", version.ref = "roborazzi" }
 roborazzi-compose = { module = "io.github.takahirom.roborazzi:roborazzi-compose", version.ref = "roborazzi" }
@@ -62,6 +69,7 @@ kotlin-gradlePlugin = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", ve
 compose-gradlePlugin = { module = "org.jetbrains.kotlin:compose-compiler-gradle-plugin", version.ref = "kotlin" }
 detekt-gradlePlugin = { module = "io.gitlab.arturbosch.detekt:detekt-gradle-plugin", version.ref = "detekt" }
 spotless-gradlePlugin = { module = "com.diffplug.spotless:spotless-plugin-gradle", version.ref = "spotless" }
+room-gradlePlugin = { module = "androidx.room:room-gradle-plugin", version.ref = "room" }
 ksp-gradlePlugin = { module = "com.google.devtools.ksp:com.google.devtools.ksp.gradle.plugin", version.ref = "ksp" }
 
 [plugins]
@@ -73,6 +81,7 @@ kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "ko
 kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 hilt = { id = "com.google.dagger.hilt.android", version.ref = "hilt" }
+room = { id = "androidx.room", version.ref = "room" }
 roborazzi = { id = "io.github.takahirom.roborazzi", version.ref = "roborazzi" }
 
 # Convention plugins (build-logic)
@@ -82,3 +91,4 @@ app-android-compose = { id = "app.android.compose" }
 app-android-feature = { id = "app.android.feature" }
 app-hilt = { id = "app.hilt" }
 app-jvm-library = { id = "app.jvm.library" }
+app-android-room = { id = "app.android.room" }

@@ -2,7 +2,7 @@
 
 | Field | Value |
 |---|---|
-| Status | Draft v0.1 — Phase 0 initial model, pending approval. **No schema is implemented yet.** |
+| Status | Draft v0.2. Room schema **version 1** is implemented: `projects`, `tags`, `categories`, `sync_outbox`, `sync_cursor` (ADR-017). Other tables are still design only. |
 | Local store | Room (SQLite) on Android — source of truth for user interaction |
 | Server store | PostgreSQL 16 |
 
@@ -14,7 +14,7 @@
 |---|---|
 | Primary keys | `id` UUIDv7 (time-ordered), generated on the client; `TEXT` in SQLite, `uuid` in Postgres |
 | Ownership | Every server row has `user_id` (FK `users.id`); every query is scoped by it |
-| Sync columns (all syncable tables) | `version BIGINT` (server-assigned), `created_at`, `updated_at` (HLC string locally, `timestamptz` server), `deleted_at` nullable (tombstone) |
+| Sync columns (all syncable tables) | `version BIGINT` (server-assigned), `created_at`, `updated_at` (UTC epoch millis locally, `timestamptz` server), `deleted_at` nullable (tombstone); the HLC used for ordering is a separate column added with the sync engine (ADR-017) |
 | Local-only columns | `sync_state` (`SYNCED`/`PENDING`/`CONFLICT`), `last_synced_version` |
 | Time | Instants stored as UTC epoch millis (SQLite) / `timestamptz` (PG). "Floating" local date-times stored as ISO-8601 local string + `time_zone_mode` (`FLOATING` / `FIXED`) |
 | Enums | Stored as `TEXT` with CHECK constraints (PG) / converters (Room) |
