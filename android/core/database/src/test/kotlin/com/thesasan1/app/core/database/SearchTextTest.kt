@@ -15,14 +15,14 @@ class SearchTextTest {
 
     @Test
     fun `builds a quoted prefix term per word`() {
-        assertEquals("\"milk\"* \"eggs\"*", SearchText.matchQuery("  Milk, eggs! "))
-        assertEquals("\"کتاب\"* \"ها\"*", SearchText.matchQuery("کتاب\u200Cها"))
+        assertEquals("\"milk*\" \"eggs*\"", SearchText.matchQuery("  Milk, eggs! "))
+        assertEquals("\"کتاب*\" \"ها*\"", SearchText.matchQuery("کتاب\u200Cها"))
     }
 
     @Test
     fun `strips FTS syntax so user input can't change the query`() {
-        assertEquals("\"a\"* \"or\"* \"b\"*", SearchText.matchQuery("a\" OR b*"))
-        assertEquals("\"near\"* \"x\"*", SearchText.matchQuery("NEAR(x)"))
+        assertEquals("\"a*\" \"or*\" \"b*\"", SearchText.matchQuery("a\" OR b*"))
+        assertEquals("\"near*\" \"x*\"", SearchText.matchQuery("NEAR(x)"))
     }
 
     @Test

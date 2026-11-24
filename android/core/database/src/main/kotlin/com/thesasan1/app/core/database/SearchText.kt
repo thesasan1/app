@@ -32,7 +32,7 @@ object SearchText {
     }
 
     /**
-     * Turns free text into a safe FTS4 MATCH expression: every word becomes a quoted prefix term,
+     * Turns free text into a safe FTS4 MATCH expression: every word becomes a quoted prefix term (`"word*"`),
      * and all terms must match. Returns null when nothing searchable is left, so callers can skip
      * the query instead of sending an empty MATCH, which is an error.
      */
@@ -41,6 +41,7 @@ object SearchText {
             .split(Regex("[^\\p{L}\\p{N}]+"))
             .filter { it.isNotEmpty() }
         if (terms.isEmpty()) return null
-        return terms.joinToString(" ") { "\"$it\"*" }
+        // FTS4 prefix syntax: the star goes inside the quotes ("milk*"); "milk"* is FTS5 only.
+        return terms.joinToString(" ") { "\"$it*\"" }
     }
 }
