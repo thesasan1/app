@@ -10,6 +10,7 @@ on:
     paths:
       - "android/**"
       - ".github/workflows/android-ci.yml"
+  workflow_dispatch:
 
 concurrency:
   group: android-ci-${{ github.ref }}
@@ -119,3 +120,35 @@ jobs:
           name: app-debug-apk
           path: android/app/build/outputs/apk/debug/*.apk
           if-no-files-found: error
+
+  # Testers download the latest main build from the "debug-latest" pre-release without signing in
+  # (artifacts need a GitHub sign-in). Debug-signed and debuggable: for testing only, never for Play.
+  publish-debug-apk:
+    name: Publish debug APK pre-release
+    needs: build
+    if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: write
+    concurrency:
+      group: debug-apk-prerelease
+      cancel-in-progress: false
+    steps:
+      - uses: actions/download-artifact@v8
+        with:
+          name: app-debug-apk
+          path: apk
+
+      - name: Update debug-latest pre-release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        run: |
+          short_sha="${GITHUB_SHA::7}"
+          cp apk/*.apk "personal-os-debug.apk"
+          notes="Debug build of main at ${short_sha}, built $(date -u +%Y-%m-%dT%H:%MZ). For testing only: debug-signed, debuggable, not a production release. Install on Android 8+ with unknown sources allowed."
+          gh release delete debug-latest --cleanup-tag --yes || true
+          gh release create debug-latest personal-os-debug.apk \
+            --prerelease --latest=false --target "$GITHUB_SHA" \
+            --title "Debug build (${short_sha})" --notes "$notes"

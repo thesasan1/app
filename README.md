@@ -72,4 +72,6 @@ See [backend/README.md](backend/README.md) for every command. CI: `.github/workf
 
 ### Trying the Android app
 
-Every CI run uploads a debug APK. Open the latest green `android-ci` run under the repository's **Actions** tab, download the `app-debug-apk` artifact (GitHub sign-in required), unzip it, and install the `.apk` on an Android 8.0+ device (allow installs from unknown sources) or drag it onto an Android Studio emulator.
+The quickest way: every green `android-ci` run on `main` refreshes the **Debug build** pre-release (tag `debug-latest`) on the repository's Releases page. Download `personal-os-debug.apk` there, with no sign-in needed. It is debug-signed and for testing only.
+
+Every CI run, pull requests included, also uploads a debug APK. Open the latest green `android-ci` run under the repository's **Actions** tab, download the `app-debug-apk` artifact (GitHub sign-in required), unzip it, and install the `.apk` on an Android 8.0+ device (allow installs from unknown sources) or drag it onto an Android Studio emulator.

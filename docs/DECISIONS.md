@@ -177,6 +177,13 @@ Architecture Decision Records (ADRs) and decisions pending the project owner. Fo
 - **Alternatives:** Converting the backend to native ESM (rejected for now: every relative import gains a `.js` suffix and decorator metadata loading gets fragile, for no runtime benefit). Switching to Vitest with SWC (rejected: a new toolchain just to load dependencies). Staying on NestJS 11 (rejected: it stops receiving fixes).
 - **Consequences:** Hosting (D-04) must offer Node 24.9+ (26 preferred). The Jest flag can go once Jest supports `require(esm)` without it.
 
+### ADR-021 — Debug APK pre-release for testers
+
+- **Status:** Accepted (agent decision, 2026-11-24; the owner asked for an APK to test)
+- **Context:** CI artifacts need a GitHub sign-in and a zip extraction, and the API offers no way to hand them over in chat.
+- **Decision:** After every green `android-ci` run on `main`, a `publish-debug-apk` job replaces the `debug-latest` pre-release with `personal-os-debug.apk`. The job alone gets `contents: write`; pull requests never publish.
+- **Consequences:** Anyone who can see the public repo can install the debug build. It is debug-signed and debuggable and holds no secrets. It is not a production release (ADR-012): Play or signed releases still need owner approval.
+
 ---
 
 ## Pending Decisions (owner input required)
