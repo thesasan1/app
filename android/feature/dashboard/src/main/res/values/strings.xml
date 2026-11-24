@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="feature_dashboard_greeting_morning">Good morning</string>
+    <string name="feature_dashboard_greeting_afternoon">Good afternoon</string>
+    <string name="feature_dashboard_greeting_evening">Good evening</string>
+    <string name="feature_dashboard_greeting_night">Good night</string>
+    <string name="feature_dashboard_empty_title">Your day starts here</string>
+    <string name="feature_dashboard_empty_body">Tasks, habits and reminders will appear here as you add them.</string>
+</resources>

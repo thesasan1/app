@@ -4,7 +4,7 @@
 
 A premium, offline-first personal operating system for Android that unifies smart capture, notes, tasks, reminders, habits, goals, planning and an AI assistant — in English and Persian (RTL).
 
-**Status:** Phase 0 — Product and Architecture Foundation (documentation only, in review). There is no runnable code yet.
+**Status:** Phase 1 — Engineering Foundation in progress. The Android app is a skeleton (dashboard shell only); see [docs/PROGRESS.md](docs/PROGRESS.md).
 
 ## Stack
 
@@ -42,4 +42,19 @@ docs/        Product and technical documentation
 
 ## Building
 
-Build and test commands will be documented here when Phase 1 creates the projects.
+### Android
+
+Requirements: JDK 17, Android SDK with platform 35 (`ANDROID_HOME` or `android/local.properties`).
+
+```bash
+cd android
+./gradlew testDebugUnitTest :core:common:test   # unit tests
+./gradlew lintDebug                              # Android lint
+./gradlew assembleDebug                          # debug APK → app/build/outputs/apk/debug/
+```
+
+CI runs the same commands on every pull request touching `android/` (`.github/workflows/android-ci.yml`).
+
+### Backend
+
+Not created yet (Phase 1, `feature/backend-skeleton`).

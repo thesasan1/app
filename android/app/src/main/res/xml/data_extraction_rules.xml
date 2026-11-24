@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Android 12+ backup rules. Session tokens and keys must never be backed up (SECURITY.md §3).
+     Explicit include/exclude lists are expanded as storage is added (Room in Phase 1, DataStore in Phase 6). -->
+<data-extraction-rules>
+    <cloud-backup>
+        <exclude domain="sharedpref" path="." />
+    </cloud-backup>
+    <device-transfer>
+        <exclude domain="sharedpref" path="." />
+    </device-transfer>
+</data-extraction-rules>

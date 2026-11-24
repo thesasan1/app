@@ -33,3 +33,6 @@ node_modules/
 dist/
 coverage/
 npm-debug.log*
+
+# Kotlin 2.x project cache
+.kotlin/
