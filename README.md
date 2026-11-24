@@ -48,7 +48,9 @@ Requirements: JDK 17, Android SDK with platform 35 (`ANDROID_HOME` or `android/l
 
 ```bash
 cd android
-./gradlew testDebugUnitTest :core:common:test   # unit tests
+./gradlew spotlessApply                          # format Kotlin (ktlint)
+./gradlew spotlessCheck detekt                   # formatting + static analysis
+./gradlew testDebugUnitTest :core:common:test   # unit, Robolectric and screenshot tests
 ./gradlew lintDebug                              # Android lint
 ./gradlew assembleDebug                          # debug APK → app/build/outputs/apk/debug/
 ```

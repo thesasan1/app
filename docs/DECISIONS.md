@@ -142,6 +142,17 @@ Architecture Decision Records (ADRs) and decisions pending the project owner. Fo
   - **IDs:** `UuidV7Generator` in `:core:common` (RFC 9562), injected as `IdGenerator`. ADR-004 is now implemented.
 - **Not decided here:** at-rest encryption (ADR-010) stays open for the owner.
 
+### ADR-018 — Error codes and logging
+
+- **Status:** Accepted (agent decision, 2026-11-24)
+- **Decision:**
+  - App code logs only through `AppLogger` (`:core:common`). Messages are lambdas, so nothing is built when a level is off.
+  - `RedactingLogger` masks emails, bearer tokens and JWTs, secret key/value pairs, long opaque strings, and 7+ digit numbers (Latin, Persian and Arabic-Indic digits) before anything reaches a sink. UUIDs are kept.
+  - Logs carry ids, counts, codes and states, never user content. Redaction is a safety net, not permission.
+  - Debug builds log at DEBUG with stack traces. Release builds log WARN+ without throwables, since exception messages can contain user input. No crash reporting or remote logging until D-05 (telemetry) is decided.
+  - `AppError.code` gives a short, content-free code (`OFFLINE`, `HTTP_503`, `NETWORK:IOException`, `VALIDATION:title`) for logs, metrics and the outbox's `last_error`.
+- **Alternatives:** Timber (adds a dependency and no redaction); logging raw throwables (leaks content).
+
 ---
 
 ## Pending Decisions (owner input required)
