@@ -64,5 +64,11 @@ private fun Project.configureUnitTests() {
     }
     tasks.withType<Test>().configureEach {
         useJUnitPlatform()
+        // CI pre-fetches Robolectric's Android runtime with retries and runs tests offline, so a
+        // network error during a test can't fail the build (KI-010). Locally Robolectric downloads it.
+        System.getenv("ROBOLECTRIC_DEPS_DIR")?.let { dir ->
+            systemProperty("robolectric.offline", "true")
+            systemProperty("robolectric.dependency.dir", dir)
+        }
     }
 }

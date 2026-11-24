@@ -23,6 +23,8 @@ jobs:
     name: Build, lint and unit test
     runs-on: ubuntu-latest
     timeout-minutes: 30
+    env:
+      ROBOLECTRIC_JAR: android-all-instrumented-14-robolectric-10818077-i7
     defaults:
       run:
         working-directory: android
@@ -35,6 +37,24 @@ jobs:
           java-version: "17"
 
       - uses: gradle/actions/setup-gradle@v6
+
+      # Robolectric's Android runtime (~180 MB) is cached and fetched with retries; tests then run
+      # offline (KI-010). Update ROBOLECTRIC_JAR when Robolectric or the test SDK (34) changes.
+      - name: Cache Robolectric runtime
+        uses: actions/cache@v4
+        with:
+          path: ~/robolectric-deps
+          key: robolectric-${{ env.ROBOLECTRIC_JAR }}
+
+      - name: Fetch Robolectric runtime
+        run: |
+          mkdir -p ~/robolectric-deps
+          if [ ! -s ~/robolectric-deps/$ROBOLECTRIC_JAR.jar ]; then
+            curl --fail --silent --show-error --location --retry 5 --retry-all-errors \
+              -o ~/robolectric-deps/$ROBOLECTRIC_JAR.jar \
+              https://repo1.maven.org/maven2/org/robolectric/android-all-instrumented/${ROBOLECTRIC_JAR#android-all-instrumented-}/$ROBOLECTRIC_JAR.jar
+          fi
+          echo "ROBOLECTRIC_DEPS_DIR=$HOME/robolectric-deps" >> "$GITHUB_ENV"
 
       - name: Formatting and static analysis
         run: ./gradlew spotlessCheck detekt --stacktrace
