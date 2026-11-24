@@ -7,28 +7,30 @@ The GitHub repository is the source of truth. A checkpoint is added at the end o
 | Field | Value |
 |---|---|
 | Current phase | **Phase 1 — Engineering Foundation** |
-| Status | PR #4 `feature/design-system-foundation` in review |
-| Code status | Android skeleton (#2) and backend skeleton (#3) merged. Design-system foundation in PR #4 |
-| Build status | `android-ci` and `backend-ci` green on `main` after #3 |
+| Status | PR #5 `feature/ci` in review |
+| Code status | Android skeleton (#2), backend skeleton (#3) and design-system foundation (#4) merged. CI hardening in PR #5 |
+| Build status | `android-ci` and `backend-ci` green on `main` after #4 |
 | Test status | Backend: 13 unit + 12 e2e (CI green). Android: unit tests, lint, screenshots run in CI |
 | Blockers | None for Phase 1. D-03…D-09 pending for later phases |
-| Next task | Phase 1 PR 3 — `feature/ci` (dependency review, Android static analysis) |
+| Next task | Phase 1 PR 5 — `feature/local-database` (Room, outbox) |
 
 ## Completed Features
 
 - Phase 0 foundation documentation — merged (PR #1).
 - Android engineering skeleton + `android-ci` — merged (PR #2).
 - Backend skeleton + `backend-ci` — merged (PR #3).
+- Design-system foundation — merged (PR #4).
 
 ## Features In Progress
 
-- Design-system foundation — PR #4.
+- CI hardening (Spotless/ktlint, detekt, dependency review, Dependabot) — PR #5.
 
 ## Merged Pull Requests
 
 - #1 Phase 0: Product and architecture foundation — merged 2026-11-24 (squash `d92d349`).
 - #2 Android engineering skeleton + Android CI — merged 2026-11-24 (squash `d69a475`), `android-ci` green.
 - #3 Backend skeleton + backend CI — merged 2026-11-24 (squash `bc6aafb`), `backend-ci` and `android-ci` green.
+- #4 Design-system foundation — merged 2026-11-24 (squash `8e301d6`), `android-ci` green after one compile fix.
 
 ---
 
@@ -77,8 +79,16 @@ The GitHub repository is the source of truth. A checkpoint is added at the end o
 
 ### Checkpoint 1.3 — 2026-11-24 — Design-system foundation submitted
 
-**Completed (in review, PR #4):** semantic color tokens with six accents, Inter/Vazirmatn variable fonts with locale-aware type scale, spacing/radius/motion tokens, `AppTheme` with token accessors, `AppButton` (4 variants, 3 sizes, loading), `AppCard`, `EmptyState`; dashboard moved to tokens; Roborazzi screenshots (light, dark, Persian RTL, 200% font scale) recorded in CI.
+**Completed (merged, PR #4):** semantic color tokens with six accents, Inter/Vazirmatn variable fonts with locale-aware type scale, spacing/radius/motion tokens, `AppTheme` with token accessors, `AppButton` (4 variants, 3 sizes, loading), `AppCard`, `EmptyState`; dashboard moved to tokens; Roborazzi screenshots (light, dark, Persian RTL, 200% font scale) recorded in CI.
 
 **Tested:** contrast and typography unit tests, screenshot rendering → verified in CI only (KI-002). Golden comparison not yet enabled (KI-008).
 
 **Recommended next task:** `feature/ci` — dependency review and Android static analysis.
+
+### Checkpoint 1.4 — 2026-11-24 — CI hardening submitted
+
+**Completed (in review, PR #5):** Spotless + ktlint and detekt for all Kotlin modules through the convention plugins; existing code formatted and detekt findings fixed (`DayPeriod` hour constants, `AppError` line length, justified suppression in `runCatchingOutcome`); `dependency-review` workflow; Dependabot for Gradle, npm and Actions; CONTRIBUTING pre-push checks.
+
+**Tested (local):** `./gradlew spotlessCheck detekt` → Passed; `./gradlew :core:common:test` → Passed. Android unit tests, lint and assemble → verified in CI.
+
+**Recommended next task:** `feature/local-database`.

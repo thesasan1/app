@@ -29,6 +29,8 @@ fun <T> Outcome<T>.getOrNull(): T? = (this as? Outcome.Success)?.value
  * Runs [block] and wraps its result. Coroutine cancellation is always rethrown so structured
  * concurrency keeps working; any other throwable is mapped with [mapError].
  */
+// Catching Throwable is the purpose of this boundary helper: every failure becomes a typed AppError.
+@Suppress("TooGenericExceptionCaught")
 inline fun <T> runCatchingOutcome(
     mapError: (Throwable) -> AppError = { AppError.Unexpected(it) },
     block: () -> T,

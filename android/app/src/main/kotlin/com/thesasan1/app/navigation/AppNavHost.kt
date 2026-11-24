@@ -13,10 +13,7 @@ import com.thesasan1.app.feature.dashboard.dashboardScreen
  * `NavGraphBuilder` extension so features never reference each other (ADR-003).
  */
 @Composable
-fun AppNavHost(
-    modifier: Modifier = Modifier,
-    navController: NavHostController = rememberNavController(),
-) {
+fun AppNavHost(modifier: Modifier = Modifier, navController: NavHostController = rememberNavController()) {
     NavHost(
         navController = navController,
         startDestination = DashboardRoute,

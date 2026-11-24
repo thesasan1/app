@@ -5,13 +5,13 @@ import com.thesasan1.app.core.designsystem.theme.AccentColor
 import com.thesasan1.app.core.designsystem.theme.AppColors
 import com.thesasan1.app.core.designsystem.theme.darkAppColors
 import com.thesasan1.app.core.designsystem.theme.lightAppColors
+import kotlin.math.max
+import kotlin.math.min
+import kotlin.math.pow
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.EnumSource
-import kotlin.math.max
-import kotlin.math.min
-import kotlin.math.pow
 
 /** WCAG 2.x contrast checks for the token set (docs/DESIGN_SYSTEM.md §2.1, §10). */
 class ColorContrastTest {

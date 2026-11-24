@@ -36,6 +36,9 @@ jobs:
 
       - uses: gradle/actions/setup-gradle@v5
 
+      - name: Formatting and static analysis
+        run: ./gradlew spotlessCheck detekt --stacktrace
+
       - name: Unit tests
         run: ./gradlew testDebugUnitTest :core:common:test --stacktrace
 

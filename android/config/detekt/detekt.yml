@@ -1,0 +1,30 @@
+# Overrides on top of detekt's default rule set (buildUponDefaultConfig = true). ADR-016.
+config:
+  validation: true
+
+naming:
+  MatchingDeclarationName:
+    # Feature navigation files (FooNavigation.kt) hold a route object plus its NavGraphBuilder extension.
+    active: false
+  FunctionNaming:
+    # Composable functions are PascalCase; backticked test names are allowed.
+    ignoreAnnotated: ['Composable']
+  TopLevelPropertyNaming:
+    constantPattern: '[A-Z][A-Za-z0-9_]*'
+
+complexity:
+  LongParameterList:
+    # Composables take many optional parameters by convention.
+    ignoreAnnotated: ['Composable']
+  LongMethod:
+    ignoreAnnotated: ['Composable']
+
+style:
+  MagicNumber:
+    # Design tokens, previews and tests are made of literal values.
+    ignoreAnnotated: ['Preview']
+    excludes: ['**/test/**', '**/designsystem/theme/**', '**/designsystem/component/**']
+  UnusedPrivateMember:
+    ignoreAnnotated: ['Preview']
+  WildcardImport:
+    active: true

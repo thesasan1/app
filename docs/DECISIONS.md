@@ -117,6 +117,17 @@ Architecture Decision Records (ADRs) and decisions pending the project owner. Fo
   - Icon family (Lucide vs Material Symbols) is deferred to the first PR that needs icons.
 - **Alternatives:** downloadable Google Fonts (rejected: needs Play services and network on first run, conflicts with offline-first); Paparazzi.
 
+### ADR-016 — Kotlin formatting and static analysis
+
+- **Status:** Accepted (agent decision, 2026-11-24)
+- **Decision:**
+  - **Spotless 7.2 + ktlint 1.5** formats every module's Kotlin sources and module build scripts. The style is `android_studio` with a 120-column limit, trailing commas allowed, and Composable functions exempt from function-naming rules. Settings live in the root `.editorconfig` so IDEs agree.
+  - **detekt 1.23.8** runs on main and test sources with `buildUponDefaultConfig` and overrides in `android/config/detekt/detekt.yml` (Compose-friendly naming, length limits and magic numbers). detekt's classpath is pinned to Kotlin 2.0.21, the version it is built with, so the project's Kotlin 2.1 does not break it.
+  - Both are applied by the existing convention plugins (`configureStaticAnalysis()`), so new modules get them automatically. CI runs `spotlessCheck detekt` before the unit tests.
+  - **Dependency review** (`actions/dependency-review-action`) on every PR fails on moderate or worse vulnerabilities and on GPL/AGPL licenses. **Dependabot** opens weekly grouped updates for Gradle, npm and GitHub Actions.
+- **Alternatives:** the ktlint Gradle plugin (Spotless also covers other formats later); detekt 2.0 alpha (not stable).
+- **Revisit:** when detekt 2.0 is stable, drop the Kotlin pin.
+
 ---
 
 ## Pending Decisions (owner input required)
