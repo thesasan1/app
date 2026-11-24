@@ -24,8 +24,8 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 30
     env:
-      # SDK 34 runs the tests; SDK 36 (compileSdk) is loaded for app resources and needs JDK 21.
-      ROBOLECTRIC_JARS: android-all-instrumented-14-robolectric-10818077-i7 android-all-instrumented-16-robolectric-13921718-2-i7
+      # SDK 34 runs the tests; SDK 37 (compileSdk) is loaded for app resources and needs JDK 21.
+      ROBOLECTRIC_JARS: android-all-instrumented-14-robolectric-10818077-i7 android-all-instrumented-17-robolectric-16653203-i7
     defaults:
       run:
         working-directory: android

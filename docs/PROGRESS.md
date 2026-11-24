@@ -8,7 +8,7 @@ The GitHub repository is the source of truth. A checkpoint is added at the end o
 |---|---|
 | Current phase | **Phase 1 — Engineering Foundation** |
 | Status | Android toolchain upgrade PR in review; PR 5b waits for ADR-007 approval |
-| Code status | Android skeleton (#2), backend skeleton (#3) design-system foundation (#4), CI hardening (#5) and local database (#14) and logging foundation (#19) merged. Toolchain upgrade (AGP 9, SDK 36) in review |
+| Code status | Android skeleton (#2), backend skeleton (#3) design-system foundation (#4), CI hardening (#5) and local database (#14) and logging foundation (#19) merged. Toolchain upgrade (AGP 9, SDK 37/36) in review |
 | Build status | `android-ci` and `backend-ci` green on `main` after #5 and the Dependabot action bumps |
 | Test status | Backend: 13 unit + 12 e2e (CI green). Android: unit tests, lint, screenshots run in CI |
 | Blockers | ADR-007 (Prisma) needs owner approval before PR 5b; ADR-010 (local DB encryption) before Phase 2. D-03…D-09 pending for later phases |
@@ -26,7 +26,7 @@ The GitHub repository is the source of truth. A checkpoint is added at the end o
 
 ## Features In Progress
 
-- Android toolchain upgrade (AGP 9.5, Kotlin 2.4, SDK 36, JDK 21; ADR-019).
+- Android toolchain upgrade (AGP 9.5, Kotlin 2.4, compileSdk 37, targetSdk 36, JDK 21; ADR-019).
 
 ## Merged Pull Requests
 
@@ -119,8 +119,8 @@ The GitHub repository is the source of truth. A checkpoint is added at the end o
 
 ### Checkpoint 1.7 — 2026-11-24 — Android toolchain upgrade submitted
 
-**Completed (in review):** Gradle 9.9.2, AGP 9.5.2 (built-in Kotlin), Kotlin 2.4.21, KSP 2.3.14, compileSdk/targetSdk 36, JDK 21 toolchain, plus every AndroidX/Hilt/Room/Robolectric/Roborazzi bump from Dependabot #11/#15/#16/#18. Convention plugins moved to the AGP 9 DSL. CI on JDK 21 with the SDK 36 Robolectric runtime. ADR-019.
+**Completed (in review):** Gradle 9.9.2, AGP 9.5.2 (built-in Kotlin), Kotlin 2.4.21, KSP 2.3.14, compileSdk 37 / targetSdk 36, JDK 21 toolchain, plus every AndroidX/Hilt/Room/Robolectric/Roborazzi bump from Dependabot #11/#15/#16/#18. Convention plugins moved to the AGP 9 DSL. CI on JDK 21 with the SDK 37 Robolectric runtime. ADR-019.
 
-**Tested (local, with a manually installed SDK 36):** configuration, Kotlin compile of every module including `:app` and KSP (Room schema unchanged), `:core:common:test`, `spotlessCheck`, `detekt` → Passed. Robolectric tests, lint, APK → CI (aapt2 and memory limits locally, KI-002).
+**Tested (local, with a manually installed SDK 36; compileSdk was raised to 37 after CI showed AndroidX needs it):** configuration, Kotlin compile of every module including `:app` and KSP (Room schema unchanged), `:core:common:test`, `spotlessCheck`, `detekt` → Passed. Robolectric tests, lint, APK → CI (aapt2 and memory limits locally, KI-002).
 
 **Recommended next task:** PR 5b after ADR-007 approval.

@@ -84,7 +84,7 @@ Architecture Decision Records (ADRs) and decisions pending the project owner. Fo
 - **Context:** D-01 and D-02 were unanswered; Phase 1 cannot start without some value. Both are cheap to change before the first release.
 - **Decision:**
   - `applicationId`/namespace `com.thesasan1.app` (debug suffix `.debug`), display name "Personal OS" / «سیستم‌عامل شخصی» — provisional.
-  - minSdk 26, compileSdk/targetSdk 35, JDK 17 toolchain. (Superseded by ADR-019: SDK 36, JDK 21.)
+  - minSdk 26, compileSdk/targetSdk 35, JDK 17 toolchain. (Superseded by ADR-019: compileSdk 37, targetSdk 36, JDK 21.)
   - Toolchain set known to be mutually compatible: Gradle 8.11.1, AGP 8.7.3, Kotlin 2.1.0 (K2, Compose compiler plugin), KSP 2.1.0-1.0.29, Hilt 2.53.1, Compose BOM 2024.12.01, Navigation 2.8.5 (type-safe routes), Lifecycle 2.8.7.
   - JUnit 5 for local unit tests (parameterized tests, clearer assertions); MockK and Turbine available.
   - `:core:common` is a pure Kotlin/JVM module (no Android), so `Outcome`/`AppError` and dispatcher qualifiers are reusable by domain code.
@@ -159,12 +159,12 @@ Architecture Decision Records (ADRs) and decisions pending the project owner. Fo
 - **Context:** The skeleton's toolchain (AGP 8.7, Kotlin 2.1) blocked current AndroidX releases: Dependabot #11, #15, #16 and #18 all failed CI. Google Play also requires a newer targetSdk (KI-005).
 - **Decision:**
   - Gradle 9.9.2, AGP 9.5.2 with built-in Kotlin (the `org.jetbrains.kotlin.android` plugin is no longer applied), Kotlin 2.4.21, KSP 2.3.14.
-  - compileSdk and targetSdk 36; minSdk stays 26.
+  - compileSdk 37 (current AndroidX releases require it), targetSdk 36, minSdk 26. compileSdk only unlocks APIs; targetSdk 37 behaviour is a separate later bump.
   - Libraries: Hilt 2.60.1, Compose BOM 2026.11.01, Navigation 2.10.2, hilt-navigation-compose 1.4.0, Lifecycle 2.11.1, Activity 1.13.0, Core 1.19.1, Room 2.8.5, coroutines 1.11.0, serialization 1.13.0, Robolectric 4.18.1, Roborazzi 1.79.0, Spotless 8.12.0.
-  - JDK 21 toolchain, still emitting Java 17 bytecode. Robolectric's SDK 36 runtime needs JDK 21, and CI uses JDK 21.
+  - JDK 21 toolchain, still emitting Java 17 bytecode. Robolectric's SDK 36+ runtimes need JDK 21, and CI uses JDK 21.
   - AGP 9 DSL: `CommonExtension` has no type parameters, and nested blocks are configured through their properties (`defaultConfig.apply { }`).
   - Unchanged: ktlint 1.5.0 (no reformat churn), and detekt 1.23.8 with its Kotlin 2.0.21 classpath pin (ADR-016).
-- **Consequences:** Contributors need JDK 21 and SDK platform 36. targetSdk 36 brings Android 16 behaviour (predictive back, large-screen orientation and resizability are no longer optional), which future UI work must respect.
+- **Consequences:** Contributors need JDK 21 and SDK platform 37. targetSdk 36 brings Android 16 behaviour (predictive back, large-screen orientation and resizability are no longer optional), which future UI work must respect.
 
 ---
 
