@@ -10,7 +10,7 @@ class AndroidComposeConventionPlugin : Plugin<Project> {
     override fun apply(target: Project) {
         with(target) {
             pluginManager.apply("org.jetbrains.kotlin.plugin.compose")
-            val extension: CommonExtension<*, *, *, *, *, *> =
+            val extension: CommonExtension =
                 extensions.findByType(ApplicationExtension::class.java)
                     ?: extensions.getByType(LibraryExtension::class.java)
             extension.buildFeatures.compose = true

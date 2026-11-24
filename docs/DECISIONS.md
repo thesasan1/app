@@ -84,7 +84,7 @@ Architecture Decision Records (ADRs) and decisions pending the project owner. Fo
 - **Context:** D-01 and D-02 were unanswered; Phase 1 cannot start without some value. Both are cheap to change before the first release.
 - **Decision:**
   - `applicationId`/namespace `com.thesasan1.app` (debug suffix `.debug`), display name "Personal OS" / «سیستم‌عامل شخصی» — provisional.
-  - minSdk 26, compileSdk/targetSdk 35, JDK 17 toolchain.
+  - minSdk 26, compileSdk/targetSdk 35, JDK 17 toolchain. (Superseded by ADR-019: compileSdk 37, targetSdk 36, JDK 21.)
   - Toolchain set known to be mutually compatible: Gradle 8.11.1, AGP 8.7.3, Kotlin 2.1.0 (K2, Compose compiler plugin), KSP 2.1.0-1.0.29, Hilt 2.53.1, Compose BOM 2024.12.01, Navigation 2.8.5 (type-safe routes), Lifecycle 2.8.7.
   - JUnit 5 for local unit tests (parameterized tests, clearer assertions); MockK and Turbine available.
   - `:core:common` is a pure Kotlin/JVM module (no Android), so `Outcome`/`AppError` and dispatcher qualifiers are reusable by domain code.
@@ -132,7 +132,7 @@ Architecture Decision Records (ADRs) and decisions pending the project owner. Fo
 
 - **Status:** Accepted (agent decision, 2026-11-24)
 - **Decision:**
-  - **Room 2.7.2 with KSP**, in a new `:core:database` module, set up by the `app.android.room` convention plugin. Kotlin code generation is on. Room 2.7 is the newest line that works with the current AGP 8 / compileSdk 35 toolchain.
+  - **Room 2.7.2 with KSP**, in a new `:core:database` module, set up by the `app.android.room` convention plugin. Kotlin code generation is on. (Upgraded to Room 2.8.5 with ADR-019; schema unchanged.)
   - **Schemas are exported** to `android/core/database/schemas/` and committed. CI fails when the exported schema differs from the committed one.
   - **Migrations:** there is no destructive fallback. Every version bump adds a `Migration` to `DatabaseMigrations` and a case to `DatabaseMigrationTest` (Room `MigrationTestHelper` on Robolectric).
   - **Version 1 tables:** `projects`, `tags`, `categories` and the sync support tables `sync_outbox` and `sync_cursor` (DATABASE.md §3.8, §5). Feature tables arrive in Phase 2.
@@ -152,6 +152,19 @@ Architecture Decision Records (ADRs) and decisions pending the project owner. Fo
   - Debug builds log at DEBUG with stack traces. Release builds log WARN+ without throwables, since exception messages can contain user input. No crash reporting or remote logging until D-05 (telemetry) is decided.
   - `AppError.code` gives a short, content-free code (`OFFLINE`, `HTTP_503`, `NETWORK:IOException`, `VALIDATION:title`) for logs, metrics and the outbox's `last_error`.
 - **Alternatives:** Timber (adds a dependency and no redaction); logging raw throwables (leaks content).
+
+### ADR-019 — Android toolchain upgrade (AGP 9)
+
+- **Status:** Accepted (agent decision, 2026-11-24)
+- **Context:** The skeleton's toolchain (AGP 8.7, Kotlin 2.1) blocked current AndroidX releases: Dependabot #11, #15, #16 and #18 all failed CI. Google Play also requires a newer targetSdk (KI-005).
+- **Decision:**
+  - Gradle 9.9.2, AGP 9.5.2 with built-in Kotlin (the `org.jetbrains.kotlin.android` plugin is no longer applied), Kotlin 2.4.21, KSP 2.3.14.
+  - compileSdk 37.2 (Compose 1.13 and current AndroidX require 37.1+), targetSdk 36, minSdk 26. compileSdk only unlocks APIs; targetSdk 37 behaviour is a separate later bump.
+  - Libraries: Hilt 2.60.1, Compose BOM 2026.11.01, Navigation 2.10.2, hilt-navigation-compose 1.4.0, Lifecycle 2.11.1, Activity 1.13.0, Core 1.19.1, Room 2.8.5, coroutines 1.11.0, serialization 1.13.0, Robolectric 4.18.1, Roborazzi 1.79.0, Spotless 8.12.0.
+  - JDK 21 toolchain, still emitting Java 17 bytecode. Robolectric's SDK 36+ runtimes need JDK 21, and CI uses JDK 21.
+  - AGP 9 DSL: `CommonExtension` has no type parameters, and nested blocks are configured through their properties (`defaultConfig.apply { }`).
+  - Unchanged: ktlint 1.5.0 (no reformat churn), and detekt 1.23.8 with its Kotlin 2.0.21 classpath pin (ADR-016).
+- **Consequences:** Contributors need JDK 21 and SDK platform 37. targetSdk 36 brings Android 16 behaviour (predictive back, large-screen orientation and resizability are no longer optional), which future UI work must respect.
 
 ---
 

@@ -9,11 +9,11 @@
 | KI-003 | `android-ci`, `backend-ci` and `dependency-review` exist but are not required status checks on `main`. | Owner action (branch protection) |
 | KI-007 | Backend has no database, auth, or worker yet; readiness reports no dependency checks. | Phase 1 PR 5b / Phase 6 |
 | KI-008 | Screenshot tests record images in CI (artifact `designsystem-screenshots`) but are not yet compared against committed reference images, so visual regressions are not caught automatically. References must be recorded on CI-compatible hardware and committed; the sandbox cannot run Android builds (KI-002). | Phase 1 follow-up |
-| KI-005 | targetSdk is 35; Google Play requires raising targetSdk annually (36 expected for new uploads). Bump with a newer AGP before the first Play upload. | Phase 9 at the latest |
+| KI-005 | targetSdk was 35; raised to 36 by ADR-019. Re-check the Play requirement before the first upload. | Resolved (toolchain PR) |
 | KI-006 | No launcher icon yet (lint `MissingApplicationIcon` warning). | Design-system PR |
 | KI-009 | The Room database is protected only by Android file-based encryption. Whether to add SQLCipher is open (ADR-010) and should be settled before Phase 2 stores real notes and journal entries. | Owner decision |
-| KI-010 | Robolectric downloaded its Android runtime from Maven Central during CI tests, and rate limiting (HTTP 429) failed runs. CI now caches the runtime, fetches it with retries, and runs tests offline. Tests run on SDK 34 and Robolectric also loads the compileSdk (35) runtime; changing either, or the Robolectric version, means updating `ROBOLECTRIC_JARS` in `android-ci.yml`. | Mitigated (PR #14) |
-| KI-011 | Dependabot PRs that fail CI are left open: #11 (Compose BOM 2026.11, Navigation 2.10; needs AGP 9.1+ and compileSdk 36+), #15 (Kotlin 2.4 group), #16 (Hilt 2.60), #18 (Roborazzi 1.79), and #12 (NestJS 12, ESM-only). The Android ones belong in one toolchain-upgrade PR (AGP 9, Kotlin, KSP, compileSdk 36, which also covers KI-005). NestJS 12 needs its own PR. | Phase 1 follow-up |
+| KI-010 | Robolectric downloaded its Android runtime from Maven Central during CI tests, and rate limiting (HTTP 429) failed runs. CI now caches the runtime, fetches it with retries, and runs tests offline. Tests run on SDK 34 and Robolectric also loads the compileSdk (37) runtime, which needs JDK 21; changing either, or the Robolectric version, means updating `ROBOLECTRIC_JARS` in `android-ci.yml`. | Mitigated (PR #14) |
+| KI-011 | Dependabot #11, #15, #16 and #18 (AndroidX, Kotlin, Hilt, Roborazzi) are superseded by the toolchain upgrade (ADR-019) and closed once it merges. #12 (NestJS 12, ESM-only) still needs its own backend PR. | Android: resolved; backend: open |
 | KI-004 | Branch protection and secret scanning on `main` are not confirmed enabled (requires owner action in repository settings). | Owner action |
 
 ## Technical Risks
@@ -37,7 +37,7 @@
 
 | Dependency | Needed for | Owner action |
 |---|---|---|
-| Android SDK / JDK 17+ in CI | Builds and tests | Provided by GitHub Actions runners (Phase 1) |
+| Android SDK / JDK 21 in CI | Builds and tests | Provided by GitHub Actions runners (Phase 1) |
 | Google Cloud project + OAuth consent screen | Google Sign-In, Calendar, Tasks | Owner creates project and credentials (secrets stored in CI/secret manager) |
 | AI provider account (paid) | Phase 5 | Owner selects (D-03) and provisions key |
 | Cloud hosting account | Phase 6 | Owner selects (D-04) |
