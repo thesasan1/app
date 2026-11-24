@@ -26,10 +26,10 @@ Configuration comes from environment variables validated at startup (`src/config
 
 ## Endpoints (current)
 
-| Method | Path | Notes |
-|---|---|---|
-| GET | `/v1/health/live` | Liveness |
-| GET | `/v1/health/ready` | Readiness (database and Redis checks arrive with those modules) |
-| GET | `/v1/docs` | Swagger UI, disabled when `NODE_ENV=production` |
+| Method | Path               | Notes                                                           |
+| ------ | ------------------ | --------------------------------------------------------------- |
+| GET    | `/v1/health/live`  | Liveness                                                        |
+| GET    | `/v1/health/ready` | Readiness (database and Redis checks arrive with those modules) |
+| GET    | `/v1/docs`         | Swagger UI, disabled when `NODE_ENV=production`                 |
 
 All errors are RFC 9457 `application/problem+json` with a stable `code`.
