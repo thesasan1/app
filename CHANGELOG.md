@@ -21,5 +21,6 @@ All notable changes are documented here. Format based on [Keep a Changelog](http
 
 ### Changed
 
+- Backend: NestJS 12 on Node.js 26 LTS; Jest runs with VM modules to load ESM-only packages.
 - Android toolchain: Gradle 9.9, AGP 9.5, Kotlin 2.4, compileSdk 37, targetSdk 36, JDK 21, plus current AndroidX libraries.
 - `android-ci` uses v5 of the checkout, setup-java, setup-gradle and upload-artifact actions.

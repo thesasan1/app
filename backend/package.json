@@ -5,7 +5,7 @@
   "description": "Backend API for the AI-powered Personal Operating System",
   "license": "UNLICENSED",
   "engines": {
-    "node": ">=22"
+    "node": ">=24.9"
   },
   "scripts": {
     "build": "tsc -p tsconfig.build.json",
@@ -15,16 +15,16 @@
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "typecheck": "tsc -p tsconfig.json --noEmit",
-    "test": "jest --config jest.config.ts",
-    "test:e2e": "jest --config test/jest-e2e.config.ts",
+    "test": "node --experimental-vm-modules --disable-warning=ExperimentalWarning node_modules/jest/bin/jest.js --config jest.config.ts",
+    "test:e2e": "node --experimental-vm-modules --disable-warning=ExperimentalWarning node_modules/jest/bin/jest.js --config test/jest-e2e.config.ts",
     "openapi": "ts-node scripts/generate-openapi.ts",
     "openapi:check": "ts-node scripts/generate-openapi.ts --check"
   },
   "dependencies": {
-    "@nestjs/common": "^11.2.11",
-    "@nestjs/core": "^11.2.11",
-    "@nestjs/platform-express": "^11.2.11",
-    "@nestjs/swagger": "^11.4.8",
+    "@nestjs/common": "^12.6.0",
+    "@nestjs/core": "^12.6.0",
+    "@nestjs/platform-express": "^12.6.0",
+    "@nestjs/swagger": "^12.1.2",
     "class-transformer": "^0.5.1",
     "class-validator": "^0.15.1",
     "helmet": "^8.3.0",
@@ -37,7 +37,7 @@
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
-    "@nestjs/testing": "^11.2.11",
+    "@nestjs/testing": "^12.6.0",
     "@types/express": "^5.0.6",
     "@types/jest": "^30.0.0",
     "@types/node": "^26.6.6",

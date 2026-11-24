@@ -96,7 +96,7 @@ Architecture Decision Records (ADRs) and decisions pending the project owner. Fo
 
 - **Status:** Accepted (agent decision, 2026-11-24)
 - **Decision:**
-  - NestJS 11 on Node.js 22, TypeScript 5.7 `strict` + `noUncheckedIndexedAccess`, CommonJS output.
+  - NestJS 11 on Node.js 22, TypeScript 5.7 `strict` + `noUncheckedIndexedAccess`, CommonJS output. (Now NestJS 12 on Node.js 26 LTS; see ADR-020.)
   - Environment validated with **zod** at startup; invalid config stops the process.
   - Logging with **nestjs-pino**; request id from a valid `x-request-id` header or a new UUID, echoed in the response and in problem bodies; authorization, cookies and token-like fields redacted; request bodies never logged.
   - All errors as RFC 9457 `application/problem+json` with a stable `code`; unknown errors return a generic 500 and are logged server-side only.
@@ -165,6 +165,17 @@ Architecture Decision Records (ADRs) and decisions pending the project owner. Fo
   - AGP 9 DSL: `CommonExtension` has no type parameters, and nested blocks are configured through their properties (`defaultConfig.apply { }`).
   - Unchanged: ktlint 1.5.0 (no reformat churn), and detekt 1.23.8 with its Kotlin 2.0.21 classpath pin (ADR-016).
 - **Consequences:** Contributors need JDK 21 and SDK platform 37. targetSdk 36 brings Android 16 behaviour (predictive back, large-screen orientation and resizability are no longer optional), which future UI work must respect.
+
+### ADR-020 — NestJS 12 on Node.js 26 LTS
+
+- **Status:** Accepted (agent decision, 2026-11-24)
+- **Context:** NestJS 12 ships as ES modules only. The backend compiles to CommonJS, and Node 22.12+ can `require()` ES modules, so the build, the server and the OpenAPI script ran unchanged. Jest could not: its module runtime only supports `require(esm)` on Node 24.9+ with `--experimental-vm-modules` (Dependabot #12 failed on Node 22).
+- **Decision:**
+  - Upgrade to NestJS 12.6 and @nestjs/swagger 12.1.
+  - Run the backend on Node.js 26 LTS, pinned in `backend/.nvmrc`, which CI reads. `engines` allows 24.9+.
+  - Keep CommonJS output and Jest + ts-jest. The test scripts start Jest with `--experimental-vm-modules`, with the experimental warning silenced.
+- **Alternatives:** Converting the backend to native ESM (rejected for now: every relative import gains a `.js` suffix and decorator metadata loading gets fragile, for no runtime benefit). Switching to Vitest with SWC (rejected: a new toolchain just to load dependencies). Staying on NestJS 11 (rejected: it stops receiving fixes).
+- **Consequences:** Hosting (D-04) must offer Node 24.9+ (26 preferred). The Jest flag can go once Jest supports `require(esm)` without it.
 
 ---
 
