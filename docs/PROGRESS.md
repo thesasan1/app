@@ -7,12 +7,12 @@ The GitHub repository is the source of truth. A checkpoint is added at the end o
 | Field | Value |
 |---|---|
 | Current phase | **Phase 1 — Engineering Foundation** |
-| Status | PR #5 `feature/ci` in review |
-| Code status | Android skeleton (#2), backend skeleton (#3) and design-system foundation (#4) merged. CI hardening in PR #5 |
-| Build status | `android-ci` and `backend-ci` green on `main` after #4 |
+| Status | PR #14 `feature/local-database` in review |
+| Code status | Android skeleton (#2), backend skeleton (#3) design-system foundation (#4) and CI hardening (#5) merged. Local database in PR #14 |
+| Build status | `android-ci` and `backend-ci` green on `main` after #5 and the Dependabot action bumps |
 | Test status | Backend: 13 unit + 12 e2e (CI green). Android: unit tests, lint, screenshots run in CI |
 | Blockers | None for Phase 1. D-03…D-09 pending for later phases |
-| Next task | Phase 1 PR 5 — `feature/local-database` (Room, outbox) |
+| Next task | Phase 1 PR 5b — `feature/backend-database` (Prisma, docker-compose, worker) |
 
 ## Completed Features
 
@@ -20,10 +20,11 @@ The GitHub repository is the source of truth. A checkpoint is added at the end o
 - Android engineering skeleton + `android-ci` — merged (PR #2).
 - Backend skeleton + `backend-ci` — merged (PR #3).
 - Design-system foundation — merged (PR #4).
+- CI hardening — merged (PR #5).
 
 ## Features In Progress
 
-- CI hardening (Spotless/ktlint, detekt, dependency review, Dependabot) — PR #5.
+- Local database (Room v1, outbox, migration harness, UUIDv7) — PR #14.
 
 ## Merged Pull Requests
 
@@ -31,6 +32,8 @@ The GitHub repository is the source of truth. A checkpoint is added at the end o
 - #2 Android engineering skeleton + Android CI — merged 2026-11-24 (squash `d69a475`), `android-ci` green.
 - #3 Backend skeleton + backend CI — merged 2026-11-24 (squash `bc6aafb`), `backend-ci` and `android-ci` green.
 - #4 Design-system foundation — merged 2026-11-24 (squash `8e301d6`), `android-ci` green after one compile fix.
+- #5 CI hardening — merged 2026-11-24 (squash `bdb5035`) after the owner enabled the dependency graph.
+- Dependabot #6–#10 (GitHub Actions bumps) and #13 (backend lint/test tooling) — merged 2026-11-24 with green CI. #11 and #12 left open (KI-011).
 
 ---
 
@@ -87,8 +90,16 @@ The GitHub repository is the source of truth. A checkpoint is added at the end o
 
 ### Checkpoint 1.4 — 2026-11-24 — CI hardening submitted
 
-**Completed (in review, PR #5):** Spotless + ktlint and detekt for all Kotlin modules through the convention plugins; existing code formatted and detekt findings fixed (`DayPeriod` hour constants, `AppError` line length, justified suppression in `runCatchingOutcome`); `dependency-review` workflow; Dependabot for Gradle, npm and Actions; CONTRIBUTING pre-push checks.
+**Completed (merged, PR #5):** Spotless + ktlint and detekt for all Kotlin modules through the convention plugins; existing code formatted and detekt findings fixed (`DayPeriod` hour constants, `AppError` line length, justified suppression in `runCatchingOutcome`); `dependency-review` workflow; Dependabot for Gradle, npm and Actions; CONTRIBUTING pre-push checks.
 
 **Tested (local):** `./gradlew spotlessCheck detekt` → Passed; `./gradlew :core:common:test` → Passed. Android unit tests, lint and assemble → verified in CI.
 
 **Recommended next task:** `feature/local-database`.
+
+### Checkpoint 1.5 — 2026-11-24 — Local database submitted
+
+**Completed (in review, PR #14):** `:core:database` with Room 2.7.2 (KSP, exported schema v1): `projects`, `tags`, `categories`, `sync_outbox`, `sync_cursor`; embedded `SyncColumns`; DAOs with soft delete, active queries and trash purge; `TransactionRunner` for atomic change + outbox writes; Hilt `DatabaseModule`; migration harness; CI check that the schema is committed. `UuidV7Generator` in `:core:common`. ADR-017.
+
+**Tested:** `:core:common:test` (incl. 5 UUIDv7 tests), `spotlessCheck`, `detekt` → Passed locally. Robolectric DAO, outbox and migration tests → CI (KI-002).
+
+**Recommended next task:** `feature/backend-database`.

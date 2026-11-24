@@ -58,6 +58,25 @@ jobs:
       - name: Assemble debug APK
         run: ./gradlew assembleDebug --stacktrace
 
+      - name: Upload Room schemas
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: room-schemas
+          path: android/core/database/schemas/
+          if-no-files-found: ignore
+
+      - name: Room schemas are committed
+        # The build exports each schema version to core/database/schemas (ADR-017). A difference
+        # means the entities changed without bumping the version or committing the new schema.
+        run: |
+          if [ -n "$(git status --porcelain -- core/database/schemas)" ]; then
+            git status --porcelain -- core/database/schemas
+            git diff -- core/database/schemas
+            echo "::error::Room schema changed. Commit core/database/schemas (bump the version for released schemas)."
+            exit 1
+          fi
+
       - name: Upload reports
         if: always()
         uses: actions/upload-artifact@v7

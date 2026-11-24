@@ -11,6 +11,9 @@
 | KI-008 | Screenshot tests record images in CI (artifact `designsystem-screenshots`) but are not yet compared against committed reference images, so visual regressions are not caught automatically. References must be recorded on CI-compatible hardware and committed; the sandbox cannot run Android builds (KI-002). | Phase 1 follow-up |
 | KI-005 | targetSdk is 35; Google Play requires raising targetSdk annually (36 expected for new uploads). Bump with a newer AGP before the first Play upload. | Phase 9 at the latest |
 | KI-006 | No launcher icon yet (lint `MissingApplicationIcon` warning). | Design-system PR |
+| KI-009 | The Room database is protected only by Android file-based encryption. Whether to add SQLCipher is open (ADR-010) and should be settled before Phase 2 stores real notes and journal entries. | Owner decision |
+| KI-010 | Robolectric downloads its Android runtime from Maven during CI tests; a network error fails the run (seen once, passed on rerun). | Phase 1 follow-up (cache or pre-fetch) |
+| KI-011 | Dependabot PRs #11 (Compose BOM 2026.11, Navigation 2.10, needs AGP 9.1+ and compileSdk 36+) and #12 (NestJS 12, ESM-only) fail CI and are left open. Each needs a deliberate upgrade PR. | Phase 1 follow-up |
 | KI-004 | Branch protection and secret scanning on `main` are not confirmed enabled (requires owner action in repository settings). | Owner action |
 
 ## Technical Risks
