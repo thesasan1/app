@@ -6,13 +6,13 @@ The GitHub repository is the source of truth. A checkpoint is added at the end o
 
 | Field | Value |
 |---|---|
-| Current phase | **Phase 1 — Engineering Foundation** |
-| Status | Debug APK pre-release PR in review; PR 5b waits for ADR-007 approval |
-| Code status | Android skeleton (#2), backend skeleton (#3) design-system foundation (#4), CI hardening (#5) and local database (#14) and logging foundation (#19) merged. toolchain upgrade (#20) merged. backend NestJS 12 / Node 26 (#21) merged. Debug APK pre-release in review |
+| Current phase | **Phase 2 — Core Productivity** (Phase 1 done except PR 5b, waiting on ADR-007) |
+| Status | Notes data layer (Room v2, full-text search) in review |
+| Code status | Phase 1 merged: Android skeleton (#2), backend skeleton (#3), design system (#4), CI hardening (#5), local database (#14), logging (#19), toolchain upgrade (#20), NestJS 12 / Node 26 (#21), debug APK pre-release (#22). Notes data layer in review |
 | Build status | `android-ci` and `backend-ci` green on `main` after #5 and the Dependabot action bumps |
 | Test status | Backend: 13 unit + 12 e2e (CI green). Android: unit tests, lint, screenshots run in CI |
-| Blockers | ADR-007 (Prisma) needs owner approval before PR 5b; ADR-010 (local DB encryption) before Phase 2. D-03…D-09 pending for later phases |
-| Next task | Phase 1 PR 5b once ADR-007 is approved; otherwise Phase 2 prerequisites (ADR-010) |
+| Blockers | ADR-007 (Prisma) needs owner approval before PR 5b; ADR-010 (local DB encryption) before the first release with real content. D-03…D-09 pending for later phases |
+| Next task | Notes repository and block document model (ADR-009); PR 5b once ADR-007 is approved |
 
 ## Completed Features
 
@@ -25,10 +25,11 @@ The GitHub repository is the source of truth. A checkpoint is added at the end o
 - Logging foundation — merged (PR #19).
 - Android toolchain upgrade — merged (PR #20).
 - Backend NestJS 12 / Node 26 — merged (PR #21).
+- Debug APK pre-release — merged (PR #22).
 
 ## Features In Progress
 
-- Debug APK pre-release for testers (ADR-021).
+- Phase 2: notes data layer (ADR-022).
 
 ## Merged Pull Requests
 
@@ -43,6 +44,7 @@ The GitHub repository is the source of truth. A checkpoint is added at the end o
 - #19 Logging foundation — merged 2026-11-24 (squash `f92ac60`).
 - #20 Android toolchain upgrade — merged 2026-11-24 (squash `7a8f4a8`); Dependabot #11, #15, #16, #18 closed as superseded.
 - #21 NestJS 12 on Node 26 — merged 2026-11-24 (squash `f1b8939`); Dependabot #12 closed.
+- #22 Debug APK pre-release — merged 2026-11-24 (squash `71872c3`); `debug-latest` published.
 
 ---
 
@@ -137,8 +139,14 @@ The GitHub repository is the source of truth. A checkpoint is added at the end o
 
 **Recommended next task:** PR 5b after ADR-007 approval.
 
-### Checkpoint 1.9 — 2026-11-24 — Debug APK pre-release submitted
+### Checkpoint 1.9 — 2026-11-24 — Debug APK pre-release merged (#22)
 
-**Completed (in review):** `publish-debug-apk` job in `android-ci` (main only, plus manual dispatch) that refreshes the `debug-latest` pre-release with the newest debug APK. ADR-021; README install steps.
+**Completed:** `publish-debug-apk` job in `android-ci` (main only, plus manual dispatch) that refreshes the `debug-latest` pre-release with the newest debug APK. ADR-021; README install steps.
 
 **Tested:** workflow YAML parses → Passed. Publishing runs only after merge to `main` and is verified then.
+
+### Checkpoint 2.1 — 2026-11-24 — Notes data layer submitted
+
+**Completed (in review):** Room schema v2 (`notes`, `notes_fts`) via AutoMigration; `NoteDao` (active list with pinned first, project filter, archive, trash, restore, search, purge); `SearchText` normaliser and safe MATCH builder for Persian and English. ADR-022. Phase 2 started while PR 5b waits on ADR-007.
+
+**Tested:** compile and KSP schema export (local) → Passed; `SearchTextTest` 4/4 (local) → Passed; `spotlessCheck`, `detekt` (local) → Passed. `NoteDaoTest` (10) and the v1→v2 migration test run on Robolectric → CI.

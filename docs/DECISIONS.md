@@ -184,6 +184,17 @@ Architecture Decision Records (ADRs) and decisions pending the project owner. Fo
 - **Decision:** After every green `android-ci` run on `main`, a `publish-debug-apk` job replaces the `debug-latest` pre-release with `personal-os-debug.apk`. The job alone gets `contents: write`; pull requests never publish.
 - **Consequences:** Anyone who can see the public repo can install the debug build. It is debug-signed and debuggable and holds no secrets. It is not a production release (ADR-012): Play or signed releases still need owner approval.
 
+### ADR-022 — Local note storage and full-text search
+
+- **Status:** Accepted (agent decision, 2026-11-24)
+- **Decision:**
+  - Room schema v2 adds `notes` (DATABASE.md §3.1) through an `AutoMigration`, since it only adds tables.
+  - Search uses an FTS4 table `notes_fts` with the `unicode61` tokenizer (available on every supported Android version). It is a regular FTS table keyed by `note_id`, not external-content: `notes` has a text primary key, and SQLite may renumber the implicit rowid on VACUUM. `NoteDao.upsert` rewrites the index row in the same transaction, and purge removes it.
+  - `SearchText` normalises indexed text and queries the same way: lower case, Arabic ي/ى/ك → Persian ی/ک, Persian and Arabic-Indic digits → ASCII, harakat and tatweel removed, ZWNJ split. Queries become quoted prefix terms combined with AND, so user input can't inject FTS syntax.
+  - Search covers active and archived notes; trashed notes only appear in the trash.
+- **Alternatives:** FTS5 (better ranking, but not on every supported device); external-content FTS (rowid instability); `LIKE` (no word matching, slow).
+- **Consequences:** Every write must go through `NoteDao.upsert`. Encryption (ADR-010) is still open, so note content is protected only by Android file-based encryption until it's decided (KI-009).
+
 ---
 
 ## Pending Decisions (owner input required)
