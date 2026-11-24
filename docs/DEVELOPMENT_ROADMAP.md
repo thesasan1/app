@@ -47,13 +47,15 @@ PR: #1 (`docs/phase-0-foundation`)
 6. `feature/error-logging-foundation` — `AppError`, `Result`, logger abstraction, dispatchers, clock. (`AppError`, `Outcome`, dispatchers and clock landed with PR #2; this PR adds the redacting logger and error codes.) — Merged (PR #19)
 7. `chore/toolchain-upgrade` — AGP 9.5, Kotlin 2.4, compileSdk 37, targetSdk 36, JDK 21 (ADR-019; added to unblock Dependabot and KI-005). — Merged (PR #20)
 8. `chore/nestjs-12` — NestJS 12 on Node.js 26 LTS (ADR-020; unblocks Dependabot #12). — Merged (PR #21)
-9. `ci/debug-apk-prerelease` — `debug-latest` pre-release for testers (ADR-021). — In review
+9. `ci/debug-apk-prerelease` — `debug-latest` pre-release for testers (ADR-021). — Merged (PR #22)
 
 **Exit:** green CI on both stacks; documented commands in README.
 
 ## Phase 2 — Core Productivity
 
 Notes (NOTE-01…08 offline parts) → Tasks (TASK-01…08) → Reminder engine + UI (REM-01, 02, 06, 07) → Habits core (HAB-01, 02, 06, 07) → Dashboard v1 (DASH-01…03) → Search (PLT-07) → Notifications.
+Progress: notes data layer (Room v2 + FTS, ADR-022) — In review.
+
 **Exit:** functional offline app for notes, tasks, reminders, habits.
 
 ## Phase 3 — Smart Capture

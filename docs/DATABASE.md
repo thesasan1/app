@@ -2,7 +2,7 @@
 
 | Field | Value |
 |---|---|
-| Status | Draft v0.2. Room schema **version 1** is implemented: `projects`, `tags`, `categories`, `sync_outbox`, `sync_cursor` (ADR-017). Other tables are still design only. |
+| Status | Draft v0.2. Room schema **version 2** is implemented: `projects`, `tags`, `categories`, `sync_outbox`, `sync_cursor` (v1, ADR-017), and `notes` + `notes_fts` (v2, ADR-022). Other tables are still design only. |
 | Local store | Room (SQLite) on Android — source of truth for user interaction |
 | Server store | PostgreSQL 16 |
 
@@ -70,6 +70,8 @@ users ─┬─ devices
 | version, created_at, updated_at | sync | |
 
 Indexes: `(user_id, updated_at)`, `(user_id, is_pinned, updated_at)`, FTS on `title, body_plain`.
+
+Local (Room v2): no `user_id`, and `category_id`/`project_id` aren't foreign keys, since sync may deliver a note before its project. `notes_fts` is an FTS4 table (`unicode61`) holding `note_id` plus normalised `title` and `body_plain`, written by `NoteDao.upsert` in the same transaction (ADR-022).
 
 ### 3.2 `tasks`
 
