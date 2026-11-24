@@ -39,9 +39,9 @@ PR: #1 (`docs/phase-0-foundation`)
 ## Phase 1 — Engineering Foundation (planned PRs)
 
 1. `feature/android-skeleton` — Gradle (version catalog, convention plugins in `build-logic`), `:app`, `:core:common`, `:core:designsystem` (base theme), `:feature:dashboard` shell, Hilt, type-safe Navigation, JUnit 5; **includes `android-ci.yml`** (pulled forward from PR 3 so the skeleton is verified by real builds). — Merged (PR #2)
-2. `feature/backend-skeleton` — NestJS app, zod-validated config, `/v1` health endpoints, pino logging with redaction and request ids, RFC 9457 filter, global validation, helmet, 1 MB body limit, OpenAPI generation + drift check, Jest unit + supertest e2e, **`backend-ci.yml`**. Worker process and docker-compose (Postgres, Redis, MinIO) move to the PR that introduces the database (PR 5b). — In review (PR #3)
+2. `feature/backend-skeleton` — NestJS app, zod-validated config, `/v1` health endpoints, pino logging with redaction and request ids, RFC 9457 filter, global validation, helmet, 1 MB body limit, OpenAPI generation + drift check, Jest unit + supertest e2e, **`backend-ci.yml`**. Worker process and docker-compose (Postgres, Redis, MinIO) move to the PR that introduces the database (PR 5b). — Merged (PR #3)
 3. `feature/ci` — dependency review, Android static analysis (detekt/ktlint via Spotless). (`android-ci.yml` landed in PR 1, `backend-ci.yml` in PR 2.)
-4. `feature/design-system-foundation` — tokens, typography (Inter + Vazirmatn), theme (light/dark, accents, RTL), first components, screenshot tests.
+4. `feature/design-system-foundation` — tokens, typography (Inter + Vazirmatn), theme (light/dark, accents, RTL), first components (`AppButton`, `AppCard`, `EmptyState`), Roborazzi screenshot rendering in CI. — In review (PR #4)
 5. `feature/local-database` — Room setup, base entities (projects, tags, categories), migration test harness, outbox table.
 5b. `feature/backend-database` — PostgreSQL via Prisma (ADR-007), migrations, docker-compose for local infra, readiness check, worker process skeleton.
 6. `feature/error-logging-foundation` — `AppError`, `Result`, logger abstraction, dispatchers, clock.

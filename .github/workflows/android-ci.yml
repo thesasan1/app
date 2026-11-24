@@ -39,6 +39,16 @@ jobs:
       - name: Unit tests
         run: ./gradlew testDebugUnitTest :core:common:test --stacktrace
 
+      - name: Record design-system screenshots
+        run: ./gradlew :core:designsystem:recordRoborazziDebug --stacktrace
+
+      - name: Upload screenshots
+        uses: actions/upload-artifact@v5
+        with:
+          name: designsystem-screenshots
+          path: android/core/designsystem/build/outputs/roborazzi/*.png
+          if-no-files-found: error
+
       - name: Android lint
         run: ./gradlew lintDebug --stacktrace
 

@@ -6,7 +6,6 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -20,8 +19,8 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LifecycleEventEffect
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.thesasan1.app.core.designsystem.AppTheme
-import com.thesasan1.app.core.designsystem.Spacing
+import com.thesasan1.app.core.designsystem.theme.AppTheme
+import com.thesasan1.app.core.designsystem.theme.Spacing
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import java.time.format.FormatStyle
@@ -50,27 +49,27 @@ internal fun DashboardScreen(
         ) {
             Text(
                 text = stringResource(uiState.period.greetingRes()),
-                style = MaterialTheme.typography.headlineMedium,
-                color = MaterialTheme.colorScheme.onBackground,
+                style = AppTheme.typography.headline,
+                color = AppTheme.colors.textPrimary,
                 modifier = Modifier.semantics { heading() },
             )
             Spacer(Modifier.height(Spacing.xs))
             Text(
                 text = uiState.today.format(DateTimeFormatter.ofLocalizedDate(FormatStyle.FULL)),
-                style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                style = AppTheme.typography.bodyMedium,
+                color = AppTheme.colors.textSecondary,
             )
             Spacer(Modifier.height(Spacing.xxxl))
             Text(
                 text = stringResource(R.string.feature_dashboard_empty_title),
-                style = MaterialTheme.typography.titleMedium,
-                color = MaterialTheme.colorScheme.onBackground,
+                style = AppTheme.typography.titleMedium,
+                color = AppTheme.colors.textPrimary,
             )
             Spacer(Modifier.height(Spacing.xs))
             Text(
                 text = stringResource(R.string.feature_dashboard_empty_body),
-                style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                style = AppTheme.typography.bodyMedium,
+                color = AppTheme.colors.textSecondary,
             )
         }
     }
