@@ -7,6 +7,8 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.rememberNavController
 import com.thesasan1.app.feature.dashboard.DashboardRoute
 import com.thesasan1.app.feature.dashboard.dashboardScreen
+import com.thesasan1.app.feature.notes.ui.navigateToNotes
+import com.thesasan1.app.feature.notes.ui.notesScreens
 
 /**
  * Root navigation graph. Each feature contributes its destinations through a
@@ -19,6 +21,7 @@ fun AppNavHost(modifier: Modifier = Modifier, navController: NavHostController =
         startDestination = DashboardRoute,
         modifier = modifier,
     ) {
-        dashboardScreen()
+        dashboardScreen(onOpenNotes = navController::navigateToNotes)
+        notesScreens(navController)
     }
 }

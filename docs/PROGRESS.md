@@ -7,12 +7,12 @@ The GitHub repository is the source of truth. A checkpoint is added at the end o
 | Field | Value |
 |---|---|
 | Current phase | **Phase 2 — Core Productivity** (Phase 1 done except PR 5b, waiting on ADR-007) |
-| Status | Notes repository and document format (ADR-009) in review |
-| Code status | Phase 1 merged: Android skeleton (#2), backend skeleton (#3), design system (#4), CI hardening (#5), local database (#14), logging (#19), toolchain upgrade (#20), NestJS 12 / Node 26 (#21), debug APK pre-release (#22). notes data layer (#23) merged. Notes repository in review |
+| Status | Notes list and editor with autosave (NOTE-01) in review |
+| Code status | Phase 1 merged: Android skeleton (#2), backend skeleton (#3), design system (#4), CI hardening (#5), local database (#14), logging (#19), toolchain upgrade (#20), NestJS 12 / Node 26 (#21), debug APK pre-release (#22). notes data layer (#23) and notes repository (#24) merged. Notes list and editor in review |
 | Build status | `android-ci` and `backend-ci` green on `main` after #5 and the Dependabot action bumps |
 | Test status | Backend: 13 unit + 12 e2e (CI green). Android: unit tests, lint, screenshots run in CI |
 | Blockers | ADR-007 (Prisma) needs owner approval before PR 5b; ADR-010 (local DB encryption) before the first release with real content. D-03…D-09 pending for later phases |
-| Next task | Notes list and editor UI with autosave (NOTE-01); PR 5b once ADR-007 is approved |
+| Next task | Notes trash and archive screens (NOTE-03, NOTE-04); PR 5b once ADR-007 is approved |
 
 ## Completed Features
 
@@ -26,10 +26,12 @@ The GitHub repository is the source of truth. A checkpoint is added at the end o
 - Android toolchain upgrade — merged (PR #20).
 - Backend NestJS 12 / Node 26 — merged (PR #21).
 - Debug APK pre-release — merged (PR #22).
+- Notes data layer — merged (PR #23).
+- Notes repository and document format — merged (PR #24).
 
 ## Features In Progress
 
-- Phase 2: notes data layer (ADR-022).
+- Phase 2: notes list and editor UI with autosave (NOTE-01).
 
 ## Merged Pull Requests
 
@@ -45,6 +47,8 @@ The GitHub repository is the source of truth. A checkpoint is added at the end o
 - #20 Android toolchain upgrade — merged 2026-11-24 (squash `7a8f4a8`); Dependabot #11, #15, #16, #18 closed as superseded.
 - #21 NestJS 12 on Node 26 — merged 2026-11-24 (squash `f1b8939`); Dependabot #12 closed.
 - #22 Debug APK pre-release — merged 2026-11-24 (squash `71872c3`); `debug-latest` published.
+- #23 Notes data layer — merged 2026-11-24 (squash `c5cd5b3`).
+- #24 Notes repository and ADR-009 document format — merged 2026-11-24 (squash `4b12820`).
 
 ---
 
@@ -151,8 +155,16 @@ The GitHub repository is the source of truth. A checkpoint is added at the end o
 
 **Tested:** compile and KSP schema export (local) → Passed; `SearchTextTest` 4/4 (local) → Passed; `spotlessCheck`, `detekt` (local) → Passed. `NoteDaoTest` (10) and the v1→v2 migration test (Robolectric, CI) → Passed.
 
-### Checkpoint 2.2 — 2026-11-24 — Notes repository submitted
+### Checkpoint 2.2 — 2026-11-24 — Notes repository merged (#24)
 
-**Completed (in review):** `:feature:notes` module. `NoteDocument` block model and `NoteDocumentCodec` (ADR-009 format v1, forward-compatible). `NoteRepository` / `OfflineNoteRepository`: create, autosave-safe `saveContent` (no write when unchanged), organize, pin, archive, trash, restore, delete forever (trash only), 30-day purge, search. Every write queues a sync outbox entry in the same transaction. Hilt binding; app depends on the module.
+**Completed:** `:feature:notes` module. `NoteDocument` block model and `NoteDocumentCodec` (ADR-009 format v1, forward-compatible). `NoteRepository` / `OfflineNoteRepository`: create, autosave-safe `saveContent` (no write when unchanged), organize, pin, archive, trash, restore, delete forever (trash only), 30-day purge, search. Every write queues a sync outbox entry in the same transaction. Hilt binding; app depends on the module.
 
 **Tested:** `NoteDocumentCodecTest` 7/7 and `OfflineNoteRepositoryTest` 10/10 (local, JVM fakes) → Passed; `spotlessCheck`, `detekt` (local) → Passed. App build with the Hilt graph → CI.
+
+### Checkpoint 2.3 — 2026-11-25 — Notes list and editor submitted
+
+**Completed (in review):** Notes list (pinned section, pin/unpin, debounced search, empty and no-results states) and a plain-text editor with autosave: saves 600 ms after typing stops and at once on lifecycle stop or back; saves run non-cancellable; the draft lives in `SavedStateHandle` so it survives process death; a new note is stored only once it has content; delete moves to the trash. A title edit keeps rich formatting the editor can't show yet (KI-012). Dashboard has a Notes entry; English and Persian strings.
+
+**Tested:** see the PR.
+
+**Recommended next task:** trash and archive screens (NOTE-03, NOTE-04).

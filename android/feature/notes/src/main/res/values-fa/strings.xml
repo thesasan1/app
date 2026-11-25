@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="feature_notes_title">یادداشت‌ها</string>
+    <string name="feature_notes_back">بازگشت</string>
+    <string name="feature_notes_new">یادداشت تازه</string>
+    <string name="feature_notes_search_hint">جست‌وجو در یادداشت‌ها</string>
+    <string name="feature_notes_section_pinned">سنجاق‌شده</string>
+    <string name="feature_notes_section_others">بقیه</string>
+    <string name="feature_notes_untitled">بدون عنوان</string>
+    <string name="feature_notes_pin">سنجاق</string>
+    <string name="feature_notes_unpin">برداشتن سنجاق</string>
+    <string name="feature_notes_move_to_trash">حذف</string>
+    <string name="feature_notes_empty_title">هنوز یادداشتی ندارید</string>
+    <string name="feature_notes_empty_body">یک ایده، یک فهرست یا هر چیزی که می‌خواهید نگه دارید بنویسید. یادداشت‌ها هنگام تایپ ذخیره می‌شوند.</string>
+    <string name="feature_notes_no_results_title">یادداشتی پیدا نشد</string>
+    <string name="feature_notes_no_results_body">واژه‌ای کوتاه‌تر یا دیگری را امتحان کنید.</string>
+    <string name="feature_notes_title_hint">عنوان</string>
+    <string name="feature_notes_body_hint">نوشتن را شروع کنید</string>
+    <string name="feature_notes_saving">در حال ذخیره…</string>
+    <string name="feature_notes_saved">ذخیره شد</string>
+    <string name="feature_notes_save_failed">ذخیره نشد</string>
+    <string name="feature_notes_not_found_title">این یادداشت دیگر نیست</string>
+    <string name="feature_notes_not_found_body">شاید حذف شده باشد. یادداشت‌های حذف‌شده ۳۰ روز در سطل زباله می‌مانند.</string>
+</resources>

@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="feature_notes_title">Notes</string>
+    <string name="feature_notes_back">Back</string>
+    <string name="feature_notes_new">New note</string>
+    <string name="feature_notes_search_hint">Search notes</string>
+    <string name="feature_notes_section_pinned">Pinned</string>
+    <string name="feature_notes_section_others">Others</string>
+    <string name="feature_notes_untitled">Untitled</string>
+    <string name="feature_notes_pin">Pin</string>
+    <string name="feature_notes_unpin">Unpin</string>
+    <string name="feature_notes_move_to_trash">Delete</string>
+    <string name="feature_notes_empty_title">No notes yet</string>
+    <string name="feature_notes_empty_body">Write down an idea, a list or anything you want to keep. Notes save as you type.</string>
+    <string name="feature_notes_no_results_title">No matching notes</string>
+    <string name="feature_notes_no_results_body">Try a shorter or different word.</string>
+    <string name="feature_notes_title_hint">Title</string>
+    <string name="feature_notes_body_hint">Start writing</string>
+    <string name="feature_notes_saving">Saving…</string>
+    <string name="feature_notes_saved">Saved</string>
+    <string name="feature_notes_save_failed">Couldn\'t save</string>
+    <string name="feature_notes_not_found_title">This note is gone</string>
+    <string name="feature_notes_not_found_body">It may have been deleted. Deleted notes stay in the trash for 30 days.</string>
+</resources>

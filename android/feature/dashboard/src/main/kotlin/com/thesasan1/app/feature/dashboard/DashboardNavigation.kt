@@ -8,8 +8,9 @@ import kotlinx.serialization.Serializable
 @Serializable
 data object DashboardRoute
 
-fun NavGraphBuilder.dashboardScreen() {
+/** [onOpenNotes] is supplied by the app so this feature never references :feature:notes (ADR-003). */
+fun NavGraphBuilder.dashboardScreen(onOpenNotes: () -> Unit) {
     composable<DashboardRoute> {
-        DashboardRoute()
+        DashboardRoute(onOpenNotes = onOpenNotes)
     }
 }
