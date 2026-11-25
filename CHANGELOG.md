@@ -6,7 +6,8 @@ All notable changes are documented here. Format based on [Keep a Changelog](http
 
 ### Added
 
-- Habit logic: schedules with rest days, check-ins, undo, corrections and daily progress for yes/no, amount, duration and multi-check-in habits. Not shown in the app yet.
+- Habits screen: create a habit, check it off, log an amount or minutes, undo, take a rest day, or archive it. Open it from Habits on the home screen.
+- Habit logic: schedules with rest days, check-ins, undo, corrections and daily progress for yes/no, amount, duration and multi-check-in habits.
 - Habit storage (Room v5): habits with their schedules, and an append-only log of check-ins, undos and corrections. Not shown in the app yet.
 - Custom reminder times (minutes, hours or days before, up to 30 days), and a 1 hour snooze button on reminder notifications.
 - Completing a task in the app, or removing its reminder, takes its reminder notification off the screen.

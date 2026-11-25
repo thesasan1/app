@@ -7,5 +7,6 @@
     <string name="feature_dashboard_empty_title">روز شما از اینجا شروع می‌شود</string>
     <string name="feature_dashboard_empty_body">کارها، عادت‌ها و یادآورها پس از افزودن، اینجا نمایش داده می‌شوند.</string>
     <string name="feature_dashboard_open_tasks">کارها</string>
+    <string name="feature_dashboard_open_habits">عادت‌ها</string>
     <string name="feature_dashboard_open_notes">یادداشت‌ها</string>
 </resources>

@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="feature_habits_title">عادت‌ها</string>
+    <string name="feature_habits_back">بازگشت</string>
+    <string name="feature_habits_new">عادت جدید</string>
+    <string name="feature_habits_empty_title">هنوز عادتی ندارید</string>
+    <string name="feature_habits_empty_body">عادتی را که می‌خواهید حفظ کنید، مثل مطالعه یا پیاده‌روی، اضافه کنید و هر روز اینجا علامت بزنید.</string>
+    <string name="feature_habits_mark_done">انجام شد</string>
+    <string name="feature_habits_add_one">+۱</string>
+    <string name="feature_habits_log">ثبت</string>
+    <string name="feature_habits_undo">واگرد</string>
+    <string name="feature_habits_rest">امروز استراحت</string>
+    <string name="feature_habits_archive">بایگانی</string>
+    <string name="feature_habits_status_done">امروز انجام شد</string>
+    <string name="feature_habits_status_todo">هنوز انجام نشده</string>
+    <string name="feature_habits_status_rest">روز استراحت</string>
+    <string name="feature_habits_status_not_due">امروز لازم نیست</string>
+    <string name="feature_habits_status_of">%1$s از %2$s %3$s</string>
+    <string name="feature_habits_status_minutes">%1$s از %2$s دقیقه</string>
+    <string name="feature_habits_name">نام</string>
+    <string name="feature_habits_kind">نحوهٔ پیگیری</string>
+    <string name="feature_habits_kind_binary">بله یا خیر</string>
+    <string name="feature_habits_kind_numeric">مقدار</string>
+    <string name="feature_habits_kind_duration">دقیقه</string>
+    <string name="feature_habits_kind_multi">چند بار در روز</string>
+    <string name="feature_habits_target">هدف روزانه (اختیاری)</string>
+    <string name="feature_habits_target_minutes">دقیقه در روز (اختیاری)</string>
+    <string name="feature_habits_target_times">چند بار در روز</string>
+    <string name="feature_habits_unit">واحد، مثل صفحه</string>
+    <string name="feature_habits_days">روزها</string>
+    <string name="feature_habits_create">ایجاد</string>
+    <string name="feature_habits_cancel">لغو</string>
+    <string name="feature_habits_ok">باشه</string>
+    <string name="feature_habits_minutes">دقیقه</string>
+    <string name="feature_habits_amount">مقدار</string>
+    <string name="feature_habits_error_name">برای عادت نامی بنویسید.</string>
+    <string name="feature_habits_error_target">هدفی بیشتر از صفر وارد کنید.</string>
+    <string name="feature_habits_error_days">دست‌کم یک روز را انتخاب کنید.</string>
+    <string name="feature_habits_error_amount">مقداری بیشتر از صفر وارد کنید.</string>
+    <string name="feature_habits_error_done">امروز قبلاً ثبت شده است.</string>
+    <string name="feature_habits_error_failed">ذخیره نشد. دوباره امتحان کنید.</string>
+</resources>

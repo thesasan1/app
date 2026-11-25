@@ -7,6 +7,8 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.rememberNavController
 import com.thesasan1.app.feature.dashboard.DashboardRoute
 import com.thesasan1.app.feature.dashboard.dashboardScreen
+import com.thesasan1.app.feature.habits.ui.habitsScreens
+import com.thesasan1.app.feature.habits.ui.navigateToHabits
 import com.thesasan1.app.feature.notes.ui.navigateToNotes
 import com.thesasan1.app.feature.notes.ui.notesScreens
 import com.thesasan1.app.feature.tasks.ui.navigateToTasks
@@ -26,8 +28,10 @@ fun AppNavHost(modifier: Modifier = Modifier, navController: NavHostController =
         dashboardScreen(
             onOpenNotes = navController::navigateToNotes,
             onOpenTasks = navController::navigateToTasks,
+            onOpenHabits = navController::navigateToHabits,
         )
         notesScreens(navController)
         tasksScreens(navController)
+        habitsScreens(navController)
     }
 }
