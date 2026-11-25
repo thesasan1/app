@@ -228,6 +228,21 @@ Architecture Decision Records (ADRs) and decisions pending the project owner. Fo
 
 ---
 
+### ADR-025 — Reminder scheduling engine
+
+- **Status:** Accepted (agent decision, 2026-11-25)
+- **Decision:**
+  - New `:core:reminders` module. The domain logic (`ReminderTimeCalculator`, `ReminderScheduler`) is pure Kotlin behind three ports (`ReminderTargets`, `AlarmScheduler`, `ReminderNotifier`), so time zones, DST and deduplication are tested on the JVM.
+  - `rebuild()` is the single way alarms are set. It is idempotent and runs on app start, boot, `MY_PACKAGE_REPLACED`, time and time-zone changes, and changes to the exact-alarm permission; reminder edits will call it too.
+  - One AlarmManager alarm per pending occurrence, each with its own intent data URI, so setting it again replaces rather than adds. `setExactAndAllowWhileIdle` when `canScheduleExactAlarms()`; otherwise `setAndAllowWhileIdle` (REM-07). Only `SCHEDULE_EXACT_ALARM` is declared: `USE_EXACT_ALARM` is reserved for alarm-clock and calendar apps under Play policy (R-02).
+  - All-day tasks are reminded at 09:00 local. A firing missed by more than 12 hours (phone off) is recorded as MISSED rather than shown late; within 12 hours it rings at once.
+  - A firing whose notification can't be shown (permission or channel off) is recorded as MISSED, not DELIVERED.
+  - An app-wide `@ApplicationScope` CoroutineScope (SupervisorJob + IO) runs receiver work under `goAsync()`.
+- **Alternatives:** WorkManager for reminders (no exact timing, minimum delays); a single "next alarm" chain (one lost broadcast silences every reminder after it); `USE_EXACT_ALARM` (Play rejection risk).
+- **Consequences:** OEM battery killers can still delay alarms (R-01); a guidance screen and opt-in reliability telemetry come later. Permission prompts belong to the reminder UI (KI-013).
+
+---
+
 ## Pending Decisions (owner input required)
 
 | ID | Decision | Recommendation | Blocks |
