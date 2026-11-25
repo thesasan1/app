@@ -40,6 +40,16 @@ class DatabaseMigrationTest {
         }
     }
 
+    @Test
+    fun version2MigratesTo3WithTasksTheirIndexAndHistory() {
+        helper.createDatabase(TEST_DB, 2).close()
+        helper.runMigrationsAndValidate(TEST_DB, 3, true).use { db ->
+            db.query(
+                "SELECT name FROM sqlite_master WHERE name IN ('tasks', 'tasks_fts', 'task_history') ORDER BY name",
+            ).use { assertEquals(3, it.count) }
+        }
+    }
+
     private companion object {
         const val TEST_DB = "migration-test.db"
     }

@@ -12,6 +12,7 @@ import com.thesasan1.app.core.database.dao.OutboxDao
 import com.thesasan1.app.core.database.dao.ProjectDao
 import com.thesasan1.app.core.database.dao.SyncCursorDao
 import com.thesasan1.app.core.database.dao.TagDao
+import com.thesasan1.app.core.database.dao.TaskDao
 import dagger.Binds
 import dagger.Module
 import dagger.Provides
@@ -42,6 +43,8 @@ object DatabaseModule {
     @Provides fun provideSyncCursorDao(db: AppDatabase): SyncCursorDao = db.syncCursorDao()
 
     @Provides fun provideNoteDao(db: AppDatabase): NoteDao = db.noteDao()
+
+    @Provides fun provideTaskDao(db: AppDatabase): TaskDao = db.taskDao()
 }
 
 @Module

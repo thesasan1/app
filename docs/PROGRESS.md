@@ -7,12 +7,12 @@ The GitHub repository is the source of truth. A checkpoint is added at the end o
 | Field | Value |
 |---|---|
 | Current phase | **Phase 2 — Core Productivity** (Phase 1 done except PR 5b, waiting on ADR-007) |
-| Status | Notes archive and trash screens (NOTE-03, NOTE-04) in review |
-| Code status | Phase 1 merged: Android skeleton (#2), backend skeleton (#3), design system (#4), CI hardening (#5), local database (#14), logging (#19), toolchain upgrade (#20), NestJS 12 / Node 26 (#21), debug APK pre-release (#22). notes data layer (#23), notes repository (#24) and notes list/editor (#27) merged. Archive and trash screens in review |
+| Status | Tasks data layer (TASK-01) in review |
+| Code status | Phase 1 merged: Android skeleton (#2), backend skeleton (#3), design system (#4), CI hardening (#5), local database (#14), logging (#19), toolchain upgrade (#20), NestJS 12 / Node 26 (#21), debug APK pre-release (#22). notes data layer (#23), notes repository (#24) and notes list/editor (#27) and archive/trash (#28) merged. Tasks data layer in review |
 | Build status | `android-ci` and `backend-ci` green on `main` after #5 and the Dependabot action bumps |
 | Test status | Backend: 13 unit + 12 e2e (CI green). Android: unit tests, lint, screenshots run in CI |
 | Blockers | ADR-007 (Prisma) needs owner approval before PR 5b; ADR-010 (local DB encryption) before the first release with real content. D-03…D-09 pending for later phases |
-| Next task | Tasks data layer (TASK-01); PR 5b once ADR-007 is approved |
+| Next task | Tasks repository with history and outbox (TASK-05, TASK-08); PR 5b once ADR-007 is approved |
 
 ## Completed Features
 
@@ -29,10 +29,11 @@ The GitHub repository is the source of truth. A checkpoint is added at the end o
 - Notes data layer — merged (PR #23).
 - Notes repository and document format — merged (PR #24).
 - Notes list and editor with autosave — merged (PR #27).
+- Notes archive and trash screens — merged (PR #28).
 
 ## Features In Progress
 
-- Phase 2: notes archive and trash screens (NOTE-03, NOTE-04).
+- Phase 2: tasks data layer (TASK-01).
 
 ## Merged Pull Requests
 
@@ -51,6 +52,7 @@ The GitHub repository is the source of truth. A checkpoint is added at the end o
 - #23 Notes data layer — merged 2026-11-24 (squash `c5cd5b3`).
 - #24 Notes repository and ADR-009 document format — merged 2026-11-24 (squash `4b12820`).
 - #27 Notes list and editor with autosave — merged 2026-11-25 (squash `46e7d3e`).
+- #28 Notes archive and trash screens — merged 2026-11-25 (squash `d9185d4`).
 
 ---
 
@@ -169,10 +171,16 @@ The GitHub repository is the source of truth. A checkpoint is added at the end o
 
 **Tested:** view-model and repository tests 28/28 (local), `spotlessApply`, `detekt`, app compile (local) → Passed; lint, Robolectric, APK (CI) → Passed.
 
-### Checkpoint 2.4 — 2026-11-25 — Notes archive and trash submitted
+### Checkpoint 2.4 — 2026-11-25 — Notes archive and trash merged (#28)
 
-**Completed (in review):** Archive screen (open, unarchive) and trash screen (restore; delete forever behind a confirmation dialog; notes past the 30-day window are purged whenever the trash opens). The editor's More menu archives (and closes) or unarchives a note and moves it to the trash. The notes list links to both screens. English and Persian strings.
+**Completed:** Archive screen (open, unarchive) and trash screen (restore; delete forever behind a confirmation dialog; notes past the 30-day window are purged whenever the trash opens). The editor's More menu archives (and closes) or unarchives a note and moves it to the trash. The notes list links to both screens. English and Persian strings.
+
+**Tested:** `:feature:notes` tests 33/33, `spotlessApply`, `detekt`, app compile (local) → Passed; lint, Robolectric, APK (CI) → Passed.
+
+### Checkpoint 2.5 — 2026-11-25 — Tasks data layer submitted
+
+**Completed (in review):** Room schema v3 (AutoMigration 2→3) with `tasks`, `tasks_fts` and append-only `task_history` (ADR-023). `TaskDao`: open, due-on, overdue, by-project, subtasks, completed, archived, trash, full-text search, history, delete forever (with subtasks) and purge. Migration test 2→3 and `TaskDaoTest`.
 
 **Tested:** see the PR.
 
-**Recommended next task:** tasks data layer (TASK-01).
+**Recommended next task:** tasks repository with history and outbox (TASK-05, TASK-08).

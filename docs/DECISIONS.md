@@ -197,6 +197,19 @@ Architecture Decision Records (ADRs) and decisions pending the project owner. Fo
 - **Alternatives:** FTS5 (better ranking, but not on every supported device); external-content FTS (rowid instability); `LIKE` (no word matching, slow).
 - **Consequences:** Every write must go through `NoteDao.upsert`. Encryption (ADR-010) is still open, so note content is protected only by Android file-based encryption until it's decided (KI-009).
 
+### ADR-023 — Local task storage
+
+- **Status:** Accepted (agent decision, 2026-11-25)
+- **Decision:**
+  - Room schema v3 adds `tasks`, `tasks_fts` and `task_history` (DATABASE.md §3.2–3.3) through an `AutoMigration`, since it only adds tables.
+  - `due_date` and `due_time` are ISO-8601 local text (`2026-11-25`, `09:30`), so they sort as text, compare against the user's local "today" without time-zone maths, and stay readable in exports. `time_zone_mode` (`FLOATING`/`FIXED`) and `time_zone_id` say how to turn them into an instant when a reminder needs one.
+  - `parent_id`, `project_id` and `recurrence_parent_id` are plain columns, not foreign keys, as for notes (sync may deliver a subtask before its parent).
+  - Search reuses the ADR-022 approach: an FTS4 `tasks_fts` keyed by `task_id`, written by `TaskDao.upsert` in the same transaction.
+  - `task_history` is append-only (`TaskDao.insertHistory` only). It is deleted only with its task, when the task is deleted forever or purged from the trash; deleting a task forever also removes its subtasks.
+  - "Open" lists sort undated tasks last, then by due time (untimed last), priority (highest first) and manual `sort_order`.
+- **Alternatives:** epoch-millisecond due instants (wrong for floating tasks when the user travels); `LocalDate` type converters (same storage, more code); foreign keys with cascades (break out-of-order sync).
+- **Consequences:** Every write must go through `TaskDao.upsert`. The repository (next unit) records history and queues the outbox entry in the same transaction as the change.
+
 ---
 
 ## Pending Decisions (owner input required)
