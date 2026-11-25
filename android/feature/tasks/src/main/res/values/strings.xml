@@ -53,4 +53,21 @@
     <string name="feature_tasks_event_archived">Archived</string>
     <string name="feature_tasks_event_deleted">Moved to trash</string>
     <string name="feature_tasks_event_restored">Restored</string>
+    <string name="feature_tasks_shelf_completed">Completed</string>
+    <string name="feature_tasks_shelf_archive">Archive</string>
+    <string name="feature_tasks_shelf_trash">Trash</string>
+    <string name="feature_tasks_completed_empty_title">Nothing completed yet</string>
+    <string name="feature_tasks_completed_empty_body">Tasks you tick off show up here.</string>
+    <string name="feature_tasks_archive_empty_title">No archived tasks</string>
+    <string name="feature_tasks_archive_empty_body">Archive a task to keep it without seeing it in your list.</string>
+    <string name="feature_tasks_trash_empty_title">The trash is empty</string>
+    <string name="feature_tasks_trash_empty_body">Deleted tasks stay here for 30 days.</string>
+    <string name="feature_tasks_trash_retention">Tasks in the trash are deleted for good after 30 days.</string>
+    <string name="feature_tasks_unarchive">Unarchive</string>
+    <string name="feature_tasks_restore">Restore</string>
+    <string name="feature_tasks_delete_forever">Delete forever</string>
+    <string name="feature_tasks_delete_forever_title">Delete forever?</string>
+    <string name="feature_tasks_delete_forever_body">“%1$s” and its subtasks and history will be deleted. This can\'t be undone.</string>
+    <string name="feature_tasks_restore_parent_first">Restore the parent task first.</string>
+    <string name="feature_tasks_subtask_label">Subtask</string>
 </resources>

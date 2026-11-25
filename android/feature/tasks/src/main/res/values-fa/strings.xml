@@ -53,4 +53,21 @@
     <string name="feature_tasks_event_archived">بایگانی شد</string>
     <string name="feature_tasks_event_deleted">به سطل زباله رفت</string>
     <string name="feature_tasks_event_restored">بازیابی شد</string>
+    <string name="feature_tasks_shelf_completed">انجام‌شده</string>
+    <string name="feature_tasks_shelf_archive">بایگانی</string>
+    <string name="feature_tasks_shelf_trash">سطل زباله</string>
+    <string name="feature_tasks_completed_empty_title">هنوز کاری انجام نشده</string>
+    <string name="feature_tasks_completed_empty_body">کارهایی که تیک بزنید اینجا می‌آیند.</string>
+    <string name="feature_tasks_archive_empty_title">کار بایگانی‌شده‌ای نیست</string>
+    <string name="feature_tasks_archive_empty_body">کاری را بایگانی کنید تا بماند ولی در فهرست دیده نشود.</string>
+    <string name="feature_tasks_trash_empty_title">سطل زباله خالی است</string>
+    <string name="feature_tasks_trash_empty_body">کارهای حذف‌شده ۳۰ روز اینجا می‌مانند.</string>
+    <string name="feature_tasks_trash_retention">کارهای داخل سطل زباله پس از ۳۰ روز برای همیشه حذف می‌شوند.</string>
+    <string name="feature_tasks_unarchive">خروج از بایگانی</string>
+    <string name="feature_tasks_restore">بازیابی</string>
+    <string name="feature_tasks_delete_forever">حذف برای همیشه</string>
+    <string name="feature_tasks_delete_forever_title">برای همیشه حذف شود؟</string>
+    <string name="feature_tasks_delete_forever_body">«%1$s» همراه زیرکارها و تاریخچه‌اش حذف می‌شود. این کار برگشت‌پذیر نیست.</string>
+    <string name="feature_tasks_restore_parent_first">اول کار اصلی را بازیابی کنید.</string>
+    <string name="feature_tasks_subtask_label">زیرکار</string>
 </resources>
