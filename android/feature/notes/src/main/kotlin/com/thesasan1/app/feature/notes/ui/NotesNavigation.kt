@@ -13,14 +13,31 @@ data object NotesListRoute
 @Serializable
 data class NoteEditorRoute(val noteId: String? = null)
 
+@Serializable
+data object NotesArchiveRoute
+
+@Serializable
+data object NotesTrashRoute
+
 fun NavController.navigateToNotes() = navigate(NotesListRoute)
 
 fun NavGraphBuilder.notesScreens(navController: NavController) {
     composable<NotesListRoute> {
         NotesListRoute(
             onOpenNote = { id -> navController.navigate(NoteEditorRoute(id)) },
+            onOpenArchive = { navController.navigate(NotesArchiveRoute) },
+            onOpenTrash = { navController.navigate(NotesTrashRoute) },
             onBack = { navController.popBackStack() },
         )
+    }
+    composable<NotesArchiveRoute> {
+        NotesArchiveRoute(
+            onOpenNote = { id -> navController.navigate(NoteEditorRoute(id)) },
+            onBack = { navController.popBackStack() },
+        )
+    }
+    composable<NotesTrashRoute> {
+        NotesTrashRoute(onBack = { navController.popBackStack() })
     }
     composable<NoteEditorRoute> {
         NoteEditorRoute(onClose = { navController.popBackStack() })

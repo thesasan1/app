@@ -21,4 +21,19 @@
     <string name="feature_notes_save_failed">Couldn\'t save</string>
     <string name="feature_notes_not_found_title">This note is gone</string>
     <string name="feature_notes_not_found_body">It may have been deleted. Deleted notes stay in the trash for 30 days.</string>
+    <string name="feature_notes_archive">Archive</string>
+    <string name="feature_notes_archive_action">Archive</string>
+    <string name="feature_notes_unarchive">Unarchive</string>
+    <string name="feature_notes_trash">Trash</string>
+    <string name="feature_notes_more">More</string>
+    <string name="feature_notes_restore">Restore</string>
+    <string name="feature_notes_delete_forever">Delete forever</string>
+    <string name="feature_notes_delete_forever_title">Delete this note forever?</string>
+    <string name="feature_notes_delete_forever_body">“%1$s” will be deleted for good. This can\'t be undone.</string>
+    <string name="feature_notes_cancel">Cancel</string>
+    <string name="feature_notes_trash_retention">Notes in the trash are deleted for good after 30 days.</string>
+    <string name="feature_notes_archive_empty_title">Nothing archived</string>
+    <string name="feature_notes_archive_empty_body">Archive a note to keep it without cluttering your list. Archived notes still show up in search.</string>
+    <string name="feature_notes_trash_empty_title">Trash is empty</string>
+    <string name="feature_notes_trash_empty_body">Deleted notes wait here for 30 days, so you can bring them back.</string>
 </resources>

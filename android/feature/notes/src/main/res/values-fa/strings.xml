@@ -21,4 +21,19 @@
     <string name="feature_notes_save_failed">ذخیره نشد</string>
     <string name="feature_notes_not_found_title">این یادداشت دیگر نیست</string>
     <string name="feature_notes_not_found_body">شاید حذف شده باشد. یادداشت‌های حذف‌شده ۳۰ روز در سطل زباله می‌مانند.</string>
+    <string name="feature_notes_archive">بایگانی</string>
+    <string name="feature_notes_archive_action">بایگانی کن</string>
+    <string name="feature_notes_unarchive">خروج از بایگانی</string>
+    <string name="feature_notes_trash">سطل زباله</string>
+    <string name="feature_notes_more">بیشتر</string>
+    <string name="feature_notes_restore">بازگردانی</string>
+    <string name="feature_notes_delete_forever">حذف همیشگی</string>
+    <string name="feature_notes_delete_forever_title">این یادداشت برای همیشه حذف شود؟</string>
+    <string name="feature_notes_delete_forever_body">«%1$s» برای همیشه پاک می‌شود. این کار برگشت‌پذیر نیست.</string>
+    <string name="feature_notes_cancel">لغو</string>
+    <string name="feature_notes_trash_retention">یادداشت‌های سطل زباله پس از ۳۰ روز برای همیشه پاک می‌شوند.</string>
+    <string name="feature_notes_archive_empty_title">چیزی بایگانی نشده</string>
+    <string name="feature_notes_archive_empty_body">یادداشت را بایگانی کنید تا بماند ولی فهرستتان شلوغ نشود. یادداشت‌های بایگانی‌شده در جست‌وجو پیدا می‌شوند.</string>
+    <string name="feature_notes_trash_empty_title">سطل زباله خالی است</string>
+    <string name="feature_notes_trash_empty_body">یادداشت‌های حذف‌شده ۳۰ روز اینجا می‌مانند تا بتوانید برشان گردانید.</string>
 </resources>

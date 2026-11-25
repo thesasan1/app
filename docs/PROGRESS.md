@@ -7,12 +7,12 @@ The GitHub repository is the source of truth. A checkpoint is added at the end o
 | Field | Value |
 |---|---|
 | Current phase | **Phase 2 — Core Productivity** (Phase 1 done except PR 5b, waiting on ADR-007) |
-| Status | Notes list and editor with autosave (NOTE-01) in review |
-| Code status | Phase 1 merged: Android skeleton (#2), backend skeleton (#3), design system (#4), CI hardening (#5), local database (#14), logging (#19), toolchain upgrade (#20), NestJS 12 / Node 26 (#21), debug APK pre-release (#22). notes data layer (#23) and notes repository (#24) merged. Notes list and editor in review |
+| Status | Notes archive and trash screens (NOTE-03, NOTE-04) in review |
+| Code status | Phase 1 merged: Android skeleton (#2), backend skeleton (#3), design system (#4), CI hardening (#5), local database (#14), logging (#19), toolchain upgrade (#20), NestJS 12 / Node 26 (#21), debug APK pre-release (#22). notes data layer (#23), notes repository (#24) and notes list/editor (#27) merged. Archive and trash screens in review |
 | Build status | `android-ci` and `backend-ci` green on `main` after #5 and the Dependabot action bumps |
 | Test status | Backend: 13 unit + 12 e2e (CI green). Android: unit tests, lint, screenshots run in CI |
 | Blockers | ADR-007 (Prisma) needs owner approval before PR 5b; ADR-010 (local DB encryption) before the first release with real content. D-03…D-09 pending for later phases |
-| Next task | Notes trash and archive screens (NOTE-03, NOTE-04); PR 5b once ADR-007 is approved |
+| Next task | Tasks data layer (TASK-01); PR 5b once ADR-007 is approved |
 
 ## Completed Features
 
@@ -28,10 +28,11 @@ The GitHub repository is the source of truth. A checkpoint is added at the end o
 - Debug APK pre-release — merged (PR #22).
 - Notes data layer — merged (PR #23).
 - Notes repository and document format — merged (PR #24).
+- Notes list and editor with autosave — merged (PR #27).
 
 ## Features In Progress
 
-- Phase 2: notes list and editor UI with autosave (NOTE-01).
+- Phase 2: notes archive and trash screens (NOTE-03, NOTE-04).
 
 ## Merged Pull Requests
 
@@ -49,6 +50,7 @@ The GitHub repository is the source of truth. A checkpoint is added at the end o
 - #22 Debug APK pre-release — merged 2026-11-24 (squash `71872c3`); `debug-latest` published.
 - #23 Notes data layer — merged 2026-11-24 (squash `c5cd5b3`).
 - #24 Notes repository and ADR-009 document format — merged 2026-11-24 (squash `4b12820`).
+- #27 Notes list and editor with autosave — merged 2026-11-25 (squash `46e7d3e`).
 
 ---
 
@@ -161,10 +163,16 @@ The GitHub repository is the source of truth. A checkpoint is added at the end o
 
 **Tested:** `NoteDocumentCodecTest` 7/7 and `OfflineNoteRepositoryTest` 10/10 (local, JVM fakes) → Passed; `spotlessCheck`, `detekt` (local) → Passed. App build with the Hilt graph → CI.
 
-### Checkpoint 2.3 — 2026-11-25 — Notes list and editor submitted
+### Checkpoint 2.3 — 2026-11-25 — Notes list and editor merged (#27)
 
-**Completed (in review):** Notes list (pinned section, pin/unpin, debounced search, empty and no-results states) and a plain-text editor with autosave: saves 600 ms after typing stops and at once on lifecycle stop or back; saves run non-cancellable; the draft lives in `SavedStateHandle` so it survives process death; a new note is stored only once it has content; delete moves to the trash. A title edit keeps rich formatting the editor can't show yet (KI-012). Dashboard has a Notes entry; English and Persian strings.
+**Completed:** Notes list (pinned section, pin/unpin, debounced search, empty and no-results states) and a plain-text editor with autosave: saves 600 ms after typing stops and at once on lifecycle stop or back; saves run non-cancellable; the draft lives in `SavedStateHandle` so it survives process death; a new note is stored only once it has content; delete moves to the trash. A title edit keeps rich formatting the editor can't show yet (KI-012). Dashboard has a Notes entry; English and Persian strings.
+
+**Tested:** view-model and repository tests 28/28 (local), `spotlessApply`, `detekt`, app compile (local) → Passed; lint, Robolectric, APK (CI) → Passed.
+
+### Checkpoint 2.4 — 2026-11-25 — Notes archive and trash submitted
+
+**Completed (in review):** Archive screen (open, unarchive) and trash screen (restore; delete forever behind a confirmation dialog; notes past the 30-day window are purged whenever the trash opens). The editor's More menu archives (and closes) or unarchives a note and moves it to the trash. The notes list links to both screens. English and Persian strings.
 
 **Tested:** see the PR.
 
-**Recommended next task:** trash and archive screens (NOTE-03, NOTE-04).
+**Recommended next task:** tasks data layer (TASK-01).
