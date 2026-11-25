@@ -126,9 +126,11 @@ Append-only. `id, task_id, event_type (CREATED, STATUS_CHANGED, RESCHEDULED, SNO
 | is_enabled | bool | |
 | version, created_at, updated_at, deleted_at | sync | |
 
+Local (Room v4): stored as above with `target_id` as a plain column; `trigger_at_local` is ISO local date-time text (ADR-024).
+
 ### 3.5 `reminder_occurrences` (local only)
 
-`id (deterministic hash of reminder_id + scheduled_for), reminder_id, scheduled_for_utc, state (SCHEDULED, DELIVERED, SNOOZED, DISMISSED, COMPLETED, MISSED), delivered_at, snooze_until`. Rebuilt from `reminders` on boot/time change; guarantees no duplicate delivery.
+`id (deterministic hash of reminder_id + scheduled_for), reminder_id, scheduled_for_utc, state (SCHEDULED, DELIVERED, SNOOZED, DISMISSED, COMPLETED, MISSED), delivered_at, snooze_until`. Rebuilt from `reminders` on boot/time change; guarantees no duplicate delivery. The id is a name-based UUID of `reminder_id@scheduled_for_utc` (ADR-024).
 
 ### 3.6 `habits`
 

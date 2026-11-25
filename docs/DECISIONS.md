@@ -213,6 +213,21 @@ Architecture Decision Records (ADRs) and decisions pending the project owner. Fo
 
 ---
 
+### ADR-024 — Local reminder storage
+
+- **Status:** Accepted (agent decision, 2026-11-25)
+- **Decision:**
+  - Room schema v4 adds `reminders` (synced, DATABASE.md §3.4) and `reminder_occurrences` (local only, §3.5) through an `AutoMigration`, since it only adds tables.
+  - Every §3.4 column is stored now, location and event triggers included, so REM-03/REM-04 need no migration. Only `TIME` reminders are scheduled at first.
+  - A TIME reminder fires at a floating ISO local date-time (`trigger_at_local`, read in the device zone), a fixed instant (`trigger_at_utc`), or `offset_minutes` relative to its task's due date and time.
+  - An occurrence's id is a name-based UUID of `reminder_id@scheduled_for_utc`, inserted with `IGNORE`. Rebuilding occurrences after a reboot, time change or sync therefore never duplicates a firing, and a delivered firing keeps its state (REM-06).
+  - Reminders are deleted softly so the deletion syncs. Occurrences are local bookkeeping and are deleted outright; finished ones are pruned by age, while pending ones are never pruned.
+  - `target_id` is a plain column, not a foreign key (as ADR-023).
+- **Alternatives:** computing firings on the fly with no occurrence table (cannot tell "already delivered" after a reboot); auto-increment occurrence ids (rebuilds would duplicate them); a separate table per trigger type (more joins, more migrations).
+- **Consequences:** The scheduler (next unit) reads `getEnabledTimeReminders()`, inserts occurrences idempotently and sets alarms from `getPendingOccurrences()`.
+
+---
+
 ## Pending Decisions (owner input required)
 
 | ID | Decision | Recommendation | Blocks |
