@@ -206,6 +206,7 @@ Architecture Decision Records (ADRs) and decisions pending the project owner. Fo
   - `parent_id`, `project_id` and `recurrence_parent_id` are plain columns, not foreign keys, as for notes (sync may deliver a subtask before its parent).
   - Search reuses the ADR-022 approach: an FTS4 `tasks_fts` keyed by `task_id`, written by `TaskDao.upsert` in the same transaction.
   - `task_history` is append-only (`TaskDao.insertHistory` only). It is deleted only with its task, when the task is deleted forever or purged from the trash; deleting a task forever also removes its subtasks.
+  - Subtasks are one level deep: `OfflineTaskRepository.create` refuses a subtask of a subtask (added 2026-11-25). So `TaskDao.deletePermanently` only needs to remove direct subtasks, and the detail screen shows subtasks only on top-level tasks.
   - "Open" lists sort undated tasks last, then by due time (untimed last), priority (highest first) and manual `sort_order`.
 - **Alternatives:** epoch-millisecond due instants (wrong for floating tasks when the user travels); `LocalDate` type converters (same storage, more code); foreign keys with cascades (break out-of-order sync).
 - **Consequences:** Every write must go through `TaskDao.upsert`. The repository (next unit) records history and queues the outbox entry in the same transaction as the change.
