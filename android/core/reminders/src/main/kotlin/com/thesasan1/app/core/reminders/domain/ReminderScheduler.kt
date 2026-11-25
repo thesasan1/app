@@ -21,7 +21,9 @@ import kotlinx.coroutines.sync.withLock
  * [LATE_GRACE] (phone off for a day, say) is recorded as MISSED instead of ringing late.
  *
  * [deliver] is what the alarm calls. It rings an occurrence once: anything not pending is ignored.
- * [complete], [snooze] and [dismissed] are the notification's actions (REM-02).
+ * [complete], [snooze] and [dismissed] are the notification's actions (REM-02). A rebuild also takes
+ * down a notification still on screen once its task is closed in the app or its reminder is turned
+ * off or removed.
  */
 @Singleton
 class ReminderScheduler @Inject constructor(
@@ -106,6 +108,7 @@ class ReminderScheduler @Inject constructor(
     }
 
     private suspend fun rebuildLocked() {
+        clearStale()
         val now = clock.millis()
         val wanted = dao.getEnabledTimeReminders().associate { it.id to nextFireMillis(it) }
 
@@ -126,6 +129,23 @@ class ReminderScheduler @Inject constructor(
 
         dao.getPendingOccurrences().forEach { alarms.schedule(it.id, maxOf(it.nextFireAt, now)) }
         dao.pruneFinishedOccurrences(now - KEEP_FINISHED.toMillis())
+    }
+
+    /** Dismisses shown notifications that no longer apply (task done elsewhere, reminder off or gone). */
+    private suspend fun clearStale() {
+        dao.getRingingOccurrences().forEach { occurrence ->
+            if (!stillApplies(occurrence)) {
+                dao.updateOccurrence(occurrence.copy(state = OccurrenceState.DISMISSED, snoozeUntil = null))
+                alarms.cancel(occurrence.id)
+                notifier.cancel(occurrence.id)
+            }
+        }
+    }
+
+    private suspend fun stillApplies(occurrence: ReminderOccurrenceEntity): Boolean {
+        val reminder = dao.getById(occurrence.reminderId)?.takeIf { it.isEnabled && it.sync.deletedAt == null }
+        val targetId = reminder?.targetId ?: return reminder != null
+        return targets.find(reminder.targetType, targetId)?.isOpen == true
     }
 
     private suspend fun nextFireMillis(reminder: ReminderEntity): Long? {

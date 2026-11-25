@@ -59,6 +59,10 @@ interface ReminderDao {
     )
     suspend fun getPendingOccurrences(): List<ReminderOccurrenceEntity>
 
+    /** Occurrences whose notification may still be on screen: delivered, or ringing again later. */
+    @Query("SELECT * FROM reminder_occurrences WHERE state IN ('DELIVERED', 'SNOOZED') AND delivered_at IS NOT NULL")
+    suspend fun getRingingOccurrences(): List<ReminderOccurrenceEntity>
+
     @Query("SELECT * FROM reminder_occurrences WHERE reminder_id = :reminderId ORDER BY scheduled_for_utc")
     suspend fun getOccurrencesFor(reminderId: String): List<ReminderOccurrenceEntity>
 
