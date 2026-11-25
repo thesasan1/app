@@ -18,6 +18,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import com.thesasan1.app.core.database.entity.HabitMeasurement
@@ -27,7 +28,6 @@ import com.thesasan1.app.feature.habits.R
 import com.thesasan1.app.feature.habits.domain.HabitDay
 import java.time.DayOfWeek
 import java.time.format.TextStyle
-import java.util.Locale
 
 private const val MAX_AMOUNT_CHARS = 7
 
@@ -36,6 +36,7 @@ private const val MAX_AMOUNT_CHARS = 7
 @Composable
 internal fun NewHabitDialog(error: HabitMessage?, onCreate: (NewHabitForm) -> Unit, onDismiss: () -> Unit) {
     var form by remember { mutableStateOf(NewHabitForm()) }
+    val locale = LocalConfiguration.current.locales[0]
     AlertDialog(
         onDismissRequest = onDismiss,
         title = { Text(stringResource(R.string.feature_habits_new)) },
@@ -84,7 +85,7 @@ internal fun NewHabitDialog(error: HabitMessage?, onCreate: (NewHabitForm) -> Un
                         FilterChip(
                             selected = selected,
                             onClick = { form = form.copy(days = if (selected) form.days - day else form.days + day) },
-                            label = { Text(day.getDisplayName(TextStyle.SHORT, Locale.getDefault())) },
+                            label = { Text(day.getDisplayName(TextStyle.SHORT, locale)) },
                         )
                     }
                 }
