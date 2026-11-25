@@ -9,6 +9,7 @@ import com.thesasan1.app.core.database.RoomDatabaseChanges
 import com.thesasan1.app.core.database.RoomTransactionRunner
 import com.thesasan1.app.core.database.TransactionRunner
 import com.thesasan1.app.core.database.dao.CategoryDao
+import com.thesasan1.app.core.database.dao.HabitDao
 import com.thesasan1.app.core.database.dao.NoteDao
 import com.thesasan1.app.core.database.dao.OutboxDao
 import com.thesasan1.app.core.database.dao.ProjectDao
@@ -50,6 +51,8 @@ object DatabaseModule {
     @Provides fun provideTaskDao(db: AppDatabase): TaskDao = db.taskDao()
 
     @Provides fun provideReminderDao(db: AppDatabase): ReminderDao = db.reminderDao()
+
+    @Provides fun provideHabitDao(db: AppDatabase): HabitDao = db.habitDao()
 }
 
 @Module

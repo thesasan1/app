@@ -6,11 +6,12 @@ All notable changes are documented here. Format based on [Keep a Changelog](http
 
 ### Added
 
+- Habit storage (Room v5): habits with their schedules, and an append-only log of check-ins, undos and corrections. Not shown in the app yet.
 - Custom reminder times (minutes, hours or days before, up to 30 days), and a 1 hour snooze button on reminder notifications.
 - Completing a task in the app, or removing its reminder, takes its reminder notification off the screen.
 - Task editor Reminders section: remind at the due time or 10 minutes, 1 hour or 1 day before, with Repeat until done. Asks for notification permission and explains when reminders may ring late.
 - Reminder notifications have Done and Snooze buttons. Done also completes the task. Reminders can repeat every 15 minutes until done.
-- Reminder alarms: they ring at the exact minute when Android allows it, and are set again after a reboot, an update or a time-zone change. Nothing in the app creates reminders yet.
+- Reminder alarms: they ring at the exact minute when Android allows it, and are set again after a reboot, an update or a time-zone change.
 - Local storage for reminders and their firings (database v4), so a reminder never fires twice after a restart.
 - Tasks Completed, Archive and Trash screens: reopen, unarchive, restore, and delete forever with confirmation.
 - Task detail screen: edit the title and notes (saved as you type), priority, due date and time with pickers, subtasks, and a history of changes; archive or move to trash.

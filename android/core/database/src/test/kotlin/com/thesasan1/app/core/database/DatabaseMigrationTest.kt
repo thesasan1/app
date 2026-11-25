@@ -60,6 +60,16 @@ class DatabaseMigrationTest {
         }
     }
 
+    @Test
+    fun version4MigratesTo5WithHabitsAndTheirEvents() {
+        helper.createDatabase(TEST_DB, 4).close()
+        helper.runMigrationsAndValidate(TEST_DB, 5, true).use { db ->
+            db.query(
+                "SELECT name FROM sqlite_master WHERE name IN ('habits', 'habit_events') ORDER BY name",
+            ).use { assertEquals(2, it.count) }
+        }
+    }
+
     private companion object {
         const val TEST_DB = "migration-test.db"
     }
