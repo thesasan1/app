@@ -19,6 +19,8 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LifecycleEventEffect
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.thesasan1.app.core.designsystem.component.AppButton
+import com.thesasan1.app.core.designsystem.component.AppButtonVariant
 import com.thesasan1.app.core.designsystem.theme.AppTheme
 import com.thesasan1.app.core.designsystem.theme.Spacing
 import java.time.LocalDate
@@ -26,14 +28,14 @@ import java.time.format.DateTimeFormatter
 import java.time.format.FormatStyle
 
 @Composable
-internal fun DashboardRoute(viewModel: DashboardViewModel = hiltViewModel()) {
+internal fun DashboardRoute(onOpenNotes: () -> Unit, viewModel: DashboardViewModel = hiltViewModel()) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     LifecycleEventEffect(Lifecycle.Event.ON_RESUME) { viewModel.refresh() }
-    DashboardScreen(uiState = uiState)
+    DashboardScreen(uiState = uiState, onOpenNotes = onOpenNotes)
 }
 
 @Composable
-internal fun DashboardScreen(uiState: DashboardUiState, modifier: Modifier = Modifier) {
+internal fun DashboardScreen(uiState: DashboardUiState, onOpenNotes: () -> Unit, modifier: Modifier = Modifier) {
     Scaffold(modifier = modifier) { innerPadding ->
         Column(
             modifier = Modifier
@@ -66,6 +68,12 @@ internal fun DashboardScreen(uiState: DashboardUiState, modifier: Modifier = Mod
                 style = AppTheme.typography.bodyMedium,
                 color = AppTheme.colors.textSecondary,
             )
+            Spacer(Modifier.height(Spacing.xxl))
+            AppButton(
+                text = stringResource(R.string.feature_dashboard_open_notes),
+                onClick = onOpenNotes,
+                variant = AppButtonVariant.Secondary,
+            )
         }
     }
 }
@@ -81,7 +89,14 @@ private fun DayPeriod.greetingRes(): Int = when (this) {
 @Composable
 private fun DashboardScreenPreview() {
     AppTheme {
-        DashboardScreen(DashboardUiState(period = DayPeriod.Morning, today = LocalDate.of(2026, 11, 24)))
+        DashboardScreen(
+            DashboardUiState(
+                period = DayPeriod.Morning,
+                today = LocalDate.of(2026, 11, 24),
+            ),
+            onOpenNotes = {
+            },
+        )
     }
 }
 
@@ -89,6 +104,13 @@ private fun DashboardScreenPreview() {
 @Composable
 private fun DashboardScreenPersianPreview() {
     AppTheme {
-        DashboardScreen(DashboardUiState(period = DayPeriod.Evening, today = LocalDate.of(2026, 11, 24)))
+        DashboardScreen(
+            DashboardUiState(
+                period = DayPeriod.Evening,
+                today = LocalDate.of(2026, 11, 24),
+            ),
+            onOpenNotes = {
+            },
+        )
     }
 }

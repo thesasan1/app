@@ -6,6 +6,7 @@ All notable changes are documented here. Format based on [Keep a Changelog](http
 
 ### Added
 
+- Notes screens: a list with pinned notes and search, and an editor that saves as you type, opened from the dashboard.
 - Notes repository with the rich-text document format (ADR-009), autosave-safe saving, trash, and sync outbox entries.
 - Notes storage (Room schema v2) with Persian-aware full-text search, archive, trash and purge.
 - `debug-latest` pre-release with the newest debug APK from `main`, for testers.

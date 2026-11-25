@@ -54,7 +54,7 @@ PR: #1 (`docs/phase-0-foundation`)
 ## Phase 2 — Core Productivity
 
 Notes (NOTE-01…08 offline parts) → Tasks (TASK-01…08) → Reminder engine + UI (REM-01, 02, 06, 07) → Habits core (HAB-01, 02, 06, 07) → Dashboard v1 (DASH-01…03) → Search (PLT-07) → Notifications.
-Progress: notes data layer (Room v2 + FTS, ADR-022) — Merged (PR #23); notes repository and document format (ADR-009) — In review.
+Progress: notes data layer (Room v2 + FTS, ADR-022) — Merged (PR #23); notes repository and document format (ADR-009) — Merged (PR #24); notes list and editor with autosave (NOTE-01) — In review.
 
 **Exit:** functional offline app for notes, tasks, reminders, habits.
 

@@ -15,6 +15,7 @@
 | KI-010 | Robolectric downloaded its Android runtime from Maven Central during CI tests, and rate limiting (HTTP 429) failed runs. CI now caches the runtime, fetches it with retries, and runs tests offline. Tests run on SDK 34 and Robolectric also loads the compileSdk (37) runtime, which needs JDK 21; changing either, or the Robolectric version, means updating `ROBOLECTRIC_JARS` in `android-ci.yml`. | Mitigated (PR #14) |
 | KI-011 | Dependabot PRs blocked by toolchain limits: Android ones superseded by ADR-019 (#20); NestJS 12 by ADR-020. | Resolved |
 | KI-004 | Branch protection and secret scanning on `main` are not confirmed enabled (requires owner action in repository settings). | Owner action |
+| KI-012 | The notes editor edits plain text only. Formatting it can't show (headings, checklists, bold) is kept when only the title changes, but editing the body of such a note saves it as plain paragraphs. No screen creates formatted notes yet, so nothing is lost today. | Rich editor (NOTE-02) |
 
 ## Technical Risks
 
