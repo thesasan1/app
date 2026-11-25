@@ -6,6 +6,7 @@ All notable changes are documented here. Format based on [Keep a Changelog](http
 
 ### Added
 
+- Task logic: create, edit, reschedule, snooze, complete and reopen, archive, trash and restore, with a history of every change.
 - Local storage for tasks: subtasks, due dates, priority, search and an append-only history (database v3).
 - Notes archive and trash: unarchive, restore, delete forever with confirmation, and automatic removal after 30 days in the trash.
 - Notes screens: a list with pinned notes and search, and an editor that saves as you type, opened from the dashboard.

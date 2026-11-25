@@ -41,6 +41,7 @@ dependencies {
     implementation(project(":core:designsystem"))
     implementation(project(":feature:dashboard"))
     implementation(project(":feature:notes"))
+    implementation(project(":feature:tasks"))
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.activity.compose)

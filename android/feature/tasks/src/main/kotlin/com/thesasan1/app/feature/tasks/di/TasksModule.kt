@@ -1,0 +1,14 @@
+package com.thesasan1.app.feature.tasks.di
+
+import com.thesasan1.app.feature.tasks.data.OfflineTaskRepository
+import com.thesasan1.app.feature.tasks.domain.TaskRepository
+import dagger.Binds
+import dagger.Module
+import dagger.hilt.InstallIn
+import dagger.hilt.components.SingletonComponent
+
+@Module
+@InstallIn(SingletonComponent::class)
+internal interface TasksModule {
+    @Binds fun bindTaskRepository(repository: OfflineTaskRepository): TaskRepository
+}
