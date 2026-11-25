@@ -44,4 +44,12 @@
         <item quantity="other">%d روز پیاپی</item>
     </plurals>
     <string name="feature_habits_streak_with_best">%1$s · بهترین %2$d</string>
+    <string name="feature_habits_archived">بایگانی</string>
+    <string name="feature_habits_archived_title">عادت‌های بایگانی‌شده</string>
+    <string name="feature_habits_archived_empty_title">چیزی بایگانی نشده</string>
+    <string name="feature_habits_archived_empty_body">عادت‌هایی که بایگانی می‌کنید با سابقه‌شان اینجا می‌مانند تا آن‌ها را برگردانید.</string>
+    <string name="feature_habits_restore">بازگرداندن</string>
+    <string name="feature_habits_delete">حذف</string>
+    <string name="feature_habits_delete_title">«%1$s» حذف شود؟</string>
+    <string name="feature_habits_delete_body">از این فهرست می‌رود و دیگر اینجا برنمی‌گردد.</string>
 </resources>

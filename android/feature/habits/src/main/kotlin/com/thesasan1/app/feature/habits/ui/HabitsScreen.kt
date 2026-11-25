@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -47,13 +48,18 @@ internal data class HabitActions(
 )
 
 @Composable
-internal fun HabitsTodayRoute(onBack: () -> Unit, viewModel: HabitsViewModel = hiltViewModel()) {
+internal fun HabitsTodayRoute(
+    onBack: () -> Unit,
+    onOpenArchive: () -> Unit,
+    viewModel: HabitsViewModel = hiltViewModel(),
+) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     LifecycleEventEffect(Lifecycle.Event.ON_RESUME) { viewModel.refreshDay() }
     HabitsTodayScreen(
         uiState = uiState,
         actions = HabitActions(viewModel::checkIn, viewModel::undoLast, viewModel::rest, viewModel::archive),
         onNew = viewModel::openNew,
+        onOpenArchive = onOpenArchive,
         onBack = onBack,
     )
     if (uiState.isCreating) {
@@ -79,6 +85,7 @@ internal fun HabitsTodayScreen(
     uiState: HabitsUiState,
     actions: HabitActions,
     onNew: () -> Unit,
+    onOpenArchive: () -> Unit,
     onBack: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -96,7 +103,19 @@ internal fun HabitsTodayScreen(
                 color = AppTheme.colors.textPrimary,
                 modifier = Modifier.semantics { heading() }.padding(bottom = Spacing.sm),
             )
-            AppButton(text = stringResource(R.string.feature_habits_new), onClick = onNew, size = AppButtonSize.Small)
+            Row(horizontalArrangement = Arrangement.spacedBy(Spacing.sm)) {
+                AppButton(
+                    text = stringResource(R.string.feature_habits_new),
+                    onClick = onNew,
+                    size = AppButtonSize.Small,
+                )
+                AppButton(
+                    text = stringResource(R.string.feature_habits_archived),
+                    onClick = onOpenArchive,
+                    size = AppButtonSize.Small,
+                    variant = AppButtonVariant.Tertiary,
+                )
+            }
             if (uiState.isEmpty) {
                 EmptyState(
                     title = stringResource(R.string.feature_habits_empty_title),
