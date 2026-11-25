@@ -98,6 +98,8 @@ Local (Room v2): no `user_id`, and `category_id`/`project_id` aren't foreign key
 
 Indexes: `(user_id, status, due_date)`, `(user_id, project_id)`, `(parent_id)`, FTS on `title, description`.
 
+Local (Room v3): no `user_id`; `parent_id`, `project_id` and `recurrence_parent_id` aren't foreign keys. `due_date` and `due_time` are ISO local text. `tasks_fts` (FTS4, `unicode61`) holds `task_id` plus normalised `title` and `description`, written by `TaskDao.upsert` (ADR-023).
+
 ### 3.3 `task_history`
 
 Append-only. `id, task_id, event_type (CREATED, STATUS_CHANGED, RESCHEDULED, SNOOZED, EDITED, COMPLETED, REOPENED, ARCHIVED, DELETED, RESTORED), from_value json, to_value json, occurred_at, device_id`.
