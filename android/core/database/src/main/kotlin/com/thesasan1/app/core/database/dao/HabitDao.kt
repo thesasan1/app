@@ -34,6 +34,13 @@ interface HabitDao {
     )
     fun observeArchived(): Flow<List<HabitEntity>>
 
+    @Query("SELECT * FROM habit_events WHERE id = :id")
+    suspend fun getEvent(id: String): HabitEventEntity?
+
+    /** Events of one habit on one habit day, in recorded order. */
+    @Query("SELECT * FROM habit_events WHERE habit_id = :habitId AND local_date = :date ORDER BY recorded_at, id")
+    suspend fun getEventsOn(habitId: String, date: String): List<HabitEventEntity>
+
     /** Records [event]. An id already present is ignored (merge by union); returns -1 then. */
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insertEvent(event: HabitEventEntity): Long
