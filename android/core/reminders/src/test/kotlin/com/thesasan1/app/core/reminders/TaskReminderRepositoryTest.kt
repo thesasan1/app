@@ -8,7 +8,9 @@ import com.thesasan1.app.core.database.entity.ReminderEntity
 import com.thesasan1.app.core.database.entity.ReminderTargetType
 import com.thesasan1.app.core.database.entity.SyncColumns
 import com.thesasan1.app.core.reminders.domain.OfflineTaskReminderRepository
+import com.thesasan1.app.core.reminders.domain.ReminderUnit
 import com.thesasan1.app.core.reminders.domain.TaskReminder
+import com.thesasan1.app.core.reminders.domain.customReminderOffset
 import java.time.Clock
 import java.time.Instant
 import java.time.ZoneOffset
@@ -17,6 +19,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertNull
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 
@@ -95,5 +98,15 @@ class TaskReminderRepositoryTest {
                 "\"offsetMinutes\":-60,\"repeatUntilDone\":false,\"isEnabled\":true,\"updatedAt\":5}",
             payload,
         )
+    }
+
+    @Test
+    fun customOffsetsAreBeforeTheDueTimeAndWithinThirtyDays() {
+        assertEquals(-90, customReminderOffset(90, ReminderUnit.MINUTES))
+        assertEquals(-120, customReminderOffset(2, ReminderUnit.HOURS))
+        assertEquals(-30 * 24 * 60, customReminderOffset(30, ReminderUnit.DAYS))
+        assertNull(customReminderOffset(31, ReminderUnit.DAYS))
+        assertNull(customReminderOffset(0, ReminderUnit.MINUTES))
+        assertNull(customReminderOffset(Int.MAX_VALUE, ReminderUnit.DAYS))
     }
 }

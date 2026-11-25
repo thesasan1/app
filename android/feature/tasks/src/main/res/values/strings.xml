@@ -88,6 +88,14 @@
     <string name="feature_tasks_reminder_add">+ %1$s</string>
     <string name="feature_tasks_reminder_repeat">Repeat until done</string>
     <string name="feature_tasks_reminder_remove">Remove</string>
+    <string name="feature_tasks_reminder_custom">Custom…</string>
+    <string name="feature_tasks_reminder_custom_title">Remind me before it\'s due</string>
+    <string name="feature_tasks_reminder_custom_amount">How long before</string>
+    <string name="feature_tasks_reminder_custom_limit">Up to 30 days before</string>
+    <string name="feature_tasks_reminder_custom_add">Add</string>
+    <string name="feature_tasks_reminder_unit_minutes">Minutes</string>
+    <string name="feature_tasks_reminder_unit_hours">Hours</string>
+    <string name="feature_tasks_reminder_unit_days">Days</string>
     <string name="feature_tasks_reminders_notifications_off">Notifications are off, so reminders can\'t ring.</string>
     <string name="feature_tasks_reminders_turn_on">Turn on</string>
     <string name="feature_tasks_reminders_inexact">Reminders may ring a few minutes late without exact alarms.</string>

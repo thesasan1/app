@@ -88,6 +88,14 @@
     <string name="feature_tasks_reminder_add">+ %1$s</string>
     <string name="feature_tasks_reminder_repeat">تکرار تا انجام</string>
     <string name="feature_tasks_reminder_remove">حذف</string>
+    <string name="feature_tasks_reminder_custom">سفارشی…</string>
+    <string name="feature_tasks_reminder_custom_title">یادآوری پیش از سررسید</string>
+    <string name="feature_tasks_reminder_custom_amount">چه مدت قبل</string>
+    <string name="feature_tasks_reminder_custom_limit">تا ۳۰ روز قبل</string>
+    <string name="feature_tasks_reminder_custom_add">افزودن</string>
+    <string name="feature_tasks_reminder_unit_minutes">دقیقه</string>
+    <string name="feature_tasks_reminder_unit_hours">ساعت</string>
+    <string name="feature_tasks_reminder_unit_days">روز</string>
     <string name="feature_tasks_reminders_notifications_off">اعلان‌ها خاموش است، پس یادآورها به صدا درنمی‌آیند.</string>
     <string name="feature_tasks_reminders_turn_on">روشن کردن</string>
     <string name="feature_tasks_reminders_inexact">بدون هشدار دقیق، ممکن است یادآورها چند دقیقه دیر به صدا درآیند.</string>

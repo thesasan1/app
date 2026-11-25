@@ -7,12 +7,12 @@ The GitHub repository is the source of truth. A checkpoint is added at the end o
 | Field | Value |
 |---|---|
 | Current phase | **Phase 2 — Core Productivity** (Phase 1 done except PR 5b, waiting on ADR-007) |
-| Status | Clearing stale reminder notifications in review |
+| Status | Custom reminder times and 1-hour snooze in review |
 | Code status | Phase 1 merged: Android skeleton (#2), backend skeleton (#3), design system (#4), CI hardening (#5), local database (#14), logging (#19), toolchain upgrade (#20), NestJS 12 / Node 26 (#21), debug APK pre-release (#22). notes data layer (#23), notes repository (#24) and notes list/editor (#27) and archive/trash (#28) tasks data layer (#29) and tasks repository (#30) and tasks list (#31) task detail/editor (#32) tasks shelves (#33) reminder storage (#34), scheduler (#35) and notification actions (#36) merged. Reminder picker in review |
 | Build status | `android-ci` and `backend-ci` green on `main` after #5 and the Dependabot action bumps |
 | Test status | Backend: 13 unit + 12 e2e (CI green). Android: unit tests, lint, screenshots run in CI |
 | Blockers | ADR-007 (Prisma) needs owner approval before PR 5b; ADR-010 (local DB encryption) before the first release with real content. D-03…D-09 pending for later phases |
-| Next task | Reschedule from the notification and custom reminder times; then habits (Phase 2); PR 5b once ADR-007 is approved |
+| Next task | Habits data layer (Phase 2); fixed-time and recurring reminders later; PR 5b once ADR-007 is approved |
 
 ## Completed Features
 
@@ -249,12 +249,22 @@ The GitHub repository is the source of truth. A checkpoint is added at the end o
 
 **Recommended next task:** clear shown notifications on in-app completion; then habits.
 
-### Checkpoint 2.14 — 2026-11-25 — Stale reminder notifications cleared (submitted)
+### Checkpoint 2.14 — 2026-11-25 — Stale reminder notifications cleared (#38)
 
-**Completed (in review):** every alarm rebuild now checks the notifications that may still be on screen (occurrences DELIVERED, or SNOOZED after ringing). If the task was completed, archived or trashed in the app, or the reminder was turned off or removed, the notification is taken down, its next repeat is cancelled, and the occurrence is recorded as DISMISSED. Because rebuilds follow every task and reminder write (ADR-027), ticking a task off in the list clears its reminder at once. New `ReminderDao.getRingingOccurrences()` (no schema change).
+**Completed:** every alarm rebuild now checks the notifications that may still be on screen (occurrences DELIVERED, or SNOOZED after ringing). If the task was completed, archived or trashed in the app, or the reminder was turned off or removed, the notification is taken down, its next repeat is cancelled, and the occurrence is recorded as DISMISSED. Because rebuilds follow every task and reminder write (ADR-027), ticking a task off in the list clears its reminder at once. New `ReminderDao.getRingingOccurrences()` (no schema change).
 
 **Not yet:** reschedule from the notification; custom offsets and fixed-time reminders.
 
-**Tested:** see the PR.
+**Tested:** `ReminderSchedulerTest` 16/16, `:feature:tasks` 26/26 (local) → Passed; `android-ci` → Passed. On-device → Not run.
 
 **Recommended next task:** reschedule from the notification and custom reminder times, then habits.
+
+### Checkpoint 2.15 — 2026-11-25 — Custom reminder times and 1-hour snooze (submitted)
+
+**Completed (in review):** the Reminders section has a **Custom…** chip: a dialog takes a number and Minutes, Hours or Days, up to 30 days before the due time (`customReminderOffset`, `ReminderUnit` in `:core:reminders`). Reminder notifications get a third button, **1 hour** (`ReminderScheduler.SNOOZE_LONG`), next to Done and Snooze 10 min, so "later" is one tap from the notification.
+
+**Not yet:** picking an exact new time from the notification (needs an activity, not a broadcast); fixed-time and recurring reminders; reminders on habits and notes.
+
+**Tested:** see the PR.
+
+**Recommended next task:** habits data layer (HAB-01), Room v5.

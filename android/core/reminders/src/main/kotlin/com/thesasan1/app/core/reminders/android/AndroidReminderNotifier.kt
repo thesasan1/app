@@ -52,6 +52,11 @@ class AndroidReminderNotifier @Inject constructor(@ApplicationContext private va
                 context.getString(R.string.reminder_action_snooze),
                 ReminderActionReceiver.intent(context, ReminderActionReceiver.ACTION_SNOOZE, id),
             )
+            .addAction(
+                0,
+                context.getString(R.string.reminder_action_snooze_long),
+                ReminderActionReceiver.intent(context, ReminderActionReceiver.ACTION_SNOOZE_LONG, id),
+            )
             .build()
         @Suppress("MissingPermission") // checked in canPost
         manager.notify(id, NOTIFICATION_ID, built)

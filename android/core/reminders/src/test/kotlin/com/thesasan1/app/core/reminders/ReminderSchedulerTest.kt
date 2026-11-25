@@ -187,6 +187,17 @@ class ReminderSchedulerTest {
     }
 
     @Test
+    fun snoozeForAnHourRingsAnHourLater() = runTest {
+        dao.upsert(reminder())
+        scheduler.rebuild()
+        ringAt(dueAt)
+
+        scheduler.snooze(id, ReminderScheduler.SNOOZE_LONG)
+
+        assertEquals(mapOf(id to dueAt + 60 * minute), alarms.set)
+    }
+
+    @Test
     fun repeatUntilDoneKeepsRingingThroughASwipeUntilDone() = runTest {
         dao.upsert(reminder(repeat = true))
         scheduler.rebuild()
