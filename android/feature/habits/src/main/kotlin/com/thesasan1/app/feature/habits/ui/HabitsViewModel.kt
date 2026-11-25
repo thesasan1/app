@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.thesasan1.app.core.common.AppError
 import com.thesasan1.app.core.common.Outcome
+import com.thesasan1.app.core.database.entity.HabitEntity
 import com.thesasan1.app.core.database.entity.HabitMeasurement
 import com.thesasan1.app.core.database.entity.HabitScheduleType
 import com.thesasan1.app.core.database.entity.WeekdayMask
@@ -34,13 +35,17 @@ data class NewHabitForm(
     val target: String = "",
     val unit: String = "",
     val days: Set<DayOfWeek> = DayOfWeek.entries.toSet(),
-)
+) {
+    companion object
+}
 
 data class HabitsUiState(
     val today: LocalDate,
     val days: List<HabitDay> = emptyList(),
     val isLoading: Boolean = true,
     val isCreating: Boolean = false,
+    /** The habit open in the Edit dialog. */
+    val editing: HabitDay? = null,
     /** The habit whose amount is being entered (numeric and duration habits). */
     val logging: HabitDay? = null,
     val message: HabitMessage? = null,
@@ -50,6 +55,7 @@ data class HabitsUiState(
 
 private data class Dialogs(
     val creating: Boolean = false,
+    val editing: HabitDay? = null,
     val logging: HabitDay? = null,
     val message: HabitMessage? = null,
 )
@@ -69,6 +75,7 @@ class HabitsViewModel @Inject constructor(private val repository: HabitRepositor
                 days = days.sortedByDescending { it.scheduled && !it.rested },
                 isLoading = false,
                 isCreating = d.creating,
+                editing = d.editing,
                 logging = d.logging,
                 message = d.message,
             )
@@ -117,20 +124,29 @@ class HabitsViewModel @Inject constructor(private val repository: HabitRepositor
     }
 
     fun create(form: NewHabitForm) {
-        val target = form.target.trim().takeIf { it.isNotEmpty() }?.toDoubleOrNull()
-        val everyDay = form.days.size == DayOfWeek.entries.size
-        val draft = HabitDraft(
-            name = form.name,
-            startDate = today.value,
-            measurement = form.measurement,
-            targetValue = target.takeIf { form.measurement != HabitMeasurement.BINARY },
-            unit = form.unit.takeIf { form.measurement == HabitMeasurement.NUMERIC },
-            scheduleType = if (everyDay) HabitScheduleType.DAILY else HabitScheduleType.WEEKDAYS,
-            scheduleDays = if (everyDay) null else form.days.fold(0) { mask, day -> mask or WeekdayMask.of(day) },
-        )
         viewModelScope.launch {
-            when (val outcome = repository.create(draft)) {
+            when (val outcome = repository.create(form.toDraft(today.value))) {
                 is Outcome.Success -> dialogs.value = dialogs.value.copy(creating = false, message = null)
+                is Outcome.Failure -> dialogs.value = dialogs.value.copy(message = outcome.error.toMessage())
+            }
+        }
+    }
+
+    fun openEdit(day: HabitDay) {
+        dialogs.value = dialogs.value.copy(editing = day, message = null)
+    }
+
+    fun dismissEdit() {
+        dialogs.value = dialogs.value.copy(editing = null, message = null)
+    }
+
+    /** Saves the Edit dialog; the habit keeps its measurement and start date. */
+    fun saveEdit(form: NewHabitForm) {
+        val habit = dialogs.value.editing?.habit ?: return
+        val draft = form.copy(measurement = habit.measurementType).toDraft(LocalDate.parse(habit.startDate))
+        viewModelScope.launch {
+            when (val outcome = repository.update(habit.id, draft)) {
+                is Outcome.Success -> dialogs.value = dialogs.value.copy(editing = null, message = null)
                 is Outcome.Failure -> dialogs.value = dialogs.value.copy(message = outcome.error.toMessage())
             }
         }
@@ -151,6 +167,33 @@ class HabitsViewModel @Inject constructor(private val repository: HabitRepositor
         const val STOP_TIMEOUT_MS = 5_000L
     }
 }
+
+private fun NewHabitForm.toDraft(startDate: LocalDate): HabitDraft {
+    val target = target.trim().takeIf { it.isNotEmpty() }?.toDoubleOrNull()
+    val everyDay = days.size == DayOfWeek.entries.size
+    return HabitDraft(
+        name = name,
+        startDate = startDate,
+        measurement = measurement,
+        targetValue = target.takeIf { measurement != HabitMeasurement.BINARY },
+        unit = unit.takeIf { measurement == HabitMeasurement.NUMERIC },
+        scheduleType = if (everyDay) HabitScheduleType.DAILY else HabitScheduleType.WEEKDAYS,
+        scheduleDays = if (everyDay) null else days.fold(0) { mask, day -> mask or WeekdayMask.of(day) },
+    )
+}
+
+/** The Edit dialog's starting values for [habit]. */
+internal fun NewHabitForm.Companion.of(habit: HabitEntity) = NewHabitForm(
+    name = habit.name,
+    measurement = habit.measurementType,
+    target = habit.targetValue?.let(::formatAmount).orEmpty(),
+    unit = habit.unit.orEmpty(),
+    days = if (habit.scheduleType == HabitScheduleType.WEEKDAYS) {
+        WeekdayMask.days(habit.scheduleDays)
+    } else {
+        DayOfWeek.entries.toSet()
+    },
+)
 
 internal fun HabitMeasurement.needsAmount(): Boolean =
     this == HabitMeasurement.NUMERIC || this == HabitMeasurement.DURATION

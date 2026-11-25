@@ -45,6 +45,7 @@ internal data class HabitActions(
     val onUndo: (HabitDay) -> Unit,
     val onRest: (HabitDay) -> Unit,
     val onArchive: (HabitDay) -> Unit,
+    val onEdit: (HabitDay) -> Unit,
 )
 
 @Composable
@@ -57,7 +58,13 @@ internal fun HabitsTodayRoute(
     LifecycleEventEffect(Lifecycle.Event.ON_RESUME) { viewModel.refreshDay() }
     HabitsTodayScreen(
         uiState = uiState,
-        actions = HabitActions(viewModel::checkIn, viewModel::undoLast, viewModel::rest, viewModel::archive),
+        actions = HabitActions(
+            onCheckIn = viewModel::checkIn,
+            onUndo = viewModel::undoLast,
+            onRest = viewModel::rest,
+            onArchive = viewModel::archive,
+            onEdit = viewModel::openEdit,
+        ),
         onNew = viewModel::openNew,
         onOpenArchive = onOpenArchive,
         onBack = onBack,
@@ -65,11 +72,19 @@ internal fun HabitsTodayRoute(
     if (uiState.isCreating) {
         NewHabitDialog(error = uiState.message, onCreate = viewModel::create, onDismiss = viewModel::dismissNew)
     }
+    uiState.editing?.let { day ->
+        EditHabitDialog(
+            day = day,
+            error = uiState.message,
+            onSave = viewModel::saveEdit,
+            onDismiss = viewModel::dismissEdit,
+        )
+    }
     uiState.logging?.let { day ->
         LogAmountDialog(day = day, onLog = viewModel::logAmount, onDismiss = viewModel::dismissLog)
     }
     val message = uiState.message
-    if (message != null && !uiState.isCreating) {
+    if (message != null && !uiState.isCreating && uiState.editing == null) {
         AlertDialog(
             onDismissRequest = viewModel::dismissMessage,
             text = { Text(stringResource(message.textRes())) },
@@ -181,6 +196,12 @@ private fun HabitRow(day: HabitDay, actions: HabitActions) {
                     size = AppButtonSize.Small,
                 )
             }
+            AppButton(
+                text = stringResource(R.string.feature_habits_edit),
+                onClick = { actions.onEdit(day) },
+                variant = AppButtonVariant.Tertiary,
+                size = AppButtonSize.Small,
+            )
             AppButton(
                 text = stringResource(R.string.feature_habits_archive),
                 onClick = { actions.onArchive(day) },

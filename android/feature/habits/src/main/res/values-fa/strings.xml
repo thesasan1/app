@@ -52,4 +52,7 @@
     <string name="feature_habits_delete">حذف</string>
     <string name="feature_habits_delete_title">«%1$s» حذف شود؟</string>
     <string name="feature_habits_delete_body">از این فهرست می‌رود و دیگر اینجا برنمی‌گردد.</string>
+    <string name="feature_habits_edit">ویرایش</string>
+    <string name="feature_habits_edit_title">ویرایش عادت</string>
+    <string name="feature_habits_save">ذخیره</string>
 </resources>

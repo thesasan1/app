@@ -32,14 +32,47 @@ import java.time.format.TextStyle
 private const val MAX_AMOUNT_CHARS = 7
 
 /** Name, kind, target and days for a new habit (HAB-01, HAB-02). */
+@Composable
+internal fun NewHabitDialog(error: HabitMessage?, onCreate: (NewHabitForm) -> Unit, onDismiss: () -> Unit) =
+    HabitFormDialog(
+        initial = NewHabitForm(),
+        isNew = true,
+        error = error,
+        onSave = onCreate,
+        onDismiss = onDismiss,
+    )
+
+/** The same fields for an existing habit; how it's tracked is shown but can't change (ADR-031). */
+@Composable
+internal fun EditHabitDialog(
+    day: HabitDay,
+    error: HabitMessage?,
+    onSave: (NewHabitForm) -> Unit,
+    onDismiss: () -> Unit,
+) = HabitFormDialog(
+    initial = NewHabitForm.of(day.habit),
+    isNew = false,
+    error = error,
+    onSave = onSave,
+    onDismiss = onDismiss,
+)
+
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
-internal fun NewHabitDialog(error: HabitMessage?, onCreate: (NewHabitForm) -> Unit, onDismiss: () -> Unit) {
-    var form by remember { mutableStateOf(NewHabitForm()) }
+private fun HabitFormDialog(
+    initial: NewHabitForm,
+    isNew: Boolean,
+    error: HabitMessage?,
+    onSave: (NewHabitForm) -> Unit,
+    onDismiss: () -> Unit,
+) {
+    var form by remember { mutableStateOf(initial) }
     val locale = LocalConfiguration.current.locales[0]
     AlertDialog(
         onDismissRequest = onDismiss,
-        title = { Text(stringResource(R.string.feature_habits_new)) },
+        title = {
+            Text(stringResource(if (isNew) R.string.feature_habits_new else R.string.feature_habits_edit_title))
+        },
         text = {
             Column(
                 verticalArrangement = Arrangement.spacedBy(Spacing.sm),
@@ -53,9 +86,10 @@ internal fun NewHabitDialog(error: HabitMessage?, onCreate: (NewHabitForm) -> Un
                 )
                 Text(stringResource(R.string.feature_habits_kind), style = AppTheme.typography.bodySmall)
                 FlowRow(horizontalArrangement = Arrangement.spacedBy(Spacing.xs)) {
-                    HabitMeasurement.entries.forEach { kind ->
+                    HabitMeasurement.entries.filter { isNew || it == form.measurement }.forEach { kind ->
                         FilterChip(
                             selected = form.measurement == kind,
+                            enabled = isNew,
                             onClick = { form = form.copy(measurement = kind) },
                             label = { Text(stringResource(kind.labelRes())) },
                         )
@@ -93,8 +127,8 @@ internal fun NewHabitDialog(error: HabitMessage?, onCreate: (NewHabitForm) -> Un
             }
         },
         confirmButton = {
-            TextButton(onClick = { onCreate(form) }, enabled = form.name.isNotBlank()) {
-                Text(stringResource(R.string.feature_habits_create))
+            TextButton(onClick = { onSave(form) }, enabled = form.name.isNotBlank()) {
+                Text(stringResource(if (isNew) R.string.feature_habits_create else R.string.feature_habits_save))
             }
         },
         dismissButton = { TextButton(onClick = onDismiss) { Text(stringResource(R.string.feature_habits_cancel)) } },
