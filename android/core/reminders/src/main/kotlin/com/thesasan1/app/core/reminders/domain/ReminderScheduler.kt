@@ -1,7 +1,5 @@
 package com.thesasan1.app.core.reminders.domain
 
-import com.thesasan1.app.core.common.logging.AppLogger
-import com.thesasan1.app.core.common.logging.info
 import com.thesasan1.app.core.database.dao.ReminderDao
 import com.thesasan1.app.core.database.entity.OccurrenceState
 import com.thesasan1.app.core.database.entity.ReminderEntity
@@ -23,15 +21,16 @@ import kotlinx.coroutines.sync.withLock
  * [LATE_GRACE] (phone off for a day, say) is recorded as MISSED instead of ringing late.
  *
  * [deliver] is what the alarm calls. It rings an occurrence once: anything not pending is ignored.
+ * [complete], [snooze] and [dismissed] are the notification's actions (REM-02).
  */
 @Singleton
 class ReminderScheduler @Inject constructor(
     private val dao: ReminderDao,
     private val targets: ReminderTargets,
+    private val actions: ReminderTargetActions,
     private val alarms: AlarmScheduler,
     private val notifier: ReminderNotifier,
     private val clock: Clock,
-    private val logger: AppLogger,
 ) {
     private val mutex = Mutex()
 
@@ -40,23 +39,70 @@ class ReminderScheduler @Inject constructor(
     suspend fun deliver(occurrenceId: String) = mutex.withLock {
         val occurrence = dao.getOccurrence(occurrenceId)
         if (occurrence != null && occurrence.state in PENDING) {
-            val reminder = dao.getById(occurrence.reminderId)?.takeIf { it.isEnabled && it.sync.deletedAt == null }
-            val target = reminder?.targetId?.let { targets.find(reminder.targetType, it) }
-            val title = target?.title ?: reminder?.title
-            val state = when {
-                reminder == null || title == null || target?.isOpen == false -> OccurrenceState.DISMISSED
-                notifier.show(occurrence.id, title, null) -> OccurrenceState.DELIVERED
-                else -> OccurrenceState.MISSED
-            }
-            val now = clock.millis()
-            dao.updateOccurrence(
-                occurrence.copy(state = state, deliveredAt = now.takeIf { state == OccurrenceState.DELIVERED }),
-            )
+            dao.updateOccurrence(ring(occurrence))
             // The alarm has fired; cancelling drops any duplicate still queued for this occurrence.
             alarms.cancel(occurrence.id)
-            logger.info(TAG) { "occurrence ${occurrence.id} -> $state" }
         }
         rebuildLocked()
+    }
+
+    /** Shows [occurrence] if it should still ring, and returns its new state. */
+    private suspend fun ring(occurrence: ReminderOccurrenceEntity): ReminderOccurrenceEntity {
+        val reminder = dao.getById(occurrence.reminderId)?.takeIf { it.isEnabled && it.sync.deletedAt == null }
+        val target = reminder?.targetId?.let { targets.find(reminder.targetType, it) }
+        val title = target?.title ?: reminder?.title
+        if (reminder == null || title == null || target?.isOpen == false) {
+            return occurrence.copy(state = OccurrenceState.DISMISSED)
+        }
+        val now = clock.millis()
+        val repeats = reminder.repeatUntilDone && now - occurrence.scheduledForUtc < REPEAT_WINDOW.toMillis()
+        return when {
+            !notifier.show(ReminderNotification(occurrence.id, title, repeats = repeats)) ->
+                occurrence.copy(state = OccurrenceState.MISSED)
+            // Repeat until done (REM-02): ring again later unless the user completes it.
+            repeats -> occurrence.copy(
+                state = OccurrenceState.SNOOZED,
+                deliveredAt = now,
+                snoozeUntil = now + REPEAT_INTERVAL.toMillis(),
+            )
+            else -> occurrence.copy(state = OccurrenceState.DELIVERED, deliveredAt = now)
+        }
+    }
+
+    /** "Done" on the notification: completes the occurrence and its task (REM-02). */
+    suspend fun complete(occurrenceId: String) = mutex.withLock {
+        val occurrence = dao.getOccurrence(occurrenceId)
+        if (occurrence != null && occurrence.state != OccurrenceState.COMPLETED) {
+            dao.updateOccurrence(occurrence.copy(state = OccurrenceState.COMPLETED, snoozeUntil = null))
+            dao.getById(occurrence.reminderId)?.let { reminder ->
+                reminder.targetId?.let { actions.complete(reminder.targetType, it) }
+            }
+        }
+        alarms.cancel(occurrenceId)
+        notifier.cancel(occurrenceId)
+        rebuildLocked()
+    }
+
+    /** "Snooze" on the notification: rings again after [duration]. */
+    suspend fun snooze(occurrenceId: String, duration: Duration = SNOOZE) = mutex.withLock {
+        val occurrence = dao.getOccurrence(occurrenceId)
+        if (occurrence != null && occurrence.state in RINGING) {
+            val until = clock.millis() + duration.toMillis()
+            dao.updateOccurrence(occurrence.copy(state = OccurrenceState.SNOOZED, snoozeUntil = until))
+        }
+        notifier.cancel(occurrenceId)
+        rebuildLocked()
+    }
+
+    /**
+     * The notification was swiped away. A delivered one is dismissed; a repeat-until-done one keeps
+     * its next repeat, since only "Done" (or turning the reminder off) stops it.
+     */
+    suspend fun dismissed(occurrenceId: String) = mutex.withLock {
+        val occurrence = dao.getOccurrence(occurrenceId)
+        if (occurrence?.state == OccurrenceState.DELIVERED) {
+            dao.updateOccurrence(occurrence.copy(state = OccurrenceState.DISMISSED))
+        }
     }
 
     private suspend fun rebuildLocked() {
@@ -89,8 +135,15 @@ class ReminderScheduler @Inject constructor(
     }
 
     companion object {
-        private const val TAG = "Reminders"
         private val PENDING = setOf(OccurrenceState.SCHEDULED, OccurrenceState.SNOOZED)
+        private val RINGING = setOf(OccurrenceState.DELIVERED, OccurrenceState.SNOOZED)
+
+        /** The notification's Snooze button. */
+        val SNOOZE: Duration = Duration.ofMinutes(10)
+
+        /** How often a repeat-until-done reminder rings again, and for how long it keeps trying. */
+        val REPEAT_INTERVAL: Duration = Duration.ofMinutes(15)
+        val REPEAT_WINDOW: Duration = Duration.ofHours(24)
 
         /** How late a firing may still ring, e.g. after the phone was off. */
         val LATE_GRACE: Duration = Duration.ofHours(12)

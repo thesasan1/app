@@ -9,7 +9,9 @@ import com.thesasan1.app.core.database.entity.ReminderOccurrenceEntity
 import com.thesasan1.app.core.database.entity.ReminderTargetType
 import com.thesasan1.app.core.database.entity.ReminderTriggerType
 import com.thesasan1.app.core.reminders.domain.AlarmScheduler
+import com.thesasan1.app.core.reminders.domain.ReminderNotification
 import com.thesasan1.app.core.reminders.domain.ReminderNotifier
+import com.thesasan1.app.core.reminders.domain.ReminderTargetActions
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.map
@@ -91,11 +93,28 @@ class FakeAlarms(override var canScheduleExact: Boolean = true) : AlarmScheduler
 }
 
 class FakeNotifier(var enabled: Boolean = true) : ReminderNotifier {
-    val shown = mutableListOf<Pair<String, String>>()
+    val shown = mutableListOf<ReminderNotification>()
+    val visible = mutableSetOf<String>()
 
-    override fun show(occurrenceId: String, title: String, text: String?): Boolean {
-        if (enabled) shown += occurrenceId to title
+    override fun show(notification: ReminderNotification): Boolean {
+        if (enabled) {
+            shown += notification
+            visible += notification.occurrenceId
+        }
         return enabled
+    }
+
+    override fun cancel(occurrenceId: String) {
+        visible -= occurrenceId
+    }
+}
+
+class FakeTargetActions : ReminderTargetActions {
+    val completed = mutableListOf<String>()
+
+    override suspend fun complete(type: ReminderTargetType, id: String): Boolean {
+        completed += id
+        return true
     }
 }
 

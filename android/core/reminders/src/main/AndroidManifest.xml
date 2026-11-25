@@ -12,6 +12,10 @@
             android:name=".android.ReminderAlarmReceiver"
             android:exported="false" />
 
+        <receiver
+            android:name=".android.ReminderActionReceiver"
+            android:exported="false" />
+
         <!-- Exported only because system broadcasts (boot, time change) must reach it. -->
         <receiver
             android:name=".android.ReminderRescheduleReceiver"

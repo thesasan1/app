@@ -6,6 +6,7 @@ All notable changes are documented here. Format based on [Keep a Changelog](http
 
 ### Added
 
+- Reminder notifications have Done and Snooze buttons. Done also completes the task. Reminders can repeat every 15 minutes until done.
 - Reminder alarms: they ring at the exact minute when Android allows it, and are set again after a reboot, an update or a time-zone change. Nothing in the app creates reminders yet.
 - Local storage for reminders and their firings (database v4), so a reminder never fires twice after a restart.
 - Tasks Completed, Archive and Trash screens: reopen, unarchive, restore, and delete forever with confirmation.
