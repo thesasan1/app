@@ -17,6 +17,7 @@ import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.heading
 import androidx.compose.ui.semantics.semantics
@@ -35,6 +36,7 @@ import com.thesasan1.app.core.designsystem.theme.AppTheme
 import com.thesasan1.app.core.designsystem.theme.Spacing
 import com.thesasan1.app.feature.habits.R
 import com.thesasan1.app.feature.habits.domain.HabitDay
+import com.thesasan1.app.feature.habits.domain.HabitStreak
 
 /** The user's actions on one habit row. */
 internal data class HabitActions(
@@ -128,6 +130,13 @@ private fun HabitRow(day: HabitDay, actions: HabitActions) {
             style = AppTheme.typography.bodySmall,
             color = if (day.isComplete) AppTheme.colors.success else AppTheme.colors.textSecondary,
         )
+        day.streak?.takeIf { it.best > 0 }?.let { streak ->
+            Text(
+                text = streakText(streak),
+                style = AppTheme.typography.bodySmall,
+                color = AppTheme.colors.textSecondary,
+            )
+        }
         FlowRow(horizontalArrangement = Arrangement.spacedBy(Spacing.xs), modifier = Modifier.fillMaxWidth()) {
             val canAdd = !(day.isComplete && day.habit.measurementType == HabitMeasurement.BINARY)
             if (canAdd && !day.rested) {
@@ -160,6 +169,16 @@ private fun HabitRow(day: HabitDay, actions: HabitActions) {
                 size = AppButtonSize.Small,
             )
         }
+    }
+}
+
+@Composable
+private fun streakText(streak: HabitStreak): String {
+    val current = pluralStringResource(R.plurals.feature_habits_streak, streak.current, streak.current)
+    return if (streak.best > streak.current) {
+        stringResource(R.string.feature_habits_streak_with_best, current, streak.best)
+    } else {
+        current
     }
 }
 

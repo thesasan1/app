@@ -279,6 +279,15 @@ Architecture Decision Records (ADRs) and decisions pending the project owner. Fo
 
 ---
 
+### ADR-030 — Habit streaks and freezes
+
+- **Status:** Accepted (agent decision, 2026-11-25)
+- **Decision:** streaks are computed, never stored. `HabitStreaks.compute` walks each day from the habit's start to today for DAILY and WEEKDAYS habits: a completed due day adds one; a day not due, a rest day, a day with a live `FREEZE_USED` event, or today before it's done leaves the run unchanged; any other missed due day resets it. Best is the longest run. A freeze can only cover a missed past due day, needs `streak_freeze_enabled` and `freezes_available > 0`, and is recorded as a `FREEZE_USED` event; undoing it refunds the freeze. N-per-week, weekly and monthly habits get period streaks with analytics (HAB-03).
+- **Alternatives:** a stored streak counter (drifts from history, against HAB-07); letting freezes count as done days (inflates streaks); freezing future days in advance (rest days already cover planned breaks).
+- **Consequences:** how freezes are earned or granted is a product choice left to the owner (D-10); until then freezes only come from `HabitDraft.freezes` and the app shows no freeze button.
+
+---
+
 ## Pending Decisions (owner input required)
 
 | ID | Decision | Recommendation | Blocks |
@@ -292,3 +301,4 @@ Architecture Decision Records (ADRs) and decisions pending the project owner. Fo
 | D-07 | Speech-to-text | On-device `SpeechRecognizer` first (offline where available), server STT fallback for Persian quality | Phase 3 |
 | D-08 | Monetization | Affects AI quotas and feature gating | Phase 5 |
 | D-09 | Google Play services dependency (geofencing, Credential Manager) | Accept, with graceful degradation on devices without Play services | Phase 2 (location reminders) |
+| D-10 | How habit streak freezes are earned or granted | Off by default; when turned on for a habit, one freeze earned per 7-day streak, holding at most 2 | Freeze button on the Habits screen |

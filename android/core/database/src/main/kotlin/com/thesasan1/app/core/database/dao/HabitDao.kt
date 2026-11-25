@@ -59,4 +59,8 @@ interface HabitDao {
     /** All events on one habit day, for the dashboard's "today". */
     @Query("SELECT * FROM habit_events WHERE local_date = :date ORDER BY recorded_at, id")
     fun observeEventsOn(date: String): Flow<List<HabitEventEntity>>
+
+    /** Every habit's events from [from] to [to] inclusive (ISO dates), for streaks. */
+    @Query("SELECT * FROM habit_events WHERE local_date BETWEEN :from AND :to ORDER BY recorded_at, id")
+    fun observeEventsBetween(from: String, to: String): Flow<List<HabitEventEntity>>
 }

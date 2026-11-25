@@ -19,11 +19,14 @@ import com.thesasan1.app.feature.habits.domain.HabitDay
 import com.thesasan1.app.feature.habits.domain.HabitDraft
 import com.thesasan1.app.feature.habits.domain.HabitRepository
 import com.thesasan1.app.feature.habits.domain.HabitRules
+import com.thesasan1.app.feature.habits.domain.HabitStreaks
 import java.time.Clock
 import java.time.LocalDate
 import javax.inject.Inject
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.map
 import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.JsonNull
 import kotlinx.serialization.json.JsonPrimitive
@@ -46,11 +49,18 @@ class OfflineHabitRepository @Inject constructor(
 
     override fun observeArchived(): Flow<List<HabitEntity>> = dao.observeArchived()
 
-    override fun observeDay(date: LocalDate): Flow<List<HabitDay>> =
-        combine(dao.observeActive(), dao.observeEventsOn(date.toString())) { habits, events ->
+    @OptIn(ExperimentalCoroutinesApi::class)
+    override fun observeDay(date: LocalDate): Flow<List<HabitDay>> = dao.observeActive().flatMapLatest { habits ->
+        val from = habits.minOfOrNull { it.startDate } ?: date.toString()
+        dao.observeEventsBetween(from, date.toString()).map { events ->
             val byHabit = events.groupBy { it.habitId }
-            habits.map { HabitRules.day(it, date, byHabit[it.id].orEmpty()) }
+            habits.map { habit ->
+                val own = byHabit[habit.id].orEmpty()
+                HabitRules.day(habit, date, own.filter { it.localDate == date.toString() })
+                    .copy(streak = HabitStreaks.compute(habit, own, date))
+            }
         }
+    }
 
     override suspend fun create(draft: HabitDraft): Outcome<HabitEntity> = storage {
         val name = draft.name.trim()
@@ -68,6 +78,8 @@ class OfflineHabitRepository @Inject constructor(
                     scheduleDays = draft.scheduleDays,
                     scheduleCount = draft.scheduleCount,
                     restDays = draft.restDays,
+                    streakFreezeEnabled = draft.freezes > 0,
+                    freezesAvailable = draft.freezes,
                     startDate = draft.startDate.toString(),
                     sortOrder = 0,
                     sync = SyncColumns.new(now),
@@ -112,6 +124,7 @@ class OfflineHabitRepository @Inject constructor(
                     Outcome.Failure(AppError.Validation("event", "nothing to undo"))
                 else -> {
                     append(event.habitId, event.localDate, HabitEventType.UNDO, null, correcting = event.id)
+                    if (event.eventType == HabitEventType.FREEZE_USED) refundFreeze(event.habitId)
                     Outcome.Success(Unit)
                 }
             }
@@ -147,6 +160,48 @@ class OfflineHabitRepository @Inject constructor(
                 }
             }
         }
+    }
+
+    override suspend fun useFreeze(habitId: String, date: LocalDate): Outcome<Unit> = storage {
+        transaction {
+            val habit = dao.getById(habitId)?.takeIf { it.sync.deletedAt == null }
+            val error = when {
+                habit == null -> AppError.NotFound
+                else -> freezeError(habit, date)
+            }
+            when {
+                habit == null || error != null -> Outcome.Failure(error ?: AppError.NotFound)
+                else -> {
+                    append(habitId, date.toString(), HabitEventType.FREEZE_USED, null)
+                    writeHabit(
+                        habit.copy(
+                            freezesAvailable = habit.freezesAvailable - 1,
+                            sync = habit.sync.touched(clock.millis()),
+                        ),
+                    )
+                    Outcome.Success(Unit)
+                }
+            }
+        }
+    }
+
+    private suspend fun freezeError(habit: HabitEntity, date: LocalDate): AppError? {
+        val day = HabitRules.day(habit, date, dao.getEventsOn(habit.id, date.toString()))
+        val frozen = HabitRules.effective(dao.getEventsOn(habit.id, date.toString()))
+            .any { it.eventType == HabitEventType.FREEZE_USED }
+        return when {
+            !habit.streakFreezeEnabled || habit.freezesAvailable <= 0 ->
+                AppError.Validation("freezes_available", "no freezes left")
+            date >= LocalDate.now(clock) -> AppError.Validation("date", "freezes are for missed past days")
+            !day.scheduled || day.isComplete || day.rested || frozen ->
+                AppError.Validation("date", "that day doesn't need a freeze")
+            else -> null
+        }
+    }
+
+    private suspend fun refundFreeze(habitId: String) {
+        val habit = dao.getById(habitId) ?: return
+        writeHabit(habit.copy(freezesAvailable = habit.freezesAvailable + 1, sync = habit.sync.touched(clock.millis())))
     }
 
     private suspend fun checkInError(habit: HabitEntity, date: LocalDate, value: Double?): AppError? {
@@ -231,12 +286,14 @@ class OfflineHabitRepository @Inject constructor(
 
         const val MAX_NAME_LENGTH = 200
         private const val DAYS_PER_WEEK = 7
+        const val MAX_FREEZES = 10
         private val AMOUNT_REQUIRED = AppError.Validation("value", "enter an amount above zero")
 
         internal fun validate(draft: HabitDraft, name: String): AppError.Validation? = when {
             name.isEmpty() -> AppError.Validation("name", "name is required")
             name.length > MAX_NAME_LENGTH -> AppError.Validation("name", "name is too long")
             (draft.targetValue ?: 1.0) <= 0 -> AppError.Validation("target_value", "target must be above zero")
+            draft.freezes !in 0..MAX_FREEZES -> AppError.Validation("freezes", "too many freezes")
             else -> scheduleError(draft)
         }
 
@@ -273,6 +330,8 @@ class OfflineHabitRepository @Inject constructor(
             put("schedule_days", h.scheduleDays?.let(::JsonPrimitive) ?: JsonNull)
             put("schedule_count", h.scheduleCount?.let(::JsonPrimitive) ?: JsonNull)
             put("rest_days", h.restDays?.let(::JsonPrimitive) ?: JsonNull)
+            put("streak_freeze_enabled", JsonPrimitive(h.streakFreezeEnabled))
+            put("freezes_available", JsonPrimitive(h.freezesAvailable))
             put("start_date", JsonPrimitive(h.startDate))
             put("archived_at", h.archivedAt?.let(::JsonPrimitive) ?: JsonNull)
             put("updated_at", JsonPrimitive(h.sync.updatedAt))
