@@ -9,8 +9,18 @@ import kotlinx.serialization.Serializable
 @Serializable
 data object HabitsTodayRoute
 
+/** Archived habits, reached from today's list. */
+@Serializable
+data object HabitsArchiveRoute
+
 fun NavController.navigateToHabits() = navigate(HabitsTodayRoute)
 
 fun NavGraphBuilder.habitsScreens(navController: NavController) {
-    composable<HabitsTodayRoute> { HabitsTodayRoute(onBack = { navController.popBackStack() }) }
+    composable<HabitsTodayRoute> {
+        HabitsTodayRoute(
+            onBack = { navController.popBackStack() },
+            onOpenArchive = { navController.navigate(HabitsArchiveRoute) },
+        )
+    }
+    composable<HabitsArchiveRoute> { HabitsArchiveRoute(onBack = { navController.popBackStack() }) }
 }

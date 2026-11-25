@@ -44,4 +44,12 @@
         <item quantity="other">%d-day streak</item>
     </plurals>
     <string name="feature_habits_streak_with_best">%1$s · best %2$d</string>
+    <string name="feature_habits_archived">Archived</string>
+    <string name="feature_habits_archived_title">Archived habits</string>
+    <string name="feature_habits_archived_empty_title">Nothing archived</string>
+    <string name="feature_habits_archived_empty_body">Habits you archive wait here, with their history, until you restore them.</string>
+    <string name="feature_habits_restore">Restore</string>
+    <string name="feature_habits_delete">Delete</string>
+    <string name="feature_habits_delete_title">Delete “%1$s”?</string>
+    <string name="feature_habits_delete_body">It leaves this list and won\'t come back here.</string>
 </resources>
