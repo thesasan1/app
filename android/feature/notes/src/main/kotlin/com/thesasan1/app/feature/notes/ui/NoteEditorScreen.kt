@@ -1,6 +1,7 @@
 package com.thesasan1.app.feature.notes.ui
 
 import androidx.activity.compose.BackHandler
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -9,12 +10,17 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.BasicTextField
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.SolidColor
@@ -48,6 +54,7 @@ internal fun NoteEditorRoute(onClose: () -> Unit, viewModel: NoteEditorViewModel
         onTitleChange = viewModel::onTitleChange,
         onBodyChange = viewModel::onBodyChange,
         onTogglePin = viewModel::togglePin,
+        onToggleArchive = viewModel::toggleArchive,
         onMoveToTrash = viewModel::moveToTrash,
         onBack = close,
     )
@@ -59,6 +66,7 @@ internal fun NoteEditorScreen(
     onTitleChange: (String) -> Unit,
     onBodyChange: (String) -> Unit,
     onTogglePin: () -> Unit,
+    onToggleArchive: () -> Unit,
     onMoveToTrash: () -> Unit,
     onBack: () -> Unit,
     modifier: Modifier = Modifier,
@@ -83,9 +91,11 @@ internal fun NoteEditorScreen(
                             ),
                         )
                     }
-                    TextButton(onClick = onMoveToTrash) {
-                        Text(stringResource(R.string.feature_notes_move_to_trash), color = AppTheme.colors.danger)
-                    }
+                    MoreMenu(
+                        isArchived = uiState.isArchived,
+                        onToggleArchive = onToggleArchive,
+                        onMoveToTrash = onMoveToTrash,
+                    )
                 }
             }
             when {
@@ -113,6 +123,36 @@ internal fun NoteEditorScreen(
                     )
                 }
             }
+        }
+    }
+}
+
+@Composable
+private fun MoreMenu(isArchived: Boolean, onToggleArchive: () -> Unit, onMoveToTrash: () -> Unit) {
+    var expanded by remember { mutableStateOf(false) }
+    Box {
+        TextButton(onClick = { expanded = true }) { Text(stringResource(R.string.feature_notes_more)) }
+        DropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
+            DropdownMenuItem(
+                text = {
+                    Text(
+                        stringResource(
+                            if (isArchived) R.string.feature_notes_unarchive else R.string.feature_notes_archive_action,
+                        ),
+                    )
+                },
+                onClick = {
+                    expanded = false
+                    onToggleArchive()
+                },
+            )
+            DropdownMenuItem(
+                text = { Text(stringResource(R.string.feature_notes_move_to_trash), color = AppTheme.colors.danger) },
+                onClick = {
+                    expanded = false
+                    onMoveToTrash()
+                },
+            )
         }
     }
 }
@@ -165,6 +205,7 @@ private fun NoteEditorScreenPreview() {
             onTitleChange = {},
             onBodyChange = {},
             onTogglePin = {},
+            onToggleArchive = {},
             onMoveToTrash = {},
             onBack = {},
         )

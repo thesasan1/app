@@ -6,6 +6,7 @@ All notable changes are documented here. Format based on [Keep a Changelog](http
 
 ### Added
 
+- Notes archive and trash: unarchive, restore, delete forever with confirmation, and automatic removal after 30 days in the trash.
 - Notes screens: a list with pinned notes and search, and an editor that saves as you type, opened from the dashboard.
 - Notes repository with the rich-text document format (ADR-009), autosave-safe saving, trash, and sync outbox entries.
 - Notes storage (Room schema v2) with Persian-aware full-text search, archive, trash and purge.

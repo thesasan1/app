@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -36,6 +37,8 @@ import com.thesasan1.app.feature.notes.R
 @Composable
 internal fun NotesListRoute(
     onOpenNote: (String?) -> Unit,
+    onOpenArchive: () -> Unit,
+    onOpenTrash: () -> Unit,
     onBack: () -> Unit,
     viewModel: NotesListViewModel = hiltViewModel(),
 ) {
@@ -45,6 +48,8 @@ internal fun NotesListRoute(
         onQueryChange = viewModel::onQueryChange,
         onOpenNote = onOpenNote,
         onTogglePin = viewModel::togglePin,
+        onOpenArchive = onOpenArchive,
+        onOpenTrash = onOpenTrash,
         onBack = onBack,
     )
 }
@@ -55,6 +60,8 @@ internal fun NotesListScreen(
     onQueryChange: (String) -> Unit,
     onOpenNote: (String?) -> Unit,
     onTogglePin: (NoteSummary) -> Unit,
+    onOpenArchive: () -> Unit,
+    onOpenTrash: () -> Unit,
     onBack: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -77,6 +84,9 @@ internal fun NotesListScreen(
         ) {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 TextButton(onClick = onBack) { Text(stringResource(R.string.feature_notes_back)) }
+                Spacer(Modifier.weight(1f))
+                TextButton(onClick = onOpenArchive) { Text(stringResource(R.string.feature_notes_archive)) }
+                TextButton(onClick = onOpenTrash) { Text(stringResource(R.string.feature_notes_trash)) }
             }
             Text(
                 text = stringResource(R.string.feature_notes_title),
@@ -179,6 +189,8 @@ private fun NotesListScreenPreview() {
             onQueryChange = {},
             onOpenNote = {},
             onTogglePin = {},
+            onOpenArchive = {},
+            onOpenTrash = {},
             onBack = {},
         )
     }
@@ -188,6 +200,6 @@ private fun NotesListScreenPreview() {
 @Composable
 private fun NotesListEmptyPersianPreview() {
     AppTheme {
-        NotesListScreen(NotesListUiState(isLoading = false), {}, {}, {}, {})
+        NotesListScreen(NotesListUiState(isLoading = false), {}, {}, {}, {}, {}, {})
     }
 }

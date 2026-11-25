@@ -30,6 +30,7 @@ data class NoteEditorUiState(
     val body: String = "",
     val isLoading: Boolean = false,
     val isPinned: Boolean = false,
+    val isArchived: Boolean = false,
     val saveStatus: SaveStatus = SaveStatus.Idle,
     val notFound: Boolean = false,
     val isClosed: Boolean = false,
@@ -94,6 +95,18 @@ class NoteEditorViewModel @Inject constructor(
         }
     }
 
+    /** Archiving closes the editor (the note leaves the main list); unarchiving keeps it open. */
+    fun toggleArchive() {
+        viewModelScope.launch {
+            save()
+            val id = noteId ?: return@launch
+            val archive = !_uiState.value.isArchived
+            if (repository.setArchived(id, archive) is Outcome.Success) {
+                _uiState.update { it.copy(isArchived = archive, isClosed = archive) }
+            }
+        }
+    }
+
     /** Moves the note to the trash (recoverable, NOTE-04) and closes the editor. */
     fun moveToTrash() {
         viewModelScope.launch {
@@ -124,6 +137,7 @@ class NoteEditorViewModel @Inject constructor(
                         title = restoredTitle ?: stored.first,
                         body = restoredBody ?: stored.second,
                         isPinned = note.isPinned,
+                        isArchived = note.isArchived,
                         isLoading = false,
                     )
                 }
