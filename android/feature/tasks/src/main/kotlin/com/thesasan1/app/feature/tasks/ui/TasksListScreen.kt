@@ -1,5 +1,6 @@
 package com.thesasan1.app.feature.tasks.ui
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -54,13 +55,18 @@ import java.time.format.DateTimeFormatter
 import java.time.format.FormatStyle
 
 @Composable
-internal fun TasksListRoute(onBack: () -> Unit, viewModel: TasksViewModel = hiltViewModel()) {
+internal fun TasksListRoute(
+    onOpenTask: (String) -> Unit,
+    onBack: () -> Unit,
+    viewModel: TasksViewModel = hiltViewModel(),
+) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     LifecycleEventEffect(Lifecycle.Event.ON_RESUME) { viewModel.refresh() }
     TasksListScreen(
         uiState = uiState,
         actions = TasksListActions(
             onBack = onBack,
+            onOpenTask = onOpenTask,
             onQuickAddChange = viewModel::onQuickAddChange,
             onQuickAddDueTodayChange = viewModel::onQuickAddDueTodayChange,
             onAdd = viewModel::addTask,
@@ -74,6 +80,7 @@ internal fun TasksListRoute(onBack: () -> Unit, viewModel: TasksViewModel = hilt
 /** Everything the screen can ask for, kept together so the screen stays previewable. */
 internal data class TasksListActions(
     val onBack: () -> Unit = {},
+    val onOpenTask: (String) -> Unit = {},
     val onQuickAddChange: (String) -> Unit = {},
     val onQuickAddDueTodayChange: (Boolean) -> Unit = {},
     val onAdd: () -> Unit = {},
@@ -171,14 +178,19 @@ private fun LazyListScope.section(headerRes: Int, tasks: List<Task>, today: Loca
         )
     }
     items(tasks, key = { it.id }) { task ->
-        TaskRow(task = task, today = today, onComplete = { actions.onComplete(task) })
+        TaskRow(
+            task = task,
+            today = today,
+            onClick = { actions.onOpenTask(task.id) },
+            onComplete = { actions.onComplete(task) },
+        )
     }
 }
 
 @Composable
-private fun TaskRow(task: Task, today: LocalDate, onComplete: () -> Unit) {
+private fun TaskRow(task: Task, today: LocalDate, onClick: () -> Unit, onComplete: () -> Unit) {
     val completeLabel = stringResource(R.string.feature_tasks_complete, task.title)
-    AppCard(modifier = Modifier.fillMaxWidth()) {
+    AppCard(modifier = Modifier.fillMaxWidth().clickable(onClick = onClick)) {
         Row(verticalAlignment = Alignment.CenterVertically) {
             Checkbox(
                 checked = false,
@@ -211,7 +223,7 @@ private fun TaskRow(task: Task, today: LocalDate, onComplete: () -> Unit) {
 }
 
 @Composable
-private fun dueLabel(task: Task, today: LocalDate): String? {
+internal fun dueLabel(task: Task, today: LocalDate): String? {
     val date = task.dueDate ?: return null
     val time = task.dueTime?.format(DateTimeFormatter.ofLocalizedTime(FormatStyle.SHORT))
     val day = when (date) {
@@ -223,7 +235,7 @@ private fun dueLabel(task: Task, today: LocalDate): String? {
 }
 
 @Composable
-private fun priorityLabel(priority: TaskPriority): String? = when (priority) {
+internal fun priorityLabel(priority: TaskPriority): String? = when (priority) {
     TaskPriority.HIGH -> stringResource(R.string.feature_tasks_priority_high)
     TaskPriority.URGENT -> stringResource(R.string.feature_tasks_priority_urgent)
     else -> null

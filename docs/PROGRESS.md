@@ -7,12 +7,12 @@ The GitHub repository is the source of truth. A checkpoint is added at the end o
 | Field | Value |
 |---|---|
 | Current phase | **Phase 2 — Core Productivity** (Phase 1 done except PR 5b, waiting on ADR-007) |
-| Status | Tasks list and quick add (TASK-01, TASK-06) in review |
-| Code status | Phase 1 merged: Android skeleton (#2), backend skeleton (#3), design system (#4), CI hardening (#5), local database (#14), logging (#19), toolchain upgrade (#20), NestJS 12 / Node 26 (#21), debug APK pre-release (#22). notes data layer (#23), notes repository (#24) and notes list/editor (#27) and archive/trash (#28) tasks data layer (#29) and tasks repository (#30) merged. Tasks list in review |
+| Status | Task detail and editor (TASK-02, TASK-03) in review |
+| Code status | Phase 1 merged: Android skeleton (#2), backend skeleton (#3), design system (#4), CI hardening (#5), local database (#14), logging (#19), toolchain upgrade (#20), NestJS 12 / Node 26 (#21), debug APK pre-release (#22). notes data layer (#23), notes repository (#24) and notes list/editor (#27) and archive/trash (#28) tasks data layer (#29) and tasks repository (#30) and tasks list (#31) merged. Task detail and editor in review |
 | Build status | `android-ci` and `backend-ci` green on `main` after #5 and the Dependabot action bumps |
 | Test status | Backend: 13 unit + 12 e2e (CI green). Android: unit tests, lint, screenshots run in CI |
 | Blockers | ADR-007 (Prisma) needs owner approval before PR 5b; ADR-010 (local DB encryption) before the first release with real content. D-03…D-09 pending for later phases |
-| Next task | Task detail and editor: description, due date/time pickers, priority, subtasks, history (TASK-02, TASK-03); PR 5b once ADR-007 is approved |
+| Next task | Tasks archive and trash screens (TASK-07 UI), then reminders; PR 5b once ADR-007 is approved |
 
 ## Completed Features
 
@@ -35,7 +35,7 @@ The GitHub repository is the source of truth. A checkpoint is added at the end o
 
 ## Features In Progress
 
-- Phase 2: tasks list and quick add (TASK-01, TASK-06).
+- Phase 2: task detail and editor (TASK-02, TASK-03).
 
 ## Merged Pull Requests
 
@@ -193,12 +193,18 @@ The GitHub repository is the source of truth. A checkpoint is added at the end o
 
 **Tested:** `OfflineTaskRepositoryTest` 12/12, `spotlessCheck`, `detekt`, `:app:compileDebugKotlin` (local) → Passed; CI → Passed.
 
-### Checkpoint 2.7 — 2026-11-25 — Tasks list and quick add submitted
+### Checkpoint 2.7 — 2026-11-25 — Tasks list and quick add merged (#31)
 
-**Completed (in review):** Tasks screen in `feature/tasks/ui`: open top-level tasks grouped into Overdue, Today, Upcoming and No date (regrouped on resume, so a list left open past midnight moves on); quick-add bar with a "Due today" chip (title capped at 500 characters, kept on failure); tick to complete with an Undo snackbar that restores the previous status; due label (Today/Tomorrow/date plus time) and High/Urgent priority. English and Persian strings. The dashboard gets a Tasks button wired by the app (ADR-003).
+**Completed:** Tasks screen in `feature/tasks/ui`: open top-level tasks grouped into Overdue, Today, Upcoming and No date (regrouped on resume, so a list left open past midnight moves on); quick-add bar with a "Due today" chip (title capped at 500 characters, kept on failure); tick to complete with an Undo snackbar that restores the previous status; due label (Today/Tomorrow/date plus time) and High/Urgent priority. English and Persian strings. The dashboard gets a Tasks button wired by the app (ADR-003).
 
-**Not yet:** task detail/editor, date and time pickers, subtasks UI, natural-language quick add, reminders.
+**Tested:** `TasksViewModelTest` 5/5, `OfflineTaskRepositoryTest` 12/12, dashboard tests, `spotlessCheck`, `detekt`, `:app:compileDebugKotlin` (local) → Passed; CI → Passed.
+
+### Checkpoint 2.8 — 2026-11-25 — Task detail and editor submitted
+
+**Completed (in review):** Tapping a task opens its detail screen (`TaskDetailRoute`). Title and notes autosave 600 ms after typing stops and when the screen stops; a blank title shows an error and keeps the saved one. Mark done / Reopen; priority chips (None to Urgent); due date with Today, Tomorrow, a date picker and Clear; due time with a time picker (a time on an undated task makes it due today) and Clear. Subtasks: list, tick, open, and add (top-level tasks only, one level deep, ADR-023). History of changes, newest first. More menu: Archive (top-level tasks) and Move to trash, both closing the screen. English and Persian strings.
+
+**Not yet:** tasks archive/trash screens, natural-language quick add, reminders, recurrence, projects and tags pickers.
 
 **Tested:** see the PR.
 
-**Recommended next task:** task detail and editor (TASK-02, TASK-03).
+**Recommended next task:** tasks archive and trash screens.

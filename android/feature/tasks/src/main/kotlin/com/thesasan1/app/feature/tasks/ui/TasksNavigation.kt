@@ -9,10 +9,23 @@ import kotlinx.serialization.Serializable
 @Serializable
 data object TasksListRoute
 
+/** One task's detail and editor. */
+@Serializable
+data class TaskDetailRoute(val taskId: String)
+
 fun NavController.navigateToTasks() = navigate(TasksListRoute)
 
 fun NavGraphBuilder.tasksScreens(navController: NavController) {
     composable<TasksListRoute> {
-        TasksListRoute(onBack = { navController.popBackStack() })
+        TasksListRoute(
+            onOpenTask = { id -> navController.navigate(TaskDetailRoute(id)) },
+            onBack = { navController.popBackStack() },
+        )
+    }
+    composable<TaskDetailRoute> {
+        TaskDetailRoute(
+            onOpenTask = { id -> navController.navigate(TaskDetailRoute(id)) },
+            onClose = { navController.popBackStack() },
+        )
     }
 }
