@@ -20,6 +20,12 @@ data class ReminderTarget(
     val zoneId: String? = null,
     /** False once the task is done, cancelled, archived or trashed: its reminders stop. */
     val isOpen: Boolean = true,
+    /**
+     * Habits (ADR-032): the coming days (ISO, earliest first) the habit is due and not yet done.
+     * An offset reminder then rings [ReminderEntity.offsetMinutes] after the start of the first of
+     * these days whose time hasn't passed. Empty for tasks.
+     */
+    val dueDates: List<String> = emptyList(),
 )
 
 /**
@@ -37,9 +43,11 @@ object ReminderTimeCalculator {
     private const val SECONDS_PER_MINUTE = 60L
     val ALL_DAY_TIME: LocalTime = LocalTime.of(ALL_DAY_HOUR, 0)
 
-    fun fireAt(reminder: ReminderEntity, target: ReminderTarget?, zone: ZoneId): Instant? {
+    fun fireAt(reminder: ReminderEntity, target: ReminderTarget?, zone: ZoneId, now: Instant? = null): Instant? {
         val offset = reminder.offsetMinutes
         return when {
+            offset != null && target?.dueDates?.isNotEmpty() == true ->
+                target.takeIf { it.isOpen }?.let { dailyInstant(it.dueDates, offset, zone, now) }
             offset != null -> target?.takeIf { it.isOpen }?.let { dueInstant(it, zone) }?.plusSeconds(
                 offset * SECONDS_PER_MINUTE,
             )
@@ -49,6 +57,16 @@ object ReminderTimeCalculator {
             else -> reminder.triggerAtUtc?.let(Instant::ofEpochMilli)
         }
     }
+
+    /**
+     * [offset] minutes into the first of [dates] that is strictly after [now], so a reminder that
+     * has just rung moves on to the next due day. A firing missed while the phone was off is skipped.
+     */
+    private fun dailyInstant(dates: List<String>, offset: Int, zone: ZoneId, now: Instant?): Instant? =
+        dates.asSequence()
+            .mapNotNull { runCatching { LocalDate.parse(it) }.getOrNull() }
+            .map { it.atStartOfDay(zone).plusMinutes(offset.toLong()).toInstant() }
+            .firstOrNull { now == null || it > now }
 
     private fun dueInstant(target: ReminderTarget, zone: ZoneId): Instant? {
         val date = target.dueDate?.let { runCatching { LocalDate.parse(it) }.getOrNull() } ?: return null

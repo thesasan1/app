@@ -151,7 +151,7 @@ class ReminderScheduler @Inject constructor(
     private suspend fun nextFireMillis(reminder: ReminderEntity): Long? {
         val target = reminder.targetId?.let { targets.find(reminder.targetType, it) }
         if (reminder.targetId != null && target == null) return null
-        return ReminderTimeCalculator.fireAt(reminder, target, clock.zone)?.toEpochMilli()
+        return ReminderTimeCalculator.fireAt(reminder, target, clock.zone, clock.instant())?.toEpochMilli()
     }
 
     companion object {

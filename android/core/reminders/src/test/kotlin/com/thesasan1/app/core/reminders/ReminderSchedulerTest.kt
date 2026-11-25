@@ -278,4 +278,31 @@ class ReminderSchedulerTest {
         assertTrue(id in notifier.visible)
         assertEquals(OccurrenceState.DELIVERED, dao.occurrences.getValue(id).state)
     }
+
+    @Test
+    fun aHabitReminderRingsTodayThenMovesToTheNextDueDay() = runTest {
+        val noonUtc = 1_795_608_000_000L // 2026-11-25 12:00 UTC
+        val hour = 3_600_000L
+        clock = Clock.fixed(Instant.ofEpochMilli(noonUtc), ZoneOffset.UTC)
+        tasks["h"] = ReminderTarget("Walk", null, null, dueDates = listOf("2026-11-25", "2026-11-26"))
+        dao.upsert(
+            ReminderEntity(
+                id = "hr",
+                targetType = ReminderTargetType.HABIT,
+                targetId = "h",
+                offsetMinutes = 18 * 60,
+                sync = SyncColumns.new(0),
+            ),
+        )
+        scheduler.rebuild()
+        val today = noonUtc + 6 * hour
+        val todayId = ReminderOccurrenceEntity.idFor("hr", today)
+        assertEquals(mapOf(todayId to today), alarms.set)
+
+        clock = Clock.fixed(Instant.ofEpochMilli(today), ZoneOffset.UTC)
+        scheduler.deliver(todayId)
+        val tomorrow = today + 24 * hour
+        assertEquals(OccurrenceState.DELIVERED, dao.occurrences.getValue(todayId).state)
+        assertEquals(mapOf(ReminderOccurrenceEntity.idFor("hr", tomorrow) to tomorrow), alarms.set)
+    }
 }

@@ -9,7 +9,7 @@ import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.launch
 
 /**
- * Rebuilds alarms whenever tasks or reminders change, however they change (the editor, a
+ * Rebuilds alarms whenever tasks, habits or reminders change, however they change (the editor, a
  * notification's Done, a future sync). Room's invalidation tracker sees every write; occurrence
  * writes are not watched, so a rebuild never triggers itself.
  */
@@ -22,7 +22,7 @@ class ReminderRebuildTrigger @Inject constructor(
     @OptIn(FlowPreview::class)
     fun start(scope: CoroutineScope) {
         scope.launch {
-            changes.observe("tasks", "reminders")
+            changes.observe("tasks", "reminders", "habits", "habit_events")
                 .debounce(DEBOUNCE_MS)
                 .collect { scheduler.rebuild() }
         }
