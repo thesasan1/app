@@ -288,6 +288,15 @@ Architecture Decision Records (ADRs) and decisions pending the project owner. Fo
 
 ---
 
+### ADR-031 — Editing a habit
+
+- **Status:** Accepted (agent decision, 2026-11-25)
+- **Decision:** `HabitRepository.update` changes a habit's name, description, goal, unit and schedule in place. Its measurement type and start date can't change, so every past check-in keeps its meaning. Events are never touched. The schedule is not versioned yet: streaks and day status use the current schedule for every day (KI-014).
+- **Alternatives:** allowing a measurement change (turns old yes/no check-ins into amounts with no value); making a new habit on every edit (splits one habit's history); versioning the schedule now (needs the analytics model, HAB-03).
+- **Consequences:** a user who wants to track a habit another way creates a new habit; schedule history can be added later by storing schedule changes as events.
+
+---
+
 ## Pending Decisions (owner input required)
 
 | ID | Decision | Recommendation | Blocks |

@@ -52,6 +52,12 @@ interface HabitRepository {
 
     suspend fun create(draft: HabitDraft): Outcome<HabitEntity>
 
+    /**
+     * Changes a habit's name, description, goal, unit and schedule (ADR-031). How it's measured and
+     * its start date stay as they are, so past check-ins keep their meaning; its events are untouched.
+     */
+    suspend fun update(habitId: String, draft: HabitDraft): Outcome<HabitEntity>
+
     suspend fun archive(habitId: String): Outcome<Unit>
 
     suspend fun unarchive(habitId: String): Outcome<Unit>

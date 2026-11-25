@@ -7,6 +7,7 @@ import com.thesasan1.app.feature.habits.data.OfflineHabitRepository
 import com.thesasan1.app.feature.habits.ui.HabitMessage
 import com.thesasan1.app.feature.habits.ui.HabitsViewModel
 import com.thesasan1.app.feature.habits.ui.NewHabitForm
+import com.thesasan1.app.feature.habits.ui.of
 import java.time.DayOfWeek
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.launch
@@ -95,5 +96,26 @@ class HabitsViewModelTest {
         assertNull(vm.uiState.value.logging)
         assertEquals(25.0, day.progress)
         assertTrue(day.isComplete)
+    }
+
+    @Test
+    fun editOpensWithTheHabitsValuesAndSavesTheChange() = runTest(main.dispatcher) {
+        backgroundScope.launch { vm.uiState.collect {} }
+        vm.create(NewHabitForm(name = "Walk"))
+        advanceUntilIdle()
+
+        val day = vm.uiState.value.days.single()
+        vm.openEdit(day)
+        assertEquals(NewHabitForm(name = "Walk"), NewHabitForm.of(day.habit))
+        vm.saveEdit(NewHabitForm(name = "", days = setOf(DayOfWeek.MONDAY)))
+        advanceUntilIdle()
+        assertEquals(HabitMessage.NameRequired, vm.uiState.value.message)
+
+        vm.saveEdit(NewHabitForm(name = "Evening walk", days = setOf(DayOfWeek.MONDAY)))
+        advanceUntilIdle()
+        val edited = vm.uiState.value.days.single().habit
+        assertNull(vm.uiState.value.editing)
+        assertEquals("Evening walk", edited.name)
+        assertEquals(WeekdayMask.of(DayOfWeek.MONDAY), edited.scheduleDays)
     }
 }

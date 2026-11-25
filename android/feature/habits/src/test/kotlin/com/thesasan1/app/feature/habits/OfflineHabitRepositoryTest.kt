@@ -6,8 +6,10 @@ import com.thesasan1.app.core.common.getOrNull
 import com.thesasan1.app.core.database.entity.HabitEventType
 import com.thesasan1.app.core.database.entity.HabitMeasurement
 import com.thesasan1.app.core.database.entity.HabitScheduleType
+import com.thesasan1.app.core.database.entity.WeekdayMask
 import com.thesasan1.app.feature.habits.data.OfflineHabitRepository
 import com.thesasan1.app.feature.habits.domain.HabitDraft
+import java.time.DayOfWeek
 import java.time.LocalDate
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.runTest
@@ -139,5 +141,35 @@ class OfflineHabitRepositoryTest {
         val habit = create()
 
         assertEquals("freezes_available", repository.useFreeze(habit.id, today.minusDays(1)).validationField())
+    }
+
+    @Test
+    fun editingChangesNameAndDaysButKeepsHistoryAndMeasurement() = runTest {
+        val habit = create(HabitDraft("Read", today.minusDays(1), measurement = HabitMeasurement.NUMERIC))
+        repository.checkIn(habit.id, today, 10.0)
+        val before = dao.events.value
+
+        val mondays = HabitDraft(
+            name = " Read more ",
+            startDate = today,
+            measurement = HabitMeasurement.NUMERIC,
+            targetValue = 20.0,
+            unit = "pages",
+            scheduleType = HabitScheduleType.WEEKDAYS,
+            scheduleDays = WeekdayMask.of(DayOfWeek.MONDAY),
+        )
+        val edited = (repository.update(habit.id, mondays) as Outcome.Success).value
+
+        assertEquals("Read more", edited.name)
+        assertEquals(20.0, edited.targetValue)
+        assertEquals(HabitScheduleType.WEEKDAYS, edited.scheduleType)
+        assertEquals(habit.startDate, edited.startDate)
+        assertEquals(before, dao.events.value)
+        assertEquals(
+            "measurement_type",
+            repository.update(habit.id, mondays.copy(measurement = HabitMeasurement.BINARY)).validationField(),
+        )
+        assertEquals("name", repository.update(habit.id, mondays.copy(name = " ")).validationField())
+        assertEquals(AppError.NotFound, (repository.update("nope", mondays) as Outcome.Failure).error)
     }
 }

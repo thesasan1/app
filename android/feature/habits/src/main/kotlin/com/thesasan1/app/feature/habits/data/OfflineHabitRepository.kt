@@ -91,6 +91,37 @@ class OfflineHabitRepository @Inject constructor(
         }
     }
 
+    override suspend fun update(habitId: String, draft: HabitDraft): Outcome<HabitEntity> = storage {
+        transaction {
+            val habit = dao.getById(habitId)?.takeIf { it.sync.deletedAt == null }
+            val name = draft.name.trim()
+            val error = when {
+                habit == null -> AppError.NotFound
+                draft.measurement != habit.measurementType ->
+                    AppError.Validation("measurement_type", "a habit's measurement can't change")
+                else -> validate(draft.copy(freezes = 0), name)
+            }
+            when {
+                habit == null || error != null -> Outcome.Failure(error ?: AppError.NotFound)
+                else -> {
+                    val changed = habit.copy(
+                        name = name,
+                        description = draft.description?.trim()?.takeIf { it.isNotEmpty() },
+                        targetValue = draft.targetValue,
+                        unit = draft.unit?.trim()?.takeIf { it.isNotEmpty() },
+                        scheduleType = draft.scheduleType,
+                        scheduleDays = draft.scheduleDays,
+                        scheduleCount = draft.scheduleCount,
+                        restDays = draft.restDays,
+                        sync = habit.sync.touched(clock.millis()),
+                    )
+                    writeHabit(changed)
+                    Outcome.Success(changed)
+                }
+            }
+        }
+    }
+
     override suspend fun archive(habitId: String) = changeHabit(habitId) { it.copy(archivedAt = clock.millis()) }
 
     override suspend fun unarchive(habitId: String) = changeHabit(habitId) { it.copy(archivedAt = null) }

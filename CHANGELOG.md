@@ -6,6 +6,7 @@ All notable changes are documented here. Format based on [Keep a Changelog](http
 
 ### Added
 
+- Edit a habit: change its name, goal, unit or days. How it's tracked stays the same, so its history keeps its meaning.
 - Archived habits: open Archived from the Habits screen to restore a habit or delete it.
 - Habit streaks: daily and weekday habits show their current streak and best. Rest days and streak freezes keep a streak going; history is never changed to save one.
 - Habits screen: create a habit, check it off, log an amount or minutes, undo, take a rest day, or archive it. Open it from Habits on the home screen.

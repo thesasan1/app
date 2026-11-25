@@ -17,6 +17,7 @@
 | KI-004 | Branch protection and secret scanning on `main` are not confirmed enabled (requires owner action in repository settings). | Owner action |
 | KI-012 | The notes editor edits plain text only. Formatting it can't show (headings, checklists, bold) is kept when only the title changes, but editing the body of such a note saves it as plain paragraphs. No screen creates formatted notes yet, so nothing is lost today. | Rich editor (NOTE-02) |
 | KI-013 | The app didn't ask for the notification permission (Android 13+) or explain exact alarms. The task editor now asks when the first reminder is added and explains inexact mode (ADR-027). A reminder that fires while notifications are off is still recorded as missed. | Resolved (#37) |
+| KI-014 | Changing a habit's days applies to its whole history: past streaks are recomputed with the new schedule (ADR-031). No event is changed, but a past day that was due can stop counting, or the other way round. | Schedule history (with analytics, HAB-03) |
 
 ## Technical Risks
 
