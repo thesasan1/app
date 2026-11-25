@@ -50,6 +50,16 @@ class DatabaseMigrationTest {
         }
     }
 
+    @Test
+    fun version3MigratesTo4WithRemindersAndOccurrences() {
+        helper.createDatabase(TEST_DB, 3).close()
+        helper.runMigrationsAndValidate(TEST_DB, 4, true).use { db ->
+            db.query(
+                "SELECT name FROM sqlite_master WHERE name IN ('reminders', 'reminder_occurrences') ORDER BY name",
+            ).use { assertEquals(2, it.count) }
+        }
+    }
+
     private companion object {
         const val TEST_DB = "migration-test.db"
     }

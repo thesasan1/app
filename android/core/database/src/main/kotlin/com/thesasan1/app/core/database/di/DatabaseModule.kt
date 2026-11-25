@@ -10,6 +10,7 @@ import com.thesasan1.app.core.database.dao.CategoryDao
 import com.thesasan1.app.core.database.dao.NoteDao
 import com.thesasan1.app.core.database.dao.OutboxDao
 import com.thesasan1.app.core.database.dao.ProjectDao
+import com.thesasan1.app.core.database.dao.ReminderDao
 import com.thesasan1.app.core.database.dao.SyncCursorDao
 import com.thesasan1.app.core.database.dao.TagDao
 import com.thesasan1.app.core.database.dao.TaskDao
@@ -45,6 +46,8 @@ object DatabaseModule {
     @Provides fun provideNoteDao(db: AppDatabase): NoteDao = db.noteDao()
 
     @Provides fun provideTaskDao(db: AppDatabase): TaskDao = db.taskDao()
+
+    @Provides fun provideReminderDao(db: AppDatabase): ReminderDao = db.reminderDao()
 }
 
 @Module
