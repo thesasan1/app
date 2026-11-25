@@ -270,6 +270,15 @@ Architecture Decision Records (ADRs) and decisions pending the project owner. Fo
 
 ---
 
+### ADR-029 — Habit check-in rules
+
+- **Status:** Accepted (agent decision, 2026-11-25)
+- **Decision:** `:feature:habits` holds `HabitRepository` and the pure `HabitRules`. A day's progress is derived from its events: UNDO cancels the event it points at, the latest CORRECTION sets a check-in's amount, and an undone correction stops applying. Binary habits take one check-in a day; numeric and duration habits need an amount above zero; multi-check-in habits count check-ins. Check-ins can't be made for a future day or before the start date; past days can (late logging is recorded with its real `recorded_at`). Weekly and monthly targets mark a day done once anything was logged; period totals come with analytics (HAB-03). CUSTOM (RRULE) schedules are refused until a rule parser exists. Rest days in the mask and REST events both take a day off the schedule.
+- **Alternatives:** allowing several binary check-ins (inflates counts); blocking past-day check-ins (breaks honest late logging, HAB-06); storing a per-day status (rewritable, against HAB-07).
+- **Consequences:** history is never edited; the UI shows undo and correct as actions, not edits. Streaks and freezes build on `HabitRules.day` in a later PR.
+
+---
+
 ## Pending Decisions (owner input required)
 
 | ID | Decision | Recommendation | Blocks |

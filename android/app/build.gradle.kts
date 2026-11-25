@@ -41,6 +41,7 @@ dependencies {
     implementation(project(":core:designsystem"))
     implementation(project(":core:reminders"))
     implementation(project(":feature:dashboard"))
+    implementation(project(":feature:habits"))
     implementation(project(":feature:notes"))
     implementation(project(":feature:tasks"))
 

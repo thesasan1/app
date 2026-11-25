@@ -7,12 +7,12 @@ The GitHub repository is the source of truth. A checkpoint is added at the end o
 | Field | Value |
 |---|---|
 | Current phase | **Phase 2 — Core Productivity** (Phase 1 done except PR 5b, waiting on ADR-007) |
-| Status | Habits data layer (Room v5) in review |
+| Status | Habits repository and check-in rules in review |
 | Code status | Phase 1 merged: Android skeleton (#2), backend skeleton (#3), design system (#4), CI hardening (#5), local database (#14), logging (#19), toolchain upgrade (#20), NestJS 12 / Node 26 (#21), debug APK pre-release (#22). notes data layer (#23), notes repository (#24) and notes list/editor (#27) and archive/trash (#28) tasks data layer (#29) and tasks repository (#30) and tasks list (#31) task detail/editor (#32) tasks shelves (#33) reminder storage (#34), scheduler (#35) and notification actions (#36) merged. Reminder picker in review |
 | Build status | `android-ci` and `backend-ci` green on `main` after #5 and the Dependabot action bumps |
 | Test status | Backend: 13 unit + 12 e2e (CI green). Android: unit tests, lint, screenshots run in CI |
 | Blockers | ADR-007 (Prisma) needs owner approval before PR 5b; ADR-010 (local DB encryption) before the first release with real content. D-03…D-09 pending for later phases |
-| Next task | Habits repository and schedule logic (HAB-01, HAB-06, HAB-07), then the habits screen; PR 5b once ADR-007 is approved |
+| Next task | Habits screen: today list, check-in, create habit (HAB-01, HAB-02); then streaks; PR 5b once ADR-007 is approved |
 
 ## Completed Features
 
@@ -269,12 +269,22 @@ The GitHub repository is the source of truth. A checkpoint is added at the end o
 
 **Recommended next task:** habits data layer (HAB-01), Room v5.
 
-### Checkpoint 2.16 — 2026-11-25 — Habits data layer (submitted)
+### Checkpoint 2.16 — 2026-11-25 — Habits data layer (#40)
 
-**Completed (in review):** Room v5 adds `habits` and the append-only `habit_events` (ADR-028), with `HabitDao` (active and archived habits, event insert that ignores a known id, reads by habit day range and by day) and `WeekdayMask` for schedule and rest days. Auto-migration 4 → 5 with exported schema `5.json`.
+**Completed:** Room v5 adds `habits` and the append-only `habit_events` (ADR-028), with `HabitDao` (active and archived habits, event insert that ignores a known id, reads by habit day range and by day) and `WeekdayMask` for schedule and rest days. Auto-migration 4 → 5 with exported schema `5.json`.
 
 **Not yet:** repository, schedule logic and streaks; habits screen; habit reminders.
 
-**Tested:** see the PR.
+**Tested:** `WeekdayMaskTest` 2/2 (local) → Passed; `HabitDaoTest`, migration 4 → 5 (Robolectric, CI) → Passed in `android-ci`. On-device → Not run.
 
 **Recommended next task:** habits repository with schedule and check-in logic (HAB-01, HAB-02, HAB-06, HAB-07).
+
+### Checkpoint 2.17 — 2026-11-25 — Habits repository and check-in rules (submitted)
+
+**Completed (in review):** new `:feature:habits` module with `HabitRepository` (`OfflineHabitRepository`: create with validation, archive, unarchive, delete, check in, undo, correct, mark rest, observe a day) and `HabitRules` (schedule, effective events, progress, completion), ADR-029. Every write queues an outbox entry (`habit`, `habit_event`). `HabitDao` gains `getEvent` and `getEventsOn` (no schema change).
+
+**Not yet:** UI, streaks and freezes, CUSTOM schedules, habit reminders.
+
+**Tested:** see the PR.
+
+**Recommended next task:** habits screen (today list, check-in, create habit).
