@@ -8,11 +8,13 @@ import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
+import dagger.multibindings.IntoSet
 
 @Module
 @InstallIn(SingletonComponent::class)
 internal interface TasksModule {
     @Binds fun bindTaskRepository(repository: OfflineTaskRepository): TaskRepository
 
-    @Binds fun bindReminderActions(actions: TaskReminderActions): ReminderTargetActions
+    @Binds @IntoSet
+    fun bindReminderActions(actions: TaskReminderActions): ReminderTargetActions
 }

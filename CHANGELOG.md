@@ -6,6 +6,7 @@ All notable changes are documented here. Format based on [Keep a Changelog](http
 
 ### Added
 
+- Habit reminder engine: a habit's daily reminder rings only on days it's due and not done yet, and Done on the notification checks off a yes/no habit. Setting the time from the app comes next.
 - Edit a habit: change its name, goal, unit or days. How it's tracked stays the same, so its history keeps its meaning.
 - Archived habits: open Archived from the Habits screen to restore a habit or delete it.
 - Habit streaks: daily and weekday habits show their current streak and best. Rest days and streak freezes keep a streak going; history is never changed to save one.

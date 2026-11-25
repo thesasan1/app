@@ -7,12 +7,12 @@ The GitHub repository is the source of truth. A checkpoint is added at the end o
 | Field | Value |
 |---|---|
 | Current phase | **Phase 2 — Core Productivity** (Phase 1 done except PR 5b, waiting on ADR-007) |
-| Status | Habit edit in review |
+| Status | Habit reminder engine in review |
 | Code status | Phase 1 merged: Android skeleton (#2), backend skeleton (#3), design system (#4), CI hardening (#5), local database (#14), logging (#19), toolchain upgrade (#20), NestJS 12 / Node 26 (#21), debug APK pre-release (#22). notes data layer (#23), notes repository (#24) and notes list/editor (#27) and archive/trash (#28) tasks data layer (#29) and tasks repository (#30) and tasks list (#31) task detail/editor (#32) tasks shelves (#33) reminder storage (#34), scheduler (#35) and notification actions (#36) merged. Reminder picker in review |
 | Build status | `android-ci` and `backend-ci` green on `main` after #5 and the Dependabot action bumps |
 | Test status | Backend: 13 unit + 12 e2e (CI green). Android: unit tests, lint, screenshots run in CI |
 | Blockers | ADR-007 (Prisma) needs owner approval before PR 5b; ADR-010 (local DB encryption) before the first release with real content. D-03…D-09 pending for later phases |
-| Next task | Habit reminders, then a freeze button once D-10 is decided; PR 5b once ADR-007 is approved |
+| Next task | Habit reminder time in the habit form, then a freeze button once D-10 is decided; PR 5b once ADR-007 is approved |
 
 ## Completed Features
 
@@ -319,12 +319,22 @@ The GitHub repository is the source of truth. A checkpoint is added at the end o
 
 **Recommended next task:** habit edit.
 
-### Checkpoint 2.21 — 2026-11-25 — Habit edit (submitted)
+### Checkpoint 2.21 — 2026-11-25 — Habit edit (#45)
 
-**Completed (in review):** an Edit button on each habit opens the habit form filled in. Name, goal, unit and days can change; how it's tracked and the start date can't (ADR-031). `HabitRepository.update` validates like create, keeps every event, and queues an outbox entry. The create and edit dialogs share one form.
+**Completed:** an Edit button on each habit opens the habit form filled in. Name, goal, unit and days can change; how it's tracked and the start date can't (ADR-031). `HabitRepository.update` validates like create, keeps every event, and queues an outbox entry. The create and edit dialogs share one form.
 
 **Not yet:** schedule history, so a days change re-evaluates past streaks (KI-014); habit reminders; freeze button (D-10).
 
-**Tested:** see the PR.
+**Tested:** `OfflineHabitRepositoryTest` 10/10, `HabitsViewModelTest` 5/5, `HabitsArchiveViewModelTest` 2/2, `HabitStreaksTest` 4/4, `HabitRulesTest` 4/4 (local) → Passed; `android-ci` → Passed. On-device → Not run.
 
 **Recommended next task:** habit reminders.
+
+### Checkpoint 2.22 — 2026-11-25 — Habit reminder engine (submitted)
+
+**Completed (in review):** habit reminders in the scheduler (ADR-032). `HabitReminderRepository` keeps one daily reminder per habit (offset minutes after midnight). `HabitReminderTargets` gives the scheduler the habit's next 8 days that are due and not done or rested; `ReminderTimeCalculator` rings at the first of those still ahead, so a reminder skips days already done and moves to the next due day after ringing. "Done" on the notification checks in a yes/no or times-a-day habit; for amount and minutes habits it only clears. Targets and Done actions are now collected from each module (`AllReminderTargets`, `AllReminderTargetActions`, Hilt multibindings). Alarms rebuild on `habits` and `habit_events` changes too.
+
+**Not yet:** a time picker in the habit form (no reminder can be set from the app yet); a shown habit notification isn't cleared when the habit is checked in in the app.
+
+**Tested:** see the PR.
+
+**Recommended next task:** reminder time in the habit form.

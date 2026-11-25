@@ -297,6 +297,15 @@ Architecture Decision Records (ADRs) and decisions pending the project owner. Fo
 
 ---
 
+### ADR-032 — Habit reminders
+
+- **Status:** Accepted (agent decision, 2026-11-25)
+- **Decision:** a habit has at most one daily reminder, stored in `reminders` as target `HABIT` with `offset_minutes` meaning minutes after local midnight (floating, so it follows the device zone). The habit module tells the scheduler which of the next 8 days are due and not yet done or rested; the reminder rings at its time on the first of those still ahead. Each module contributes its reminder lookup and its Done action to a Hilt set; the scheduler asks them in turn. Done checks in one-tap habits (yes/no, times a day) through `HabitRepository`; for amount and minutes habits it only clears the notification. A check-in, rest day, or schedule change rebuilds the alarms.
+- **Alternatives:** an RRULE per reminder (doesn't know which days are already done); one alarm per day for weeks ahead (many alarms, stale after each check-in); logging a default amount on Done (records a number the user didn't give, against HAB-07).
+- **Consequences:** no schema change. A habit firing missed while the phone was off is skipped rather than rung late (the next due day is scheduled). Several reminders per habit, and a reminder that repeats until done, can come later on the same rows.
+
+---
+
 ## Pending Decisions (owner input required)
 
 | ID | Decision | Recommendation | Blocks |

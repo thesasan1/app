@@ -88,4 +88,22 @@ class ReminderTimeCalculatorTest {
         assertNull(ReminderTimeCalculator.fireAt(reminder(local = "tomorrow"), null, tehran))
         assertNull(ReminderTimeCalculator.fireAt(reminder(offset = 0), ReminderTarget("x", "26/11", null), tehran))
     }
+
+    @Test
+    fun aHabitReminderRingsOnTheFirstDueDayWhoseTimeIsStillAhead() {
+        val eight = reminder(offset = 8 * 60).copy(targetType = ReminderTargetType.HABIT)
+        val habit = ReminderTarget("Walk", null, null, dueDates = listOf("2026-11-26", "2026-11-28"))
+        fun at(date: String, time: String) = java.time.LocalDateTime.parse("${date}T$time").atZone(tehran).toInstant()
+
+        assertEquals(
+            at("2026-11-26", "08:00"),
+            ReminderTimeCalculator.fireAt(eight, habit, tehran, at("2026-11-26", "07:00")),
+        )
+        assertEquals(
+            at("2026-11-28", "08:00"),
+            ReminderTimeCalculator.fireAt(eight, habit, tehran, at("2026-11-26", "09:00")),
+        )
+        assertNull(ReminderTimeCalculator.fireAt(eight, habit, tehran, at("2026-11-29", "00:00")))
+        assertNull(ReminderTimeCalculator.fireAt(eight, habit.copy(isOpen = false), tehran))
+    }
 }
