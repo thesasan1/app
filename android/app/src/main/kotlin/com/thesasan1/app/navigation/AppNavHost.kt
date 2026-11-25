@@ -9,6 +9,8 @@ import com.thesasan1.app.feature.dashboard.DashboardRoute
 import com.thesasan1.app.feature.dashboard.dashboardScreen
 import com.thesasan1.app.feature.notes.ui.navigateToNotes
 import com.thesasan1.app.feature.notes.ui.notesScreens
+import com.thesasan1.app.feature.tasks.ui.navigateToTasks
+import com.thesasan1.app.feature.tasks.ui.tasksScreens
 
 /**
  * Root navigation graph. Each feature contributes its destinations through a
@@ -21,7 +23,11 @@ fun AppNavHost(modifier: Modifier = Modifier, navController: NavHostController =
         startDestination = DashboardRoute,
         modifier = modifier,
     ) {
-        dashboardScreen(onOpenNotes = navController::navigateToNotes)
+        dashboardScreen(
+            onOpenNotes = navController::navigateToNotes,
+            onOpenTasks = navController::navigateToTasks,
+        )
         notesScreens(navController)
+        tasksScreens(navController)
     }
 }

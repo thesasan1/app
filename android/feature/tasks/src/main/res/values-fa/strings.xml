@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="feature_tasks_title">کارها</string>
+    <string name="feature_tasks_back">بازگشت</string>
+    <string name="feature_tasks_quick_add_hint">افزودن کار</string>
+    <string name="feature_tasks_add">افزودن</string>
+    <string name="feature_tasks_due_today">موعد امروز</string>
+    <string name="feature_tasks_section_overdue">عقب‌افتاده</string>
+    <string name="feature_tasks_section_today">امروز</string>
+    <string name="feature_tasks_section_upcoming">پیش رو</string>
+    <string name="feature_tasks_section_someday">بدون تاریخ</string>
+    <string name="feature_tasks_today">امروز</string>
+    <string name="feature_tasks_tomorrow">فردا</string>
+    <string name="feature_tasks_priority_high">اولویت بالا</string>
+    <string name="feature_tasks_priority_urgent">فوری</string>
+    <string name="feature_tasks_complete">انجام %1$s</string>
+    <string name="feature_tasks_completed">کار انجام شد</string>
+    <string name="feature_tasks_undo">واگرد</string>
+    <string name="feature_tasks_empty_title">هنوز کاری نیست</string>
+    <string name="feature_tasks_empty_body">یک کار در بالا بنویسید و «افزودن» را بزنید.</string>
+</resources>

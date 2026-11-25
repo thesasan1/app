@@ -6,5 +6,6 @@
     <string name="feature_dashboard_greeting_night">Good night</string>
     <string name="feature_dashboard_empty_title">Your day starts here</string>
     <string name="feature_dashboard_empty_body">Tasks, habits and reminders will appear here as you add them.</string>
+    <string name="feature_dashboard_open_tasks">Tasks</string>
     <string name="feature_dashboard_open_notes">Notes</string>
 </resources>
