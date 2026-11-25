@@ -1,9 +1,11 @@
 package com.thesasan1.app.core.reminders.android
 
 import android.app.AlarmManager
+import android.app.PendingIntent
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
+import androidx.core.net.toUri
 import com.thesasan1.app.core.common.ApplicationScope
 import com.thesasan1.app.core.common.logging.AppLogger
 import com.thesasan1.app.core.common.logging.error
@@ -46,6 +48,47 @@ class ReminderAlarmReceiver : BroadcastReceiver() {
     companion object {
         const val ACTION_FIRE = "com.thesasan1.app.reminders.FIRE"
         const val EXTRA_OCCURRENCE_ID = "occurrence_id"
+    }
+}
+
+/** The notification's Done and Snooze buttons, and swiping it away (REM-02). */
+@AndroidEntryPoint
+class ReminderActionReceiver : BroadcastReceiver() {
+    @Inject lateinit var scheduler: ReminderScheduler
+
+    @Inject @ApplicationScope
+    lateinit var scope: CoroutineScope
+
+    @Inject lateinit var logger: AppLogger
+
+    override fun onReceive(context: Context, intent: Intent) {
+        val occurrenceId = intent.getStringExtra(EXTRA_OCCURRENCE_ID) ?: return
+        when (intent.action) {
+            ACTION_COMPLETE -> runAsync(scope, logger) { scheduler.complete(occurrenceId) }
+            ACTION_SNOOZE -> runAsync(scope, logger) { scheduler.snooze(occurrenceId) }
+            ACTION_DISMISSED -> runAsync(scope, logger) { scheduler.dismissed(occurrenceId) }
+        }
+    }
+
+    companion object {
+        const val ACTION_COMPLETE = "com.thesasan1.app.reminders.COMPLETE"
+        const val ACTION_SNOOZE = "com.thesasan1.app.reminders.SNOOZE"
+        const val ACTION_DISMISSED = "com.thesasan1.app.reminders.DISMISSED"
+        private const val EXTRA_OCCURRENCE_ID = "occurrence_id"
+
+        /** A unique PendingIntent per action and occurrence (the data URI keeps them apart). */
+        fun intent(context: Context, action: String, occurrenceId: String): PendingIntent {
+            val intent = Intent(context, ReminderActionReceiver::class.java)
+                .setAction(action)
+                .setData("personalos://reminder-occurrence/$occurrenceId".toUri())
+                .putExtra(EXTRA_OCCURRENCE_ID, occurrenceId)
+            return PendingIntent.getBroadcast(
+                context,
+                0,
+                intent,
+                PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE,
+            )
+        }
     }
 }
 

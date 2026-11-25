@@ -243,6 +243,15 @@ Architecture Decision Records (ADRs) and decisions pending the project owner. Fo
 
 ---
 
+### ADR-026 — Reminder notification actions
+
+- **Status:** Accepted (agent decision, 2026-11-25)
+- **Decision:** Buttons on each notification: **Done** (completes the occurrence and, through the `ReminderTargetActions` port the owning feature implements, the task itself) and **Snooze 10 min**. Swiping a notification away dismisses that firing. With `repeat_until_done`, a delivered occurrence is re-armed as SNOOZED every 15 minutes for up to 24 hours; swiping doesn't stop it, only Done or disabling the reminder does. Notifications are keyed by occurrence id, so a repeat replaces rather than stacks. "Reschedule" waits for the reminder picker's time selection.
+- **Alternatives:** an ongoing (unswipeable) notification for repeat-until-done (Android 14 lets users swipe those anyway); unlimited repeats (nagging after a day is noise); a fixed snooze picker on the notification (more buttons than fit; a choice of durations can come later).
+- **Consequences:** core modules stay independent of features (ADR-003); each feature that owns a reminder target binds its own `ReminderTargetActions`. Only one binding exists today (tasks); habits will need a composite.
+
+---
+
 ## Pending Decisions (owner input required)
 
 | ID | Decision | Recommendation | Blocks |

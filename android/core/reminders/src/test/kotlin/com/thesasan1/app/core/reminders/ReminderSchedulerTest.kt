@@ -22,22 +22,29 @@ class ReminderSchedulerTest {
     private val dao = FakeReminderDao()
     private val alarms = FakeAlarms()
     private val notifier = FakeNotifier()
+    private val actions = FakeTargetActions()
     private val tasks = mutableMapOf("t" to ReminderTarget("Pay rent", "2026-11-26", "10:00"))
 
     private val scheduler
-        get() = ReminderScheduler(dao, { _, id -> tasks[id] }, alarms, notifier, clock, SilentLogger)
+        get() = ReminderScheduler(dao, { _, id -> tasks[id] }, actions, alarms, notifier, clock)
 
-    private fun reminder(id: String = "r", offset: Int? = 0, local: String? = null, enabled: Boolean = true) =
-        ReminderEntity(
-            id = id,
-            targetType = if (local == null) ReminderTargetType.TASK else ReminderTargetType.STANDALONE,
-            targetId = if (local == null) "t" else null,
-            title = if (local == null) null else "Stretch",
-            offsetMinutes = offset.takeIf { local == null },
-            triggerAtLocal = local,
-            isEnabled = enabled,
-            sync = SyncColumns.new(0),
-        )
+    private fun reminder(
+        id: String = "r",
+        offset: Int? = 0,
+        local: String? = null,
+        enabled: Boolean = true,
+        repeat: Boolean = false,
+    ) = ReminderEntity(
+        id = id,
+        targetType = if (local == null) ReminderTargetType.TASK else ReminderTargetType.STANDALONE,
+        targetId = if (local == null) "t" else null,
+        title = if (local == null) null else "Stretch",
+        offsetMinutes = offset.takeIf { local == null },
+        triggerAtLocal = local,
+        isEnabled = enabled,
+        repeatUntilDone = repeat,
+        sync = SyncColumns.new(0),
+    )
 
     private val dueAt = Instant.parse("2026-11-26T10:00:00Z").toEpochMilli()
 
@@ -82,14 +89,13 @@ class ReminderSchedulerTest {
     fun deliveringRingsOnceAndNeverAgain() = runTest {
         dao.upsert(reminder())
         scheduler.rebuild()
-        val id = ReminderOccurrenceEntity.idFor("r", dueAt)
         clock = Clock.fixed(Instant.ofEpochMilli(dueAt), ZoneOffset.UTC)
 
         scheduler.deliver(id)
         scheduler.deliver(id) // a duplicate broadcast
         scheduler.rebuild() // e.g. a reboot right after
 
-        assertEquals(listOf(id to "Pay rent"), notifier.shown)
+        assertEquals(listOf(id to "Pay rent"), notifier.shown.map { it.occurrenceId to it.title })
         assertEquals(OccurrenceState.DELIVERED, dao.occurrences.getValue(id).state)
         assertEquals(dueAt, dao.occurrences.getValue(id).deliveredAt)
         assertTrue(alarms.set.isEmpty())
@@ -100,7 +106,6 @@ class ReminderSchedulerTest {
         notifier.enabled = false
         dao.upsert(reminder())
         scheduler.rebuild()
-        val id = ReminderOccurrenceEntity.idFor("r", dueAt)
 
         scheduler.deliver(id)
 
@@ -134,7 +139,6 @@ class ReminderSchedulerTest {
     fun aDeletedReminderIsDismissedIfItsAlarmStillFires() = runTest {
         dao.upsert(reminder())
         scheduler.rebuild()
-        val id = ReminderOccurrenceEntity.idFor("r", dueAt)
         dao.reminders.value = mapOf("r" to reminder().let { it.copy(sync = it.sync.deleted(1)) })
 
         scheduler.deliver(id)
@@ -142,5 +146,82 @@ class ReminderSchedulerTest {
         assertTrue(notifier.shown.isEmpty())
         // The occurrence is dismissed, and the rebuild then forgets nothing still pending.
         assertTrue(dao.getPendingOccurrences().isEmpty())
+    }
+
+    private val id = ReminderOccurrenceEntity.idFor("r", dueAt)
+    private val minute = 60_000L
+
+    private suspend fun ringAt(atMillis: Long) {
+        clock = Clock.fixed(Instant.ofEpochMilli(atMillis), ZoneOffset.UTC)
+        scheduler.deliver(id)
+    }
+
+    @Test
+    fun doneCompletesTheTaskAndClearsTheNotification() = runTest {
+        dao.upsert(reminder())
+        scheduler.rebuild()
+        ringAt(dueAt)
+
+        scheduler.complete(id)
+
+        assertEquals(OccurrenceState.COMPLETED, dao.occurrences.getValue(id).state)
+        assertEquals(listOf("t"), actions.completed)
+        assertTrue(notifier.visible.isEmpty())
+        assertTrue(alarms.set.isEmpty())
+    }
+
+    @Test
+    fun snoozeRingsAgainTenMinutesLater() = runTest {
+        dao.upsert(reminder())
+        scheduler.rebuild()
+        ringAt(dueAt)
+
+        scheduler.snooze(id)
+        assertEquals(mapOf(id to dueAt + 10 * minute), alarms.set)
+        assertTrue(notifier.visible.isEmpty())
+
+        ringAt(dueAt + 10 * minute)
+        assertEquals(2, notifier.shown.size)
+        assertEquals(OccurrenceState.DELIVERED, dao.occurrences.getValue(id).state)
+        assertTrue(alarms.set.isEmpty())
+    }
+
+    @Test
+    fun repeatUntilDoneKeepsRingingThroughASwipeUntilDone() = runTest {
+        dao.upsert(reminder(repeat = true))
+        scheduler.rebuild()
+        ringAt(dueAt)
+
+        assertTrue(notifier.shown.single().repeats)
+        assertEquals(mapOf(id to dueAt + 15 * minute), alarms.set)
+        scheduler.dismissed(id)
+        assertEquals(OccurrenceState.SNOOZED, dao.occurrences.getValue(id).state)
+
+        ringAt(dueAt + 15 * minute)
+        assertEquals(2, notifier.shown.size)
+        scheduler.complete(id)
+        assertTrue(alarms.set.isEmpty())
+    }
+
+    @Test
+    fun repeatingStopsAfterADay() = runTest {
+        dao.upsert(reminder(repeat = true))
+        scheduler.rebuild()
+
+        ringAt(dueAt + 25 * 60 * minute)
+
+        assertEquals(OccurrenceState.DELIVERED, dao.occurrences.getValue(id).state)
+        assertTrue(alarms.set.isEmpty())
+    }
+
+    @Test
+    fun swipingAPlainReminderDismissesIt() = runTest {
+        dao.upsert(reminder())
+        scheduler.rebuild()
+        ringAt(dueAt)
+
+        scheduler.dismissed(id)
+
+        assertEquals(OccurrenceState.DISMISSED, dao.occurrences.getValue(id).state)
     }
 }

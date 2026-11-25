@@ -11,6 +11,7 @@ import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.content.ContextCompat
 import com.thesasan1.app.core.reminders.R
+import com.thesasan1.app.core.reminders.domain.ReminderNotification
 import com.thesasan1.app.core.reminders.domain.ReminderNotifier
 import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
@@ -23,22 +24,42 @@ import javax.inject.Inject
 class AndroidReminderNotifier @Inject constructor(@ApplicationContext private val context: Context) :
     ReminderNotifier {
 
-    override fun show(occurrenceId: String, title: String, text: String?): Boolean {
+    override fun show(notification: ReminderNotification): Boolean {
         val manager = NotificationManagerCompat.from(context)
         if (!canPost(manager)) return false
         ensureChannel()
-        val notification = NotificationCompat.Builder(context, CHANNEL_ID)
+        val id = notification.occurrenceId
+        val text = when {
+            notification.repeats -> R.string.reminder_notification_repeats
+            else -> R.string.reminder_notification_text
+        }
+        val built = NotificationCompat.Builder(context, CHANNEL_ID)
             .setSmallIcon(R.drawable.ic_stat_reminder)
-            .setContentTitle(title)
-            .setContentText(text ?: context.getString(R.string.reminder_notification_text))
+            .setContentTitle(notification.title)
+            .setContentText(context.getString(text))
             .setCategory(NotificationCompat.CATEGORY_REMINDER)
             .setPriority(NotificationCompat.PRIORITY_HIGH)
             .setAutoCancel(true)
-            .setContentIntent(openAppIntent(occurrenceId))
+            .setContentIntent(openAppIntent(id))
+            .setDeleteIntent(ReminderActionReceiver.intent(context, ReminderActionReceiver.ACTION_DISMISSED, id))
+            .addAction(
+                0,
+                context.getString(R.string.reminder_action_done),
+                ReminderActionReceiver.intent(context, ReminderActionReceiver.ACTION_COMPLETE, id),
+            )
+            .addAction(
+                0,
+                context.getString(R.string.reminder_action_snooze),
+                ReminderActionReceiver.intent(context, ReminderActionReceiver.ACTION_SNOOZE, id),
+            )
             .build()
         @Suppress("MissingPermission") // checked in canPost
-        manager.notify(occurrenceId, NOTIFICATION_ID, notification)
+        manager.notify(id, NOTIFICATION_ID, built)
         return true
+    }
+
+    override fun cancel(occurrenceId: String) {
+        NotificationManagerCompat.from(context).cancel(occurrenceId, NOTIFICATION_ID)
     }
 
     private fun canPost(manager: NotificationManagerCompat): Boolean {
