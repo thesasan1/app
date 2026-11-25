@@ -16,6 +16,7 @@
 | KI-011 | Dependabot PRs blocked by toolchain limits: Android ones superseded by ADR-019 (#20); NestJS 12 by ADR-020. | Resolved |
 | KI-004 | Branch protection and secret scanning on `main` are not confirmed enabled (requires owner action in repository settings). | Owner action |
 | KI-012 | The notes editor edits plain text only. Formatting it can't show (headings, checklists, bold) is kept when only the title changes, but editing the body of such a note saves it as plain paragraphs. No screen creates formatted notes yet, so nothing is lost today. | Rich editor (NOTE-02) |
+| KI-013 | The app doesn't yet ask for the notification permission (Android 13+) or explain exact alarms. Until the reminder UI does, a reminder that fires without the permission is recorded as missed, and without exact-alarm access alarms may ring late. No screen creates reminders yet. | Reminder picker PR |
 
 ## Technical Risks
 

@@ -54,7 +54,7 @@ PR: #1 (`docs/phase-0-foundation`)
 ## Phase 2 — Core Productivity
 
 Notes (NOTE-01…08 offline parts) → Tasks (TASK-01…08) → Reminder engine + UI (REM-01, 02, 06, 07) → Habits core (HAB-01, 02, 06, 07) → Dashboard v1 (DASH-01…03) → Search (PLT-07) → Notifications.
-Progress: notes data layer (Room v2 + FTS, ADR-022) — Merged (PR #23); notes repository and document format (ADR-009) — Merged (PR #24); notes list and editor with autosave (NOTE-01) — Merged (PR #27); archive and trash screens (NOTE-03, NOTE-04) — Merged (PR #28); tasks data layer (TASK-01) — Merged (PR #29); tasks repository with history (TASK-05, TASK-08) — Merged (PR #30); tasks list and quick add (TASK-01, TASK-06) — Merged (PR #31); task detail and editor (TASK-02, TASK-03) — Merged (PR #32); completed, archive and trash screens (TASK-07) — Merged (PR #33); reminder storage, Room v4 (ADR-024) — In review.
+Progress: notes data layer (Room v2 + FTS, ADR-022) — Merged (PR #23); notes repository and document format (ADR-009) — Merged (PR #24); notes list and editor with autosave (NOTE-01) — Merged (PR #27); archive and trash screens (NOTE-03, NOTE-04) — Merged (PR #28); tasks data layer (TASK-01) — Merged (PR #29); tasks repository with history (TASK-05, TASK-08) — Merged (PR #30); tasks list and quick add (TASK-01, TASK-06) — Merged (PR #31); task detail and editor (TASK-02, TASK-03) — Merged (PR #32); completed, archive and trash screens (TASK-07) — Merged (PR #33); reminder storage, Room v4 (ADR-024) — Merged (PR #34); reminder scheduler (ADR-025) — In review.
 
 **Exit:** functional offline app for notes, tasks, reminders, habits.
 

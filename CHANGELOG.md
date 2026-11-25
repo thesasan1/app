@@ -6,6 +6,7 @@ All notable changes are documented here. Format based on [Keep a Changelog](http
 
 ### Added
 
+- Reminder alarms: they ring at the exact minute when Android allows it, and are set again after a reboot, an update or a time-zone change. Nothing in the app creates reminders yet.
 - Local storage for reminders and their firings (database v4), so a reminder never fires twice after a restart.
 - Tasks Completed, Archive and Trash screens: reopen, unarchive, restore, and delete forever with confirmation.
 - Task detail screen: edit the title and notes (saved as you type), priority, due date and time with pickers, subtasks, and a history of changes; archive or move to trash.
