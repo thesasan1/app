@@ -56,6 +56,10 @@ class FakeReminderDao : ReminderDao {
     override suspend fun getPendingOccurrences() =
         occurrences.values.filter { it.state in pending }.sortedBy { it.nextFireAt }
 
+    override suspend fun getRingingOccurrences() = occurrences.values.filter {
+        it.state in setOf(OccurrenceState.DELIVERED, OccurrenceState.SNOOZED) && it.deliveredAt != null
+    }
+
     override suspend fun getOccurrencesFor(reminderId: String) =
         occurrences.values.filter { it.reminderId == reminderId }.sortedBy { it.scheduledForUtc }
 

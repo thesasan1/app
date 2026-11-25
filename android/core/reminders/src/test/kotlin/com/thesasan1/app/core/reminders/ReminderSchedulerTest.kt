@@ -224,4 +224,47 @@ class ReminderSchedulerTest {
 
         assertEquals(OccurrenceState.DISMISSED, dao.occurrences.getValue(id).state)
     }
+
+    @Test
+    fun completingTheTaskInTheAppTakesDownItsNotification() = runTest {
+        dao.upsert(reminder(repeat = true))
+        scheduler.rebuild()
+        clock = Clock.fixed(Instant.ofEpochMilli(dueAt), ZoneOffset.UTC)
+        scheduler.deliver(id)
+        assertTrue(id in notifier.visible)
+
+        tasks["t"] = tasks.getValue("t").copy(isOpen = false)
+        scheduler.rebuild()
+
+        assertTrue(id !in notifier.visible)
+        assertEquals(OccurrenceState.DISMISSED, dao.occurrences.getValue(id).state)
+        assertTrue(alarms.set.isEmpty())
+    }
+
+    @Test
+    fun removingTheReminderTakesDownItsNotification() = runTest {
+        dao.upsert(reminder())
+        scheduler.rebuild()
+        clock = Clock.fixed(Instant.ofEpochMilli(dueAt), ZoneOffset.UTC)
+        scheduler.deliver(id)
+
+        dao.upsert(reminder().let { it.copy(sync = it.sync.deleted(dueAt)) })
+        scheduler.rebuild()
+
+        assertTrue(id !in notifier.visible)
+        assertEquals(OccurrenceState.DISMISSED, dao.occurrences.getValue(id).state)
+    }
+
+    @Test
+    fun anOpenTaskKeepsItsNotification() = runTest {
+        dao.upsert(reminder())
+        scheduler.rebuild()
+        clock = Clock.fixed(Instant.ofEpochMilli(dueAt), ZoneOffset.UTC)
+        scheduler.deliver(id)
+
+        scheduler.rebuild()
+
+        assertTrue(id in notifier.visible)
+        assertEquals(OccurrenceState.DELIVERED, dao.occurrences.getValue(id).state)
+    }
 }
