@@ -39,4 +39,9 @@
     <string name="feature_habits_error_amount">مقداری بیشتر از صفر وارد کنید.</string>
     <string name="feature_habits_error_done">امروز قبلاً ثبت شده است.</string>
     <string name="feature_habits_error_failed">ذخیره نشد. دوباره امتحان کنید.</string>
+    <plurals name="feature_habits_streak">
+        <item quantity="one">%d روز پیاپی</item>
+        <item quantity="other">%d روز پیاپی</item>
+    </plurals>
+    <string name="feature_habits_streak_with_best">%1$s · بهترین %2$d</string>
 </resources>

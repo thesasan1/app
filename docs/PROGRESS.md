@@ -7,12 +7,12 @@ The GitHub repository is the source of truth. A checkpoint is added at the end o
 | Field | Value |
 |---|---|
 | Current phase | **Phase 2 — Core Productivity** (Phase 1 done except PR 5b, waiting on ADR-007) |
-| Status | Habits screen in review |
+| Status | Habit streaks and freezes in review |
 | Code status | Phase 1 merged: Android skeleton (#2), backend skeleton (#3), design system (#4), CI hardening (#5), local database (#14), logging (#19), toolchain upgrade (#20), NestJS 12 / Node 26 (#21), debug APK pre-release (#22). notes data layer (#23), notes repository (#24) and notes list/editor (#27) and archive/trash (#28) tasks data layer (#29) and tasks repository (#30) and tasks list (#31) task detail/editor (#32) tasks shelves (#33) reminder storage (#34), scheduler (#35) and notification actions (#36) merged. Reminder picker in review |
 | Build status | `android-ci` and `backend-ci` green on `main` after #5 and the Dependabot action bumps |
 | Test status | Backend: 13 unit + 12 e2e (CI green). Android: unit tests, lint, screenshots run in CI |
 | Blockers | ADR-007 (Prisma) needs owner approval before PR 5b; ADR-010 (local DB encryption) before the first release with real content. D-03…D-09 pending for later phases |
-| Next task | Habit streaks and freezes (HAB-06), habit edit and archive shelf; PR 5b once ADR-007 is approved |
+| Next task | Habit edit and archive shelf, then a way to earn or grant freezes (D-10); PR 5b once ADR-007 is approved |
 
 ## Completed Features
 
@@ -289,12 +289,22 @@ The GitHub repository is the source of truth. A checkpoint is added at the end o
 
 **Recommended next task:** habits screen (today list, check-in, create habit).
 
-### Checkpoint 2.18 — 2026-11-25 — Habits screen (submitted)
+### Checkpoint 2.18 — 2026-11-25 — Habits screen (#42)
 
-**Completed (in review):** Habits screen reached from a new Habits button on the dashboard. Lists today's active habits with status (done, progress against the goal, rest day, not due today). Actions: Done (yes/no), +1 (times a day), Log with an amount dialog (amount, minutes), Undo the newest check-in, Rest today, Archive. New habit dialog: name, how it's tracked, optional goal, unit, and days (all days = DAILY, fewer = WEEKDAYS). English and Persian strings. `HabitsViewModel` refreshes the day on resume.
+**Completed:** Habits screen reached from a new Habits button on the dashboard. Lists today's active habits with status (done, progress against the goal, rest day, not due today). Actions: Done (yes/no), +1 (times a day), Log with an amount dialog (amount, minutes), Undo the newest check-in, Rest today, Archive. New habit dialog: name, how it's tracked, optional goal, unit, and days (all days = DAILY, fewer = WEEKDAYS). English and Persian strings. `HabitsViewModel` refreshes the day on resume.
 
 **Not yet:** streaks and freezes, editing a habit, archive shelf, weekly/monthly targets and N-per-week in the form, habit reminders.
 
-**Tested:** see the PR.
+**Tested:** `HabitsViewModelTest` 4/4, `HabitRulesTest` 4/4, `OfflineHabitRepositoryTest` 7/7, `:feature:dashboard` 13/13 (local) → Passed; `android-ci` → Passed. On-device → Not run.
 
 **Recommended next task:** streaks and freezes, then habit edit and the archive shelf.
+
+### Checkpoint 2.19 — 2026-11-25 — Habit streaks and freezes (submitted)
+
+**Completed (in review):** `HabitStreaks` derives each daily or weekday habit's current and best streak from its events (ADR-030); the Habits screen shows "N-day streak · best M". Rest days, days not due, used freezes and today-not-done-yet keep the run; any other missed due day ends it. `HabitRepository.useFreeze` spends a freeze on a missed past due day as a `FREEZE_USED` event and lowers `freezes_available`; undoing it gives the freeze back. `HabitDraft.freezes` (0–10) sets the starting freezes. `HabitDao.observeEventsBetween` (no schema change).
+
+**Not yet:** a button to use a freeze and a way to earn or grant freezes (D-10); streaks for N-per-week, weekly and monthly targets; habit edit, archive shelf, reminders.
+
+**Tested:** see the PR.
+
+**Recommended next task:** habit edit and the archive shelf.

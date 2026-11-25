@@ -6,6 +6,7 @@ All notable changes are documented here. Format based on [Keep a Changelog](http
 
 ### Added
 
+- Habit streaks: daily and weekday habits show their current streak and best. Rest days and streak freezes keep a streak going; history is never changed to save one.
 - Habits screen: create a habit, check it off, log an amount or minutes, undo, take a rest day, or archive it. Open it from Habits on the home screen.
 - Habit logic: schedules with rest days, check-ins, undo, corrections and daily progress for yes/no, amount, duration and multi-check-in habits.
 - Habit storage (Room v5): habits with their schedules, and an append-only log of check-ins, undos and corrections. Not shown in the app yet.

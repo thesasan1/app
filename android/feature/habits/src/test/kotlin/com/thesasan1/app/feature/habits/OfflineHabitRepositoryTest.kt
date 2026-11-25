@@ -115,4 +115,29 @@ class OfflineHabitRepositoryTest {
         assertEquals(1, dao.events.value.count { it.eventType == HabitEventType.REST })
         assertTrue(repository.observeDay(today).first().single().rested)
     }
+
+    @Test
+    fun aFreezeCoversAMissedPastDayAndUndoGivesItBack() = runTest {
+        val habit = create(HabitDraft("Run", today.minusDays(3), freezes = 1))
+        repository.checkIn(habit.id, today.minusDays(3))
+        repository.checkIn(habit.id, today.minusDays(1))
+
+        assertEquals("date", repository.useFreeze(habit.id, today).validationField())
+        assertTrue(repository.useFreeze(habit.id, today.minusDays(2)) is Outcome.Success)
+        assertEquals(0, dao.habits.value.getValue(habit.id).freezesAvailable)
+        assertEquals(2, repository.observeDay(today).first().single().streak?.current)
+        assertEquals("freezes_available", repository.useFreeze(habit.id, today.minusDays(2)).validationField())
+
+        val freeze = dao.events.value.single { it.eventType == HabitEventType.FREEZE_USED }
+        repository.undo(freeze.id)
+        assertEquals(1, dao.habits.value.getValue(habit.id).freezesAvailable)
+        assertEquals(1, repository.observeDay(today).first().single().streak?.current)
+    }
+
+    @Test
+    fun aHabitWithoutFreezesCannotUseOne() = runTest {
+        val habit = create()
+
+        assertEquals("freezes_available", repository.useFreeze(habit.id, today.minusDays(1)).validationField())
+    }
 }

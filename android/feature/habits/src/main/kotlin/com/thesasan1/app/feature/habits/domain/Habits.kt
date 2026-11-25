@@ -20,6 +20,8 @@ data class HabitDraft(
     val scheduleDays: Int? = null,
     val scheduleCount: Int? = null,
     val restDays: Int? = null,
+    /** Streak freezes the habit starts with; 0 turns freezes off (ADR-030). */
+    val freezes: Int = 0,
 )
 
 /** One habit on one day, derived from its events (HAB-07: nothing here is stored). */
@@ -35,6 +37,8 @@ data class HabitDay(
     /** Count of check-ins (binary, multi) or the summed amount (numeric, duration). */
     val progress: Double,
     val isComplete: Boolean,
+    /** Day streak up to this day; null for weekly and monthly targets. */
+    val streak: HabitStreak? = null,
 )
 
 /** Habits and their check-ins. History is append-only: undo and corrections are new events (ADR-028). */
@@ -66,4 +70,10 @@ interface HabitRepository {
 
     /** Marks [date] as a rest day for the habit (HAB-06). */
     suspend fun markRest(habitId: String, date: LocalDate): Outcome<Unit>
+
+    /**
+     * Spends one of the habit's freezes on a missed past due day so its streak carries on (HAB-06).
+     * Recorded as a FREEZE_USED event; undoing it gives the freeze back.
+     */
+    suspend fun useFreeze(habitId: String, date: LocalDate): Outcome<Unit>
 }

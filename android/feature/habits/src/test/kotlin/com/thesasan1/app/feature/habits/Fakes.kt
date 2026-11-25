@@ -46,6 +46,8 @@ class FakeHabitDao : HabitDao {
         events.map { all -> all.filter { it.habitId == habitId && it.localDate in from..to } }
     override suspend fun getEvents(habitId: String) = events.value.filter { it.habitId == habitId }
     override fun observeEventsOn(date: String) = events.map { all -> all.filter { it.localDate == date } }
+    override fun observeEventsBetween(from: String, to: String) =
+        events.map { all -> all.filter { it.localDate in from..to } }
 }
 
 class FakeOutboxDao : OutboxDao {
