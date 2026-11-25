@@ -161,6 +161,9 @@ class ReminderScheduler @Inject constructor(
         /** The notification's Snooze button. */
         val SNOOZE: Duration = Duration.ofMinutes(10)
 
+        /** The notification's longer snooze, for "not now, later". */
+        val SNOOZE_LONG: Duration = Duration.ofHours(1)
+
         /** How often a repeat-until-done reminder rings again, and for how long it keeps trying. */
         val REPEAT_INTERVAL: Duration = Duration.ofMinutes(15)
         val REPEAT_WINDOW: Duration = Duration.ofHours(24)

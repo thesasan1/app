@@ -6,6 +6,7 @@ All notable changes are documented here. Format based on [Keep a Changelog](http
 
 ### Added
 
+- Custom reminder times (minutes, hours or days before, up to 30 days), and a 1 hour snooze button on reminder notifications.
 - Completing a task in the app, or removing its reminder, takes its reminder notification off the screen.
 - Task editor Reminders section: remind at the due time or 10 minutes, 1 hour or 1 day before, with Repeat until done. Asks for notification permission and explains when reminders may ring late.
 - Reminder notifications have Done and Snooze buttons. Done also completes the task. Reminders can repeat every 15 minutes until done.

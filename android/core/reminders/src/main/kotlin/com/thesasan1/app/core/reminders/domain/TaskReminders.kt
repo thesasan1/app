@@ -21,6 +21,23 @@ data class TaskReminder(val id: String, val offsetMinutes: Int, val repeatUntilD
 @Suppress("MagicNumber") // the presets are the data
 val REMINDER_PRESETS: List<Int> = listOf(0, -10, -60, -24 * 60)
 
+/** Units for a custom reminder offset, in minutes. */
+@Suppress("MagicNumber") // minutes per unit
+enum class ReminderUnit(val minutes: Int) {
+    MINUTES(1),
+    HOURS(60),
+    DAYS(24 * 60),
+}
+
+/** The longest a reminder may come before its task is due. */
+const val MAX_REMINDER_LEAD_MINUTES = 30 * 24 * 60
+
+/** [amount] [unit]s before the due time as an offset (negative minutes), or null when out of range. */
+fun customReminderOffset(amount: Int, unit: ReminderUnit): Int? {
+    val minutes = amount.toLong() * unit.minutes
+    return if (minutes in 1..MAX_REMINDER_LEAD_MINUTES) -minutes.toInt() else null
+}
+
 /** Task reminders as the editor sees them. Alarms follow on their own (see [ReminderRebuildTrigger]). */
 interface TaskReminderRepository {
     fun observe(taskId: String): Flow<List<TaskReminder>>

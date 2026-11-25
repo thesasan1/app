@@ -51,7 +51,7 @@ class ReminderAlarmReceiver : BroadcastReceiver() {
     }
 }
 
-/** The notification's Done and Snooze buttons, and swiping it away (REM-02). */
+/** The notification's Done, Snooze and Snooze-1-hour buttons, and swiping it away (REM-02). */
 @AndroidEntryPoint
 class ReminderActionReceiver : BroadcastReceiver() {
     @Inject lateinit var scheduler: ReminderScheduler
@@ -66,6 +66,9 @@ class ReminderActionReceiver : BroadcastReceiver() {
         when (intent.action) {
             ACTION_COMPLETE -> runAsync(scope, logger) { scheduler.complete(occurrenceId) }
             ACTION_SNOOZE -> runAsync(scope, logger) { scheduler.snooze(occurrenceId) }
+            ACTION_SNOOZE_LONG -> runAsync(scope, logger) {
+                scheduler.snooze(occurrenceId, ReminderScheduler.SNOOZE_LONG)
+            }
             ACTION_DISMISSED -> runAsync(scope, logger) { scheduler.dismissed(occurrenceId) }
         }
     }
@@ -73,6 +76,7 @@ class ReminderActionReceiver : BroadcastReceiver() {
     companion object {
         const val ACTION_COMPLETE = "com.thesasan1.app.reminders.COMPLETE"
         const val ACTION_SNOOZE = "com.thesasan1.app.reminders.SNOOZE"
+        const val ACTION_SNOOZE_LONG = "com.thesasan1.app.reminders.SNOOZE_LONG"
         const val ACTION_DISMISSED = "com.thesasan1.app.reminders.DISMISSED"
         private const val EXTRA_OCCURRENCE_ID = "occurrence_id"
 

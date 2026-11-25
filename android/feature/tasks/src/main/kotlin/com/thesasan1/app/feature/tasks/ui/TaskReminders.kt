@@ -23,6 +23,7 @@ import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -76,18 +77,31 @@ internal fun TaskReminders(state: TaskRemindersUiState, hasDueDate: Boolean, act
             }
         }
     }
-    if (state.available.isNotEmpty()) {
-        FlowRow(horizontalArrangement = Arrangement.spacedBy(Spacing.sm)) {
-            state.available.forEach { offset ->
-                AssistChip(
-                    onClick = {
-                        actions.onAdd(offset)
-                        permissions.requestNotificationsIfNeeded()
-                    },
-                    label = { Text(stringResource(R.string.feature_tasks_reminder_add, reminderLabel(offset))) },
-                )
-            }
+    var customOpen by remember { mutableStateOf(false) }
+    val add: (Int) -> Unit = { offset ->
+        actions.onAdd(offset)
+        permissions.requestNotificationsIfNeeded()
+    }
+    FlowRow(horizontalArrangement = Arrangement.spacedBy(Spacing.sm)) {
+        state.available.forEach { offset ->
+            AssistChip(
+                onClick = { add(offset) },
+                label = { Text(stringResource(R.string.feature_tasks_reminder_add, reminderLabel(offset))) },
+            )
         }
+        AssistChip(
+            onClick = { customOpen = true },
+            label = { Text(stringResource(R.string.feature_tasks_reminder_custom)) },
+        )
+    }
+    if (customOpen) {
+        CustomReminderDialog(
+            onAdd = { offset ->
+                add(offset)
+                customOpen = false
+            },
+            onDismiss = { customOpen = false },
+        )
     }
     if (state.reminders.isNotEmpty()) ReminderPermissionNotices(permissions)
 }
