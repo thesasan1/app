@@ -252,6 +252,15 @@ Architecture Decision Records (ADRs) and decisions pending the project owner. Fo
 
 ---
 
+### ADR-027 — Task reminder picker and alarm rebuilds on data change
+
+- **Status:** Accepted (agent decision, 2026-11-25)
+- **Decision:** Task reminders are offsets from the due time, picked from four presets (at due, 10 min, 1 h, 1 day before); one reminder per offset. Alarms are rebuilt (debounced 300 ms) whenever Room reports a write to `tasks` or `reminders`, through a `DatabaseChanges` port in `:core:database`, instead of each repository calling the scheduler. The POST_NOTIFICATIONS prompt appears when the first reminder is added, not at app start; exact-alarm access is explained in place, with a link to the system setting.
+- **Alternatives:** repositories calling `ReminderScheduler.rebuild()` (misses writes from other paths and couples features to the scheduler); a WorkManager job per change (heavier, delayed); asking for notifications on first launch (asks before the user has a reason).
+- **Consequences:** any write path (UI, notification action, future sync) keeps alarms correct. Occurrence writes are not watched, so rebuilds don't trigger themselves. A rebuild runs at most once per burst of edits.
+
+---
+
 ## Pending Decisions (owner input required)
 
 | ID | Decision | Recommendation | Blocks |

@@ -9,4 +9,6 @@ android {
 dependencies {
     implementation(project(":core:database"))
     implementation(project(":core:reminders"))
+    implementation(libs.androidx.activity.compose)
+    implementation(libs.androidx.core.ktx)
 }

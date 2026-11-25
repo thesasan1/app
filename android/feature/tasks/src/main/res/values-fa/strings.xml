@@ -70,4 +70,26 @@
     <string name="feature_tasks_delete_forever_body">«%1$s» همراه زیرکارها و تاریخچه‌اش حذف می‌شود. این کار برگشت‌پذیر نیست.</string>
     <string name="feature_tasks_restore_parent_first">اول کار اصلی را بازیابی کنید.</string>
     <string name="feature_tasks_subtask_label">زیرکار</string>
+    <string name="feature_tasks_section_reminders">یادآورها</string>
+    <string name="feature_tasks_reminders_need_due">برای افزودن یادآور، تاریخ سررسید تعیین کنید.</string>
+    <string name="feature_tasks_reminder_at_due">در زمان سررسید</string>
+    <plurals name="feature_tasks_reminder_minutes_before">
+        <item quantity="one">%d دقیقه قبل</item>
+        <item quantity="other">%d دقیقه قبل</item>
+    </plurals>
+    <plurals name="feature_tasks_reminder_hours_before">
+        <item quantity="one">%d ساعت قبل</item>
+        <item quantity="other">%d ساعت قبل</item>
+    </plurals>
+    <plurals name="feature_tasks_reminder_days_before">
+        <item quantity="one">%d روز قبل</item>
+        <item quantity="other">%d روز قبل</item>
+    </plurals>
+    <string name="feature_tasks_reminder_add">+ %1$s</string>
+    <string name="feature_tasks_reminder_repeat">تکرار تا انجام</string>
+    <string name="feature_tasks_reminder_remove">حذف</string>
+    <string name="feature_tasks_reminders_notifications_off">اعلان‌ها خاموش است، پس یادآورها به صدا درنمی‌آیند.</string>
+    <string name="feature_tasks_reminders_turn_on">روشن کردن</string>
+    <string name="feature_tasks_reminders_inexact">بدون هشدار دقیق، ممکن است یادآورها چند دقیقه دیر به صدا درآیند.</string>
+    <string name="feature_tasks_reminders_allow_exact">اجازه دادن</string>
 </resources>

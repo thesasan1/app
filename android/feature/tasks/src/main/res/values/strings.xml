@@ -70,4 +70,26 @@
     <string name="feature_tasks_delete_forever_body">“%1$s” and its subtasks and history will be deleted. This can\'t be undone.</string>
     <string name="feature_tasks_restore_parent_first">Restore the parent task first.</string>
     <string name="feature_tasks_subtask_label">Subtask</string>
+    <string name="feature_tasks_section_reminders">Reminders</string>
+    <string name="feature_tasks_reminders_need_due">Set a due date to add reminders.</string>
+    <string name="feature_tasks_reminder_at_due">At the due time</string>
+    <plurals name="feature_tasks_reminder_minutes_before">
+        <item quantity="one">%d minute before</item>
+        <item quantity="other">%d minutes before</item>
+    </plurals>
+    <plurals name="feature_tasks_reminder_hours_before">
+        <item quantity="one">%d hour before</item>
+        <item quantity="other">%d hours before</item>
+    </plurals>
+    <plurals name="feature_tasks_reminder_days_before">
+        <item quantity="one">%d day before</item>
+        <item quantity="other">%d days before</item>
+    </plurals>
+    <string name="feature_tasks_reminder_add">+ %1$s</string>
+    <string name="feature_tasks_reminder_repeat">Repeat until done</string>
+    <string name="feature_tasks_reminder_remove">Remove</string>
+    <string name="feature_tasks_reminders_notifications_off">Notifications are off, so reminders can\'t ring.</string>
+    <string name="feature_tasks_reminders_turn_on">Turn on</string>
+    <string name="feature_tasks_reminders_inexact">Reminders may ring a few minutes late without exact alarms.</string>
+    <string name="feature_tasks_reminders_allow_exact">Allow</string>
 </resources>

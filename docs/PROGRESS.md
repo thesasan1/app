@@ -7,12 +7,12 @@ The GitHub repository is the source of truth. A checkpoint is added at the end o
 | Field | Value |
 |---|---|
 | Current phase | **Phase 2 — Core Productivity** (Phase 1 done except PR 5b, waiting on ADR-007) |
-| Status | Reminder notification actions (REM-02) in review |
-| Code status | Phase 1 merged: Android skeleton (#2), backend skeleton (#3), design system (#4), CI hardening (#5), local database (#14), logging (#19), toolchain upgrade (#20), NestJS 12 / Node 26 (#21), debug APK pre-release (#22). notes data layer (#23), notes repository (#24) and notes list/editor (#27) and archive/trash (#28) tasks data layer (#29) and tasks repository (#30) and tasks list (#31) task detail/editor (#32) tasks shelves (#33) reminder storage (#34) and reminder scheduler (#35) merged. Reminder notification actions in review |
+| Status | Reminder picker on tasks (REM-01, REM-07, KI-013) in review |
+| Code status | Phase 1 merged: Android skeleton (#2), backend skeleton (#3), design system (#4), CI hardening (#5), local database (#14), logging (#19), toolchain upgrade (#20), NestJS 12 / Node 26 (#21), debug APK pre-release (#22). notes data layer (#23), notes repository (#24) and notes list/editor (#27) and archive/trash (#28) tasks data layer (#29) and tasks repository (#30) and tasks list (#31) task detail/editor (#32) tasks shelves (#33) reminder storage (#34), scheduler (#35) and notification actions (#36) merged. Reminder picker in review |
 | Build status | `android-ci` and `backend-ci` green on `main` after #5 and the Dependabot action bumps |
 | Test status | Backend: 13 unit + 12 e2e (CI green). Android: unit tests, lint, screenshots run in CI |
 | Blockers | ADR-007 (Prisma) needs owner approval before PR 5b; ADR-010 (local DB encryption) before the first release with real content. D-03…D-09 pending for later phases |
-| Next task | Reminder picker on tasks with the notification and exact-alarm prompts (KI-013), rebuilding alarms when tasks change; PR 5b once ADR-007 is approved |
+| Next task | Clear a shown reminder notification when its task is completed in the app; reschedule from the notification; then habits (Phase 2); PR 5b once ADR-007 is approved |
 
 ## Completed Features
 
@@ -229,12 +229,22 @@ The GitHub repository is the source of truth. A checkpoint is added at the end o
 
 **Recommended next task:** notification actions (REM-02).
 
-### Checkpoint 2.12 — 2026-11-25 — Reminder notification actions submitted
+### Checkpoint 2.12 — 2026-11-25 — Reminder notification actions merged (#36)
 
-**Completed (in review):** reminder notifications get **Done** and **Snooze 10 min** buttons, and swiping one away is recorded (REM-02, ADR-026). Done marks the occurrence completed and completes the task through `TaskRepository`, so it gets the usual history row and outbox entry (`ReminderTargetActions` port, implemented in `:feature:tasks`). Snooze rings again after 10 minutes. A reminder set to repeat until done rings every 15 minutes for up to 24 hours; swiping it away doesn't stop it, only Done or turning the reminder off does.
+**Completed:** reminder notifications get **Done** and **Snooze 10 min** buttons, and swiping one away is recorded (REM-02, ADR-026). Done marks the occurrence completed and completes the task through `TaskRepository`, so it gets the usual history row and outbox entry (`ReminderTargetActions` port, implemented in `:feature:tasks`). Snooze rings again after 10 minutes. A reminder set to repeat until done rings every 15 minutes for up to 24 hours; swiping it away doesn't stop it, only Done or turning the reminder off does.
 
 **Not yet:** reschedule from the notification (needs a time picker; comes with the reminder picker), the picker itself, permission prompts (KI-013), and clearing a shown notification when the task is completed inside the app.
 
-**Tested:** see the PR.
+**Tested:** `ReminderSchedulerTest` 13/13, `ReminderTimeCalculatorTest` 7/7, `:feature:tasks` 25/25 (local) → Passed; `android-ci` → Passed.
 
 **Recommended next task:** reminder picker on tasks (REM-01, REM-07).
+
+### Checkpoint 2.13 — 2026-11-25 — Reminder picker on tasks submitted
+
+**Completed (in review):** the task editor has a **Reminders** section (open tasks with a due date): add a reminder at the due time or 10 minutes, 1 hour or 1 day before; a "Repeat until done" checkbox and Remove per reminder. Tasks without a time count from 09:00 (ADR-025). `TaskReminderRepository` (`:core:reminders`) writes the reminder and its outbox entry in one transaction; removal is a soft delete. Alarms are rebuilt whenever the `tasks` or `reminders` tables change (`ReminderRebuildTrigger` on a new `DatabaseChanges` port over Room's invalidation tracker; ADR-027), so editing a due date, completing, archiving or trashing a task moves or cancels its alarms. Adding the first reminder asks for POST_NOTIFICATIONS on Android 13+; when notifications are off the section says so with a Turn on button (prompt or app notification settings), and without exact-alarm access it says reminders may ring a few minutes late, with an Allow button (REM-07). This resolves KI-013.
+
+**Not yet:** custom offsets and fixed-time reminders, clearing an already shown notification when the task is completed in the app, and reschedule from the notification.
+
+**Tested:** see the PR.
+
+**Recommended next task:** clear shown notifications on in-app completion; then habits.
