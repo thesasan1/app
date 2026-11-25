@@ -261,6 +261,15 @@ Architecture Decision Records (ADRs) and decisions pending the project owner. Fo
 
 ---
 
+### ADR-028 — Local habit storage
+
+- **Status:** Accepted (agent decision, 2026-11-25)
+- **Decision:** Room v5 adds `habits` and `habit_events` (DATABASE.md §3.6–3.7) as an additive auto-migration. Habit days are ISO local date strings, like task due dates. Schedule and rest days are a Monday=1 … Sunday=64 bitmask (`WeekdayMask`). `habit_events` is append-only: `HabitDao` offers insert (ignore on a known id, so device merges are a union) and reads, and no update or delete. Undo and correction are new events that point at the event they change. Streaks and totals are not stored; they are derived from events.
+- **Alternatives:** a mutable `habit_days` table with one row per day (simpler reads, but lets history be rewritten, against HAB-07, and conflicts on sync); separate tables per measurement type (more joins, no gain).
+- **Consequences:** history can't be altered to protect a streak; analytics recompute from events and may cache a `habit_day_summary` later. Events carry their own `sync_state` instead of the full sync columns, since they never change after insert. `goal_id` is a plain column until goals exist (as for tasks, ADR-023).
+
+---
+
 ## Pending Decisions (owner input required)
 
 | ID | Decision | Recommendation | Blocks |

@@ -152,6 +152,7 @@ Local (Room v4): stored as above with `target_id` as a plain column; `trigger_at
 | start_date | date | |
 | archived_at | timestamp nullable | |
 | goal_id | uuid nullable | |
+| sort_order | int | position in the habit list |
 | version, created_at, updated_at, deleted_at | sync | |
 
 ### 3.7 `habit_events` (append-only, conflict-free)
@@ -166,6 +167,7 @@ Local (Room v4): stored as above with `target_id` as a plain column; `trigger_at
 | note | text nullable | |
 | corrects_event_id | uuid nullable | for CORRECTION/UNDO |
 | recorded_at | timestamp | real time it was recorded (never back-dated) |
+| sync_state | text | local only; events never change after insert, so no version columns (ADR-028) |
 
 Streaks and analytics are **derived** from events; nothing is rewritten to preserve a streak (HAB-07). Derived daily aggregates may be cached in a local `habit_day_summary` table and rebuilt at any time.
 

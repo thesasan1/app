@@ -4,6 +4,7 @@ import androidx.room.AutoMigration
 import androidx.room.Database
 import androidx.room.RoomDatabase
 import com.thesasan1.app.core.database.dao.CategoryDao
+import com.thesasan1.app.core.database.dao.HabitDao
 import com.thesasan1.app.core.database.dao.NoteDao
 import com.thesasan1.app.core.database.dao.OutboxDao
 import com.thesasan1.app.core.database.dao.ProjectDao
@@ -12,6 +13,8 @@ import com.thesasan1.app.core.database.dao.SyncCursorDao
 import com.thesasan1.app.core.database.dao.TagDao
 import com.thesasan1.app.core.database.dao.TaskDao
 import com.thesasan1.app.core.database.entity.CategoryEntity
+import com.thesasan1.app.core.database.entity.HabitEntity
+import com.thesasan1.app.core.database.entity.HabitEventEntity
 import com.thesasan1.app.core.database.entity.NoteEntity
 import com.thesasan1.app.core.database.entity.NoteFtsEntity
 import com.thesasan1.app.core.database.entity.OutboxEntity
@@ -46,8 +49,10 @@ import com.thesasan1.app.core.database.entity.TaskHistoryEntity
         TaskHistoryEntity::class,
         ReminderEntity::class,
         ReminderOccurrenceEntity::class,
+        HabitEntity::class,
+        HabitEventEntity::class,
     ],
-    version = 4,
+    version = 5,
     exportSchema = true,
     autoMigrations = [
         // v2: notes and notes_fts (new tables only).
@@ -56,6 +61,8 @@ import com.thesasan1.app.core.database.entity.TaskHistoryEntity
         AutoMigration(from = 2, to = 3),
         // v4: reminders and reminder_occurrences (new tables only).
         AutoMigration(from = 3, to = 4),
+        // v5: habits and habit_events (new tables only).
+        AutoMigration(from = 4, to = 5),
     ],
 )
 abstract class AppDatabase : RoomDatabase() {
@@ -67,6 +74,7 @@ abstract class AppDatabase : RoomDatabase() {
     abstract fun noteDao(): NoteDao
     abstract fun taskDao(): TaskDao
     abstract fun reminderDao(): ReminderDao
+    abstract fun habitDao(): HabitDao
 
     companion object {
         const val NAME = "personal_os.db"
