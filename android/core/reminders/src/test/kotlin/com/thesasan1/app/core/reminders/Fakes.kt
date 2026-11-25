@@ -31,10 +31,9 @@ class FakeReminderDao : ReminderDao {
         reminders.map { all -> all.values.filter { it.targetType == targetType && it.targetId == targetId } }
 
     override suspend fun getForTarget(targetType: ReminderTargetType, targetId: String) =
-        reminders.value.values.filter {
-            it.targetType == targetType && it.targetId == targetId &&
-                it.sync.deletedAt == null
-        }
+        reminders.value.values.filter { it.isFor(targetType, targetId) && it.sync.deletedAt == null }
+
+    private fun ReminderEntity.isFor(type: ReminderTargetType, id: String) = targetType == type && targetId == id
 
     override suspend fun getEnabledTimeReminders() = reminders.value.values.filter {
         it.isEnabled && it.triggerType == ReminderTriggerType.TIME && it.sync.deletedAt == null
