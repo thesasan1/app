@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -57,6 +58,7 @@ import java.time.format.FormatStyle
 @Composable
 internal fun TasksListRoute(
     onOpenTask: (String) -> Unit,
+    onOpenShelf: (TaskShelf) -> Unit,
     onBack: () -> Unit,
     viewModel: TasksViewModel = hiltViewModel(),
 ) {
@@ -67,6 +69,7 @@ internal fun TasksListRoute(
         actions = TasksListActions(
             onBack = onBack,
             onOpenTask = onOpenTask,
+            onOpenShelf = onOpenShelf,
             onQuickAddChange = viewModel::onQuickAddChange,
             onQuickAddDueTodayChange = viewModel::onQuickAddDueTodayChange,
             onAdd = viewModel::addTask,
@@ -81,6 +84,7 @@ internal fun TasksListRoute(
 internal data class TasksListActions(
     val onBack: () -> Unit = {},
     val onOpenTask: (String) -> Unit = {},
+    val onOpenShelf: (TaskShelf) -> Unit = {},
     val onQuickAddChange: (String) -> Unit = {},
     val onQuickAddDueTodayChange: (Boolean) -> Unit = {},
     val onAdd: () -> Unit = {},
@@ -111,7 +115,13 @@ internal fun TasksListScreen(uiState: TasksUiState, actions: TasksListActions, m
                 .padding(innerPadding)
                 .padding(horizontal = Spacing.screenHorizontal),
         ) {
-            TextButton(onClick = actions.onBack) { Text(stringResource(R.string.feature_tasks_back)) }
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                TextButton(onClick = actions.onBack) { Text(stringResource(R.string.feature_tasks_back)) }
+                Spacer(Modifier.weight(1f))
+                TaskShelf.entries.forEach { shelf ->
+                    TextButton(onClick = { actions.onOpenShelf(shelf) }) { Text(stringResource(shelf.titleRes)) }
+                }
+            }
             Text(
                 text = stringResource(R.string.feature_tasks_title),
                 style = AppTheme.typography.headline,

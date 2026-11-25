@@ -6,6 +6,7 @@ All notable changes are documented here. Format based on [Keep a Changelog](http
 
 ### Added
 
+- Tasks Completed, Archive and Trash screens: reopen, unarchive, restore, and delete forever with confirmation.
 - Task detail screen: edit the title and notes (saved as you type), priority, due date and time with pickers, subtasks, and a history of changes; archive or move to trash.
 - Tasks screen: tasks grouped by Overdue, Today, Upcoming and No date, quick add with "Due today", and tick-to-complete with Undo. Open it from the dashboard.
 - Task logic: create, edit, reschedule, snooze, complete and reopen, archive, trash and restore, with a history of every change.
