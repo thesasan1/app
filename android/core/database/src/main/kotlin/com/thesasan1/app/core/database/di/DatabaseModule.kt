@@ -3,7 +3,9 @@ package com.thesasan1.app.core.database.di
 import android.content.Context
 import androidx.room.Room
 import com.thesasan1.app.core.database.AppDatabase
+import com.thesasan1.app.core.database.DatabaseChanges
 import com.thesasan1.app.core.database.DatabaseMigrations
+import com.thesasan1.app.core.database.RoomDatabaseChanges
 import com.thesasan1.app.core.database.RoomTransactionRunner
 import com.thesasan1.app.core.database.TransactionRunner
 import com.thesasan1.app.core.database.dao.CategoryDao
@@ -54,4 +56,6 @@ object DatabaseModule {
 @InstallIn(SingletonComponent::class)
 internal interface DatabaseBindings {
     @Binds fun bindTransactionRunner(runner: RoomTransactionRunner): TransactionRunner
+
+    @Binds fun bindDatabaseChanges(changes: RoomDatabaseChanges): DatabaseChanges
 }

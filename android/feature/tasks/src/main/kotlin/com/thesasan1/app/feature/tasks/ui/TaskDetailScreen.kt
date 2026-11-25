@@ -62,8 +62,10 @@ internal fun TaskDetailRoute(
     onOpenTask: (String) -> Unit,
     onClose: () -> Unit,
     viewModel: TaskDetailViewModel = hiltViewModel(),
+    remindersViewModel: TaskRemindersViewModel = hiltViewModel(),
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val reminders by remindersViewModel.uiState.collectAsStateWithLifecycle()
     LifecycleEventEffect(Lifecycle.Event.ON_STOP) { viewModel.flush() }
     LaunchedEffect(uiState.isClosed) { if (uiState.isClosed) onClose() }
     TaskDetailScreen(
@@ -89,6 +91,12 @@ internal fun TaskDetailRoute(
             onArchive = viewModel::archive,
             onMoveToTrash = viewModel::moveToTrash,
         ),
+        reminders = reminders,
+        remindersActions = TaskRemindersActions(
+            onAdd = remindersViewModel::add,
+            onRepeatChange = remindersViewModel::setRepeatUntilDone,
+            onRemove = remindersViewModel::remove,
+        ),
     )
 }
 
@@ -109,7 +117,13 @@ internal data class TaskDetailActions(
 )
 
 @Composable
-internal fun TaskDetailScreen(uiState: TaskDetailUiState, actions: TaskDetailActions, modifier: Modifier = Modifier) {
+internal fun TaskDetailScreen(
+    uiState: TaskDetailUiState,
+    actions: TaskDetailActions,
+    modifier: Modifier = Modifier,
+    reminders: TaskRemindersUiState = TaskRemindersUiState(),
+    remindersActions: TaskRemindersActions = TaskRemindersActions(),
+) {
     Scaffold(modifier = modifier, containerColor = AppTheme.colors.canvas) { innerPadding ->
         Column(
             modifier = Modifier
@@ -130,7 +144,13 @@ internal fun TaskDetailScreen(uiState: TaskDetailUiState, actions: TaskDetailAct
                     title = stringResource(R.string.feature_tasks_not_found_title),
                     body = stringResource(R.string.feature_tasks_not_found_body),
                 )
-                task != null -> TaskEditor(task, uiState, actions)
+                task != null -> {
+                    TaskEditor(task, uiState, actions)
+                    if (task.status != TaskStatus.DONE) {
+                        SectionHeader(R.string.feature_tasks_section_reminders)
+                        TaskReminders(reminders, hasDueDate = task.dueDate != null, actions = remindersActions)
+                    }
+                }
             }
         }
     }
