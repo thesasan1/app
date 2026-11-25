@@ -31,11 +31,17 @@ import java.time.format.FormatStyle
 internal fun DashboardRoute(
     onOpenNotes: () -> Unit,
     onOpenTasks: () -> Unit,
+    onOpenHabits: () -> Unit,
     viewModel: DashboardViewModel = hiltViewModel(),
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     LifecycleEventEffect(Lifecycle.Event.ON_RESUME) { viewModel.refresh() }
-    DashboardScreen(uiState = uiState, onOpenNotes = onOpenNotes, onOpenTasks = onOpenTasks)
+    DashboardScreen(
+        uiState = uiState,
+        onOpenNotes = onOpenNotes,
+        onOpenTasks = onOpenTasks,
+        onOpenHabits = onOpenHabits,
+    )
 }
 
 @Composable
@@ -43,6 +49,7 @@ internal fun DashboardScreen(
     uiState: DashboardUiState,
     onOpenNotes: () -> Unit,
     onOpenTasks: () -> Unit,
+    onOpenHabits: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Scaffold(modifier = modifier) { innerPadding ->
@@ -85,6 +92,12 @@ internal fun DashboardScreen(
             )
             Spacer(Modifier.height(Spacing.sm))
             AppButton(
+                text = stringResource(R.string.feature_dashboard_open_habits),
+                onClick = onOpenHabits,
+                variant = AppButtonVariant.Secondary,
+            )
+            Spacer(Modifier.height(Spacing.sm))
+            AppButton(
                 text = stringResource(R.string.feature_dashboard_open_notes),
                 onClick = onOpenNotes,
                 variant = AppButtonVariant.Secondary,
@@ -111,6 +124,7 @@ private fun DashboardScreenPreview() {
             ),
             onOpenNotes = {},
             onOpenTasks = {},
+            onOpenHabits = {},
         )
     }
 }
@@ -126,6 +140,7 @@ private fun DashboardScreenPersianPreview() {
             ),
             onOpenNotes = {},
             onOpenTasks = {},
+            onOpenHabits = {},
         )
     }
 }

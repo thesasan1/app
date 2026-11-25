@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="feature_habits_title">Habits</string>
+    <string name="feature_habits_back">Back</string>
+    <string name="feature_habits_new">New habit</string>
+    <string name="feature_habits_empty_title">No habits yet</string>
+    <string name="feature_habits_empty_body">Add one you want to keep, like reading or a walk. Check it off here each day.</string>
+    <string name="feature_habits_mark_done">Done</string>
+    <string name="feature_habits_add_one">+1</string>
+    <string name="feature_habits_log">Log</string>
+    <string name="feature_habits_undo">Undo</string>
+    <string name="feature_habits_rest">Rest today</string>
+    <string name="feature_habits_archive">Archive</string>
+    <string name="feature_habits_status_done">Done today</string>
+    <string name="feature_habits_status_todo">Not done yet</string>
+    <string name="feature_habits_status_rest">Rest day</string>
+    <string name="feature_habits_status_not_due">Not due today</string>
+    <string name="feature_habits_status_of">%1$s of %2$s %3$s</string>
+    <string name="feature_habits_status_minutes">%1$s of %2$s min</string>
+    <string name="feature_habits_name">Name</string>
+    <string name="feature_habits_kind">How you track it</string>
+    <string name="feature_habits_kind_binary">Yes or no</string>
+    <string name="feature_habits_kind_numeric">Amount</string>
+    <string name="feature_habits_kind_duration">Minutes</string>
+    <string name="feature_habits_kind_multi">Times a day</string>
+    <string name="feature_habits_target">Daily goal (optional)</string>
+    <string name="feature_habits_target_minutes">Minutes a day (optional)</string>
+    <string name="feature_habits_target_times">Times a day</string>
+    <string name="feature_habits_unit">Unit, like pages</string>
+    <string name="feature_habits_days">Days</string>
+    <string name="feature_habits_create">Create</string>
+    <string name="feature_habits_cancel">Cancel</string>
+    <string name="feature_habits_ok">OK</string>
+    <string name="feature_habits_minutes">Minutes</string>
+    <string name="feature_habits_amount">Amount</string>
+    <string name="feature_habits_error_name">Give the habit a name.</string>
+    <string name="feature_habits_error_target">Enter a goal above zero.</string>
+    <string name="feature_habits_error_days">Pick at least one day.</string>
+    <string name="feature_habits_error_amount">Enter an amount above zero.</string>
+    <string name="feature_habits_error_done">That\'s already checked in for today.</string>
+    <string name="feature_habits_error_failed">That didn\'t save. Try again.</string>
+</resources>
