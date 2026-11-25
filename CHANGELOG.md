@@ -6,6 +6,7 @@ All notable changes are documented here. Format based on [Keep a Changelog](http
 
 ### Added
 
+- Tasks screen: tasks grouped by Overdue, Today, Upcoming and No date, quick add with "Due today", and tick-to-complete with Undo. Open it from the dashboard.
 - Task logic: create, edit, reschedule, snooze, complete and reopen, archive, trash and restore, with a history of every change.
 - Local storage for tasks: subtasks, due dates, priority, search and an append-only history (database v3).
 - Notes archive and trash: unarchive, restore, delete forever with confirmation, and automatic removal after 30 days in the trash.

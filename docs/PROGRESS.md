@@ -7,12 +7,12 @@ The GitHub repository is the source of truth. A checkpoint is added at the end o
 | Field | Value |
 |---|---|
 | Current phase | **Phase 2 — Core Productivity** (Phase 1 done except PR 5b, waiting on ADR-007) |
-| Status | Tasks repository with history and outbox (TASK-05, TASK-08) in review |
-| Code status | Phase 1 merged: Android skeleton (#2), backend skeleton (#3), design system (#4), CI hardening (#5), local database (#14), logging (#19), toolchain upgrade (#20), NestJS 12 / Node 26 (#21), debug APK pre-release (#22). notes data layer (#23), notes repository (#24) and notes list/editor (#27) and archive/trash (#28) and tasks data layer (#29) merged. Tasks repository in review |
+| Status | Tasks list and quick add (TASK-01, TASK-06) in review |
+| Code status | Phase 1 merged: Android skeleton (#2), backend skeleton (#3), design system (#4), CI hardening (#5), local database (#14), logging (#19), toolchain upgrade (#20), NestJS 12 / Node 26 (#21), debug APK pre-release (#22). notes data layer (#23), notes repository (#24) and notes list/editor (#27) and archive/trash (#28) tasks data layer (#29) and tasks repository (#30) merged. Tasks list in review |
 | Build status | `android-ci` and `backend-ci` green on `main` after #5 and the Dependabot action bumps |
 | Test status | Backend: 13 unit + 12 e2e (CI green). Android: unit tests, lint, screenshots run in CI |
 | Blockers | ADR-007 (Prisma) needs owner approval before PR 5b; ADR-010 (local DB encryption) before the first release with real content. D-03…D-09 pending for later phases |
-| Next task | Tasks list and quick add screens (TASK-01, TASK-06); PR 5b once ADR-007 is approved |
+| Next task | Task detail and editor: description, due date/time pickers, priority, subtasks, history (TASK-02, TASK-03); PR 5b once ADR-007 is approved |
 
 ## Completed Features
 
@@ -31,10 +31,11 @@ The GitHub repository is the source of truth. A checkpoint is added at the end o
 - Notes list and editor with autosave — merged (PR #27).
 - Notes archive and trash screens — merged (PR #28).
 - Tasks data layer — merged (PR #29).
+- Tasks repository with history — merged (PR #30).
 
 ## Features In Progress
 
-- Phase 2: tasks repository with history and outbox (TASK-05, TASK-08).
+- Phase 2: tasks list and quick add (TASK-01, TASK-06).
 
 ## Merged Pull Requests
 
@@ -55,6 +56,7 @@ The GitHub repository is the source of truth. A checkpoint is added at the end o
 - #27 Notes list and editor with autosave — merged 2026-11-25 (squash `46e7d3e`).
 - #28 Notes archive and trash screens — merged 2026-11-25 (squash `d9185d4`).
 - #29 Tasks data layer, Room v3 — merged 2026-11-25 (squash `0c427cc`).
+- #30 Tasks repository with history and outbox — merged 2026-11-25 (squash `ea9bcf1`).
 
 ---
 
@@ -185,10 +187,18 @@ The GitHub repository is the source of truth. A checkpoint is added at the end o
 
 **Tested:** compile with KSP schema export, `spotlessApply`, `detekt` (local) → Passed; `TaskDaoTest` and migration 2→3 (Robolectric, CI) → Passed.
 
-### Checkpoint 2.6 — 2026-11-25 — Tasks repository submitted
+### Checkpoint 2.6 — 2026-11-25 — Tasks repository merged (#30)
 
-**Completed (in review):** New `:feature:tasks` module. Domain `Task`, `TaskDraft`, `TaskEvent` and `TaskRepository`; `OfflineTaskRepository` writes the task, an append-only history entry (only the fields that changed) and outbox entries for both in one transaction. Covers create (title 1–500 characters, time needs a date, one-level subtasks that inherit the parent's project), edit, reschedule (clears snooze), snooze, status changes (COMPLETED/REOPENED/STATUS_CHANGED), archive, trash and restore (a subtask waits for its parent), delete forever (trash only, with subtasks) and the 30-day purge. Changes that alter nothing write nothing.
+**Completed:** New `:feature:tasks` module. Domain `Task`, `TaskDraft`, `TaskEvent` and `TaskRepository`; `OfflineTaskRepository` writes the task, an append-only history entry (only the fields that changed) and outbox entries for both in one transaction. Covers create (title 1–500 characters, time needs a date, one-level subtasks that inherit the parent's project), edit, reschedule (clears snooze), snooze, status changes (COMPLETED/REOPENED/STATUS_CHANGED), archive, trash and restore (a subtask waits for its parent), delete forever (trash only, with subtasks) and the 30-day purge. Changes that alter nothing write nothing.
+
+**Tested:** `OfflineTaskRepositoryTest` 12/12, `spotlessCheck`, `detekt`, `:app:compileDebugKotlin` (local) → Passed; CI → Passed.
+
+### Checkpoint 2.7 — 2026-11-25 — Tasks list and quick add submitted
+
+**Completed (in review):** Tasks screen in `feature/tasks/ui`: open top-level tasks grouped into Overdue, Today, Upcoming and No date (regrouped on resume, so a list left open past midnight moves on); quick-add bar with a "Due today" chip (title capped at 500 characters, kept on failure); tick to complete with an Undo snackbar that restores the previous status; due label (Today/Tomorrow/date plus time) and High/Urgent priority. English and Persian strings. The dashboard gets a Tasks button wired by the app (ADR-003).
+
+**Not yet:** task detail/editor, date and time pickers, subtasks UI, natural-language quick add, reminders.
 
 **Tested:** see the PR.
 
-**Recommended next task:** tasks list and quick add screens (TASK-01, TASK-06).
+**Recommended next task:** task detail and editor (TASK-02, TASK-03).

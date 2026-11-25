@@ -28,14 +28,23 @@ import java.time.format.DateTimeFormatter
 import java.time.format.FormatStyle
 
 @Composable
-internal fun DashboardRoute(onOpenNotes: () -> Unit, viewModel: DashboardViewModel = hiltViewModel()) {
+internal fun DashboardRoute(
+    onOpenNotes: () -> Unit,
+    onOpenTasks: () -> Unit,
+    viewModel: DashboardViewModel = hiltViewModel(),
+) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     LifecycleEventEffect(Lifecycle.Event.ON_RESUME) { viewModel.refresh() }
-    DashboardScreen(uiState = uiState, onOpenNotes = onOpenNotes)
+    DashboardScreen(uiState = uiState, onOpenNotes = onOpenNotes, onOpenTasks = onOpenTasks)
 }
 
 @Composable
-internal fun DashboardScreen(uiState: DashboardUiState, onOpenNotes: () -> Unit, modifier: Modifier = Modifier) {
+internal fun DashboardScreen(
+    uiState: DashboardUiState,
+    onOpenNotes: () -> Unit,
+    onOpenTasks: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
     Scaffold(modifier = modifier) { innerPadding ->
         Column(
             modifier = Modifier
@@ -70,6 +79,12 @@ internal fun DashboardScreen(uiState: DashboardUiState, onOpenNotes: () -> Unit,
             )
             Spacer(Modifier.height(Spacing.xxl))
             AppButton(
+                text = stringResource(R.string.feature_dashboard_open_tasks),
+                onClick = onOpenTasks,
+                variant = AppButtonVariant.Secondary,
+            )
+            Spacer(Modifier.height(Spacing.sm))
+            AppButton(
                 text = stringResource(R.string.feature_dashboard_open_notes),
                 onClick = onOpenNotes,
                 variant = AppButtonVariant.Secondary,
@@ -94,8 +109,8 @@ private fun DashboardScreenPreview() {
                 period = DayPeriod.Morning,
                 today = LocalDate.of(2026, 11, 24),
             ),
-            onOpenNotes = {
-            },
+            onOpenNotes = {},
+            onOpenTasks = {},
         )
     }
 }
@@ -109,8 +124,8 @@ private fun DashboardScreenPersianPreview() {
                 period = DayPeriod.Evening,
                 today = LocalDate.of(2026, 11, 24),
             ),
-            onOpenNotes = {
-            },
+            onOpenNotes = {},
+            onOpenTasks = {},
         )
     }
 }
