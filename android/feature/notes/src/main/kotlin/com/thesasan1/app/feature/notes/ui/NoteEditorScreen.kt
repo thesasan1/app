@@ -34,6 +34,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LifecycleEventEffect
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.thesasan1.app.core.designsystem.component.BackButton
 import com.thesasan1.app.core.designsystem.component.EmptyState
 import com.thesasan1.app.core.designsystem.theme.AppTheme
 import com.thesasan1.app.core.designsystem.theme.Spacing
@@ -80,7 +81,7 @@ internal fun NoteEditorScreen(
                 .padding(horizontal = Spacing.screenHorizontal),
         ) {
             Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.fillMaxWidth()) {
-                TextButton(onClick = onBack) { Text(stringResource(R.string.feature_notes_back)) }
+                BackButton(onClick = onBack)
                 Spacer(Modifier.weight(1f))
                 SaveStatusLabel(uiState.saveStatus)
                 if (!uiState.notFound) {

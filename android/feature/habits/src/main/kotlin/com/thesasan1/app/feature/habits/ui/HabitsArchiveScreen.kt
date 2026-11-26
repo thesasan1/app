@@ -27,6 +27,7 @@ import com.thesasan1.app.core.designsystem.component.AppButton
 import com.thesasan1.app.core.designsystem.component.AppButtonSize
 import com.thesasan1.app.core.designsystem.component.AppButtonVariant
 import com.thesasan1.app.core.designsystem.component.AppCard
+import com.thesasan1.app.core.designsystem.component.BackButton
 import com.thesasan1.app.core.designsystem.component.EmptyState
 import com.thesasan1.app.core.designsystem.theme.AppTheme
 import com.thesasan1.app.core.designsystem.theme.Spacing
@@ -80,7 +81,7 @@ internal fun HabitsArchiveScreen(
                 .padding(innerPadding)
                 .padding(horizontal = Spacing.screenHorizontal),
         ) {
-            TextButton(onClick = onBack) { Text(stringResource(R.string.feature_habits_back)) }
+            BackButton(onClick = onBack)
             Text(
                 text = stringResource(R.string.feature_habits_archived_title),
                 style = AppTheme.typography.headline,

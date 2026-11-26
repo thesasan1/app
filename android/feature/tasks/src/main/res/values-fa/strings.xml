@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="feature_tasks_title">کارها</string>
-    <string name="feature_tasks_back">بازگشت</string>
     <string name="feature_tasks_quick_add_hint">افزودن کار</string>
     <string name="feature_tasks_add">افزودن</string>
     <string name="feature_tasks_due_today">موعد امروز</string>

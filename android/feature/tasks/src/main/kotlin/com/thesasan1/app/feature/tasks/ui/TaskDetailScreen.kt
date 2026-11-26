@@ -41,6 +41,7 @@ import androidx.lifecycle.compose.LifecycleEventEffect
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.thesasan1.app.core.designsystem.component.AppButton
 import com.thesasan1.app.core.designsystem.component.AppButtonVariant
+import com.thesasan1.app.core.designsystem.component.BackButton
 import com.thesasan1.app.core.designsystem.component.EmptyState
 import com.thesasan1.app.core.designsystem.theme.AppTheme
 import com.thesasan1.app.core.designsystem.theme.Spacing
@@ -134,7 +135,7 @@ internal fun TaskDetailScreen(
             verticalArrangement = Arrangement.spacedBy(Spacing.md),
         ) {
             Row(verticalAlignment = Alignment.CenterVertically) {
-                TextButton(onClick = actions.onBack) { Text(stringResource(R.string.feature_tasks_back)) }
+                BackButton(onClick = actions.onBack)
                 Spacer(Modifier.weight(1f))
                 if (uiState.task != null) MoreMenu(uiState.task.isSubtask, actions)
             }

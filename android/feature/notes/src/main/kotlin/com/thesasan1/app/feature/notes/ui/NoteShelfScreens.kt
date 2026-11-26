@@ -26,6 +26,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.thesasan1.app.core.designsystem.component.AppCard
+import com.thesasan1.app.core.designsystem.component.BackButton
 import com.thesasan1.app.core.designsystem.component.EmptyState
 import com.thesasan1.app.core.designsystem.theme.AppTheme
 import com.thesasan1.app.core.designsystem.theme.Spacing
@@ -106,7 +107,7 @@ internal fun NoteShelfScreen(
                 .padding(innerPadding)
                 .padding(horizontal = Spacing.screenHorizontal),
         ) {
-            TextButton(onClick = onBack) { Text(stringResource(R.string.feature_notes_back)) }
+            BackButton(onClick = onBack)
             Text(
                 text = stringResource(titleRes),
                 style = AppTheme.typography.headline,

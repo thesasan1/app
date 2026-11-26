@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="feature_habits_title">عادت‌ها</string>
-    <string name="feature_habits_back">بازگشت</string>
     <string name="feature_habits_new">عادت جدید</string>
     <string name="feature_habits_empty_title">هنوز عادتی ندارید</string>
     <string name="feature_habits_empty_body">عادتی را که می‌خواهید حفظ کنید، مثل مطالعه یا پیاده‌روی، اضافه کنید و هر روز اینجا علامت بزنید.</string>
