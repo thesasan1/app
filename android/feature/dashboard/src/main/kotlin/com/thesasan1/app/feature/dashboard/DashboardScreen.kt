@@ -19,8 +19,8 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LifecycleEventEffect
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.thesasan1.app.core.designsystem.component.AppButton
-import com.thesasan1.app.core.designsystem.component.AppButtonVariant
+import com.thesasan1.app.core.designsystem.component.AppIcons
+import com.thesasan1.app.core.designsystem.component.AppTile
 import com.thesasan1.app.core.designsystem.theme.AppTheme
 import com.thesasan1.app.core.designsystem.theme.Spacing
 import java.time.LocalDate
@@ -57,7 +57,7 @@ internal fun DashboardScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(innerPadding)
-                .padding(horizontal = Spacing.screenHorizontal, vertical = Spacing.xxl),
+                .padding(horizontal = Spacing.screenHorizontal, vertical = Spacing.xxxl),
             verticalArrangement = Arrangement.Top,
         ) {
             Text(
@@ -85,23 +85,11 @@ internal fun DashboardScreen(
                 color = AppTheme.colors.textSecondary,
             )
             Spacer(Modifier.height(Spacing.xxl))
-            AppButton(
-                text = stringResource(R.string.feature_dashboard_open_tasks),
-                onClick = onOpenTasks,
-                variant = AppButtonVariant.Secondary,
-            )
-            Spacer(Modifier.height(Spacing.sm))
-            AppButton(
-                text = stringResource(R.string.feature_dashboard_open_habits),
-                onClick = onOpenHabits,
-                variant = AppButtonVariant.Secondary,
-            )
-            Spacer(Modifier.height(Spacing.sm))
-            AppButton(
-                text = stringResource(R.string.feature_dashboard_open_notes),
-                onClick = onOpenNotes,
-                variant = AppButtonVariant.Secondary,
-            )
+            Column(verticalArrangement = Arrangement.spacedBy(Spacing.md)) {
+                AppTile(AppIcons.Tasks, stringResource(R.string.feature_dashboard_open_tasks), onOpenTasks)
+                AppTile(AppIcons.Habits, stringResource(R.string.feature_dashboard_open_habits), onOpenHabits)
+                AppTile(AppIcons.Notes, stringResource(R.string.feature_dashboard_open_notes), onOpenNotes)
+            }
         }
     }
 }

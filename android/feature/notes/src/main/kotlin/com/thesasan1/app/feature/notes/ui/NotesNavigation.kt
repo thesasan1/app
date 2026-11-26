@@ -27,7 +27,6 @@ fun NavGraphBuilder.notesScreens(navController: NavController) {
             onOpenNote = { id -> navController.navigate(NoteEditorRoute(id)) },
             onOpenArchive = { navController.navigate(NotesArchiveRoute) },
             onOpenTrash = { navController.navigate(NotesTrashRoute) },
-            onBack = { navController.popBackStack() },
         )
     }
     composable<NotesArchiveRoute> {

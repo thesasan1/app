@@ -5,13 +5,14 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.ExtendedFloatingActionButton
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -20,8 +21,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.semantics.heading
-import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
@@ -32,7 +31,9 @@ import com.thesasan1.app.core.designsystem.component.AppButton
 import com.thesasan1.app.core.designsystem.component.AppButtonSize
 import com.thesasan1.app.core.designsystem.component.AppButtonVariant
 import com.thesasan1.app.core.designsystem.component.AppCard
+import com.thesasan1.app.core.designsystem.component.AppIcons
 import com.thesasan1.app.core.designsystem.component.EmptyState
+import com.thesasan1.app.core.designsystem.component.ScreenHeader
 import com.thesasan1.app.core.designsystem.theme.AppTheme
 import com.thesasan1.app.core.designsystem.theme.Spacing
 import com.thesasan1.app.feature.habits.R
@@ -49,11 +50,7 @@ internal data class HabitActions(
 )
 
 @Composable
-internal fun HabitsTodayRoute(
-    onBack: () -> Unit,
-    onOpenArchive: () -> Unit,
-    viewModel: HabitsViewModel = hiltViewModel(),
-) {
+internal fun HabitsTodayRoute(onOpenArchive: () -> Unit, viewModel: HabitsViewModel = hiltViewModel()) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     LifecycleEventEffect(Lifecycle.Event.ON_RESUME) { viewModel.refreshDay() }
     HabitsTodayScreen(
@@ -67,7 +64,6 @@ internal fun HabitsTodayRoute(
         ),
         onNew = viewModel::openNew,
         onOpenArchive = onOpenArchive,
-        onBack = onBack,
     )
     if (uiState.isCreating) {
         NewHabitDialog(error = uiState.message, onCreate = viewModel::create, onDismiss = viewModel::dismissNew)
@@ -101,35 +97,29 @@ internal fun HabitsTodayScreen(
     actions: HabitActions,
     onNew: () -> Unit,
     onOpenArchive: () -> Unit,
-    onBack: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    Scaffold(modifier = modifier, containerColor = AppTheme.colors.canvas) { innerPadding ->
+    Scaffold(
+        modifier = modifier,
+        containerColor = AppTheme.colors.canvas,
+        floatingActionButton = {
+            ExtendedFloatingActionButton(
+                onClick = onNew,
+                icon = { Icon(AppIcons.Add, contentDescription = null) },
+                text = { Text(stringResource(R.string.feature_habits_new)) },
+                containerColor = AppTheme.colors.accent,
+                contentColor = AppTheme.colors.onAccent,
+            )
+        },
+    ) { innerPadding ->
         Column(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(innerPadding)
                 .padding(horizontal = Spacing.screenHorizontal),
         ) {
-            TextButton(onClick = onBack) { Text(stringResource(R.string.feature_habits_back)) }
-            Text(
-                text = stringResource(R.string.feature_habits_title),
-                style = AppTheme.typography.headline,
-                color = AppTheme.colors.textPrimary,
-                modifier = Modifier.semantics { heading() }.padding(bottom = Spacing.sm),
-            )
-            Row(horizontalArrangement = Arrangement.spacedBy(Spacing.sm)) {
-                AppButton(
-                    text = stringResource(R.string.feature_habits_new),
-                    onClick = onNew,
-                    size = AppButtonSize.Small,
-                )
-                AppButton(
-                    text = stringResource(R.string.feature_habits_archived),
-                    onClick = onOpenArchive,
-                    size = AppButtonSize.Small,
-                    variant = AppButtonVariant.Tertiary,
-                )
+            ScreenHeader(title = stringResource(R.string.feature_habits_title)) {
+                TextButton(onClick = onOpenArchive) { Text(stringResource(R.string.feature_habits_archived)) }
             }
             if (uiState.isEmpty) {
                 EmptyState(

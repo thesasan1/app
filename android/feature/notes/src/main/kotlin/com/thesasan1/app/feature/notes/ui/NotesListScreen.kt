@@ -5,7 +5,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -13,6 +12,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.ExtendedFloatingActionButton
+import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -29,7 +29,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.thesasan1.app.core.designsystem.component.AppCard
+import com.thesasan1.app.core.designsystem.component.AppIcons
 import com.thesasan1.app.core.designsystem.component.EmptyState
+import com.thesasan1.app.core.designsystem.component.ScreenHeader
 import com.thesasan1.app.core.designsystem.theme.AppTheme
 import com.thesasan1.app.core.designsystem.theme.Spacing
 import com.thesasan1.app.feature.notes.R
@@ -39,7 +41,6 @@ internal fun NotesListRoute(
     onOpenNote: (String?) -> Unit,
     onOpenArchive: () -> Unit,
     onOpenTrash: () -> Unit,
-    onBack: () -> Unit,
     viewModel: NotesListViewModel = hiltViewModel(),
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
@@ -50,7 +51,6 @@ internal fun NotesListRoute(
         onTogglePin = viewModel::togglePin,
         onOpenArchive = onOpenArchive,
         onOpenTrash = onOpenTrash,
-        onBack = onBack,
     )
 }
 
@@ -62,7 +62,6 @@ internal fun NotesListScreen(
     onTogglePin: (NoteSummary) -> Unit,
     onOpenArchive: () -> Unit,
     onOpenTrash: () -> Unit,
-    onBack: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Scaffold(
@@ -73,7 +72,9 @@ internal fun NotesListScreen(
                 onClick = { onOpenNote(null) },
                 containerColor = AppTheme.colors.accent,
                 contentColor = AppTheme.colors.onAccent,
-            ) { Text(stringResource(R.string.feature_notes_new)) }
+                icon = { Icon(AppIcons.Add, contentDescription = null) },
+                text = { Text(stringResource(R.string.feature_notes_new)) },
+            )
         },
     ) { innerPadding ->
         Column(
@@ -82,18 +83,10 @@ internal fun NotesListScreen(
                 .padding(innerPadding)
                 .padding(horizontal = Spacing.screenHorizontal),
         ) {
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                TextButton(onClick = onBack) { Text(stringResource(R.string.feature_notes_back)) }
-                Spacer(Modifier.weight(1f))
+            ScreenHeader(title = stringResource(R.string.feature_notes_title)) {
                 TextButton(onClick = onOpenArchive) { Text(stringResource(R.string.feature_notes_archive)) }
                 TextButton(onClick = onOpenTrash) { Text(stringResource(R.string.feature_notes_trash)) }
             }
-            Text(
-                text = stringResource(R.string.feature_notes_title),
-                style = AppTheme.typography.headline,
-                color = AppTheme.colors.textPrimary,
-                modifier = Modifier.semantics { heading() },
-            )
             OutlinedTextField(
                 value = uiState.query,
                 onValueChange = onQueryChange,
@@ -191,7 +184,6 @@ private fun NotesListScreenPreview() {
             onTogglePin = {},
             onOpenArchive = {},
             onOpenTrash = {},
-            onBack = {},
         )
     }
 }
@@ -200,6 +192,6 @@ private fun NotesListScreenPreview() {
 @Composable
 private fun NotesListEmptyPersianPreview() {
     AppTheme {
-        NotesListScreen(NotesListUiState(isLoading = false), {}, {}, {}, {}, {}, {})
+        NotesListScreen(NotesListUiState(isLoading = false), {}, {}, {}, {}, {})
     }
 }

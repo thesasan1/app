@@ -1,4 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">سیستم‌عامل شخصی</string>
+    <string name="app_tab_home">خانه</string>
+    <string name="app_tab_tasks">کارها</string>
+    <string name="app_tab_habits">عادت‌ها</string>
+    <string name="app_tab_notes">یادداشت‌ها</string>
 </resources>
