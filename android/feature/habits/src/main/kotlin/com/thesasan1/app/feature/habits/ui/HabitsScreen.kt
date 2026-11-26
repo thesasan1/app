@@ -86,6 +86,7 @@ internal fun HabitsTodayRoute(onOpenArchive: () -> Unit, viewModel: HabitsViewMo
     uiState.editing?.let { day ->
         EditHabitDialog(
             day = day,
+            reminder = uiState.editingReminder,
             error = uiState.message,
             onSave = viewModel::saveEdit,
             onDismiss = viewModel::dismissEdit,

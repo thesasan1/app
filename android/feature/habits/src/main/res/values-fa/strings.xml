@@ -56,4 +56,7 @@
     <string name="feature_habits_edit_title">ویرایش عادت</string>
     <string name="feature_habits_save">ذخیره</string>
     <string name="feature_habits_more">گزینه‌های بیشتر</string>
+    <string name="feature_habits_reminder">یادآور</string>
+    <string name="feature_habits_reminder_off">خاموش</string>
+    <string name="feature_habits_reminder_clear">پاک کردن</string>
 </resources>

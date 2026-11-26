@@ -27,6 +27,7 @@ import com.thesasan1.app.core.designsystem.theme.Spacing
 import com.thesasan1.app.feature.habits.R
 import com.thesasan1.app.feature.habits.domain.HabitDay
 import java.time.DayOfWeek
+import java.time.LocalTime
 import java.time.format.TextStyle
 
 private const val MAX_AMOUNT_CHARS = 7
@@ -46,11 +47,12 @@ internal fun NewHabitDialog(error: HabitMessage?, onCreate: (NewHabitForm) -> Un
 @Composable
 internal fun EditHabitDialog(
     day: HabitDay,
+    reminder: LocalTime?,
     error: HabitMessage?,
     onSave: (NewHabitForm) -> Unit,
     onDismiss: () -> Unit,
 ) = HabitFormDialog(
-    initial = NewHabitForm.of(day.habit),
+    initial = NewHabitForm.of(day.habit).copy(reminder = reminder),
     isNew = false,
     error = error,
     onSave = onSave,
@@ -123,6 +125,7 @@ private fun HabitFormDialog(
                         )
                     }
                 }
+                ReminderField(time = form.reminder, onChange = { form = form.copy(reminder = it) })
                 error?.let { Text(stringResource(it.formTextRes()), color = AppTheme.colors.danger) }
             }
         },
