@@ -4,8 +4,10 @@ import com.thesasan1.app.core.database.dao.ReminderDao
 import com.thesasan1.app.core.database.entity.OccurrenceState
 import com.thesasan1.app.core.database.entity.ReminderEntity
 import com.thesasan1.app.core.database.entity.ReminderOccurrenceEntity
+import com.thesasan1.app.core.database.entity.ReminderTargetType
 import java.time.Clock
 import java.time.Duration
+import java.time.Instant
 import javax.inject.Inject
 import javax.inject.Singleton
 import kotlinx.coroutines.sync.Mutex
@@ -131,7 +133,7 @@ class ReminderScheduler @Inject constructor(
         dao.pruneFinishedOccurrences(now - KEEP_FINISHED.toMillis())
     }
 
-    /** Dismisses shown notifications that no longer apply (task done elsewhere, reminder off or gone). */
+    /** Dismisses shown notifications that no longer apply (task or habit day done, reminder off or gone). */
     private suspend fun clearStale() {
         dao.getRingingOccurrences().forEach { occurrence ->
             if (!stillApplies(occurrence)) {
@@ -145,8 +147,15 @@ class ReminderScheduler @Inject constructor(
     private suspend fun stillApplies(occurrence: ReminderOccurrenceEntity): Boolean {
         val reminder = dao.getById(occurrence.reminderId)?.takeIf { it.isEnabled && it.sync.deletedAt == null }
         val targetId = reminder?.targetId ?: return reminder != null
-        return targets.find(reminder.targetType, targetId)?.isOpen == true
+        val target = targets.find(reminder.targetType, targetId)?.takeIf { it.isOpen }
+        // A habit's notification is for one day; once that day is done (or rested), it no longer applies.
+        val dayStillDue = reminder.targetType != ReminderTargetType.HABIT ||
+            occurrence.localDate() in target?.dueDates.orEmpty()
+        return target != null && dayStillDue
     }
+
+    private fun ReminderOccurrenceEntity.localDate(): String =
+        Instant.ofEpochMilli(scheduledForUtc).atZone(clock.zone).toLocalDate().toString()
 
     private suspend fun nextFireMillis(reminder: ReminderEntity): Long? {
         val target = reminder.targetId?.let { targets.find(reminder.targetType, it) }
