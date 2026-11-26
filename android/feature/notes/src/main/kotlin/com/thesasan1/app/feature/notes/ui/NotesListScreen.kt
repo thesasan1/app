@@ -13,14 +13,16 @@ import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.Icon
-import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
+import androidx.compose.material3.TextField
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.heading
 import androidx.compose.ui.semantics.semantics
@@ -33,6 +35,7 @@ import com.thesasan1.app.core.designsystem.component.AppIcons
 import com.thesasan1.app.core.designsystem.component.EmptyState
 import com.thesasan1.app.core.designsystem.component.ScreenHeader
 import com.thesasan1.app.core.designsystem.theme.AppTheme
+import com.thesasan1.app.core.designsystem.theme.Radii
 import com.thesasan1.app.core.designsystem.theme.Spacing
 import com.thesasan1.app.feature.notes.R
 
@@ -87,11 +90,20 @@ internal fun NotesListScreen(
                 TextButton(onClick = onOpenArchive) { Text(stringResource(R.string.feature_notes_archive)) }
                 TextButton(onClick = onOpenTrash) { Text(stringResource(R.string.feature_notes_trash)) }
             }
-            OutlinedTextField(
+            TextField(
                 value = uiState.query,
                 onValueChange = onQueryChange,
                 placeholder = { Text(stringResource(R.string.feature_notes_search_hint)) },
+                leadingIcon = { Icon(AppIcons.Search, contentDescription = null, tint = AppTheme.colors.textTertiary) },
                 singleLine = true,
+                shape = Radii.full,
+                colors = TextFieldDefaults.colors(
+                    focusedContainerColor = AppTheme.colors.surface,
+                    unfocusedContainerColor = AppTheme.colors.surface,
+                    focusedIndicatorColor = Color.Transparent,
+                    unfocusedIndicatorColor = Color.Transparent,
+                    disabledIndicatorColor = Color.Transparent,
+                ),
                 modifier = Modifier.fillMaxWidth().padding(vertical = Spacing.md),
             )
             when {

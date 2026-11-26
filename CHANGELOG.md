@@ -6,6 +6,7 @@ All notable changes are documented here. Format based on [Keep a Changelog](http
 
 ### Added
 
+- Notes: a pill-shaped search field with a search icon.
 - Tasks: a rounded quick-add field with a built-in "+" button, and round check circles.
 - Habit rows show one round check button; Undo, Rest, Edit and Archive moved to a "⋮" menu.
 - A cleaner look: a bottom tab bar for Home, Tasks, Habits and Notes, icon tiles on Home, large screen titles, and "+" buttons instead of the old text Back buttons.
