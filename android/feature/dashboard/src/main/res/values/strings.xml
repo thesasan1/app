@@ -4,9 +4,20 @@
     <string name="feature_dashboard_greeting_afternoon">Good afternoon</string>
     <string name="feature_dashboard_greeting_evening">Good evening</string>
     <string name="feature_dashboard_greeting_night">Good night</string>
-    <string name="feature_dashboard_empty_title">Your day starts here</string>
-    <string name="feature_dashboard_empty_body">Tasks, habits and reminders will appear here as you add them.</string>
     <string name="feature_dashboard_open_tasks">Tasks</string>
     <string name="feature_dashboard_open_habits">Habits</string>
     <string name="feature_dashboard_open_notes">Notes</string>
+    <string name="feature_dashboard_today">Today</string>
+    <string name="feature_dashboard_tasks_none">Nothing due today</string>
+    <string name="feature_dashboard_habits_none">No habits due today</string>
+    <string name="feature_dashboard_habits_all_done">All done for today</string>
+    <string name="feature_dashboard_habits_progress">%1$d of %2$d done</string>
+    <plurals name="feature_dashboard_tasks_due">
+        <item quantity="one">%d due today</item>
+        <item quantity="other">%d due today</item>
+    </plurals>
+    <plurals name="feature_dashboard_tasks_overdue">
+        <item quantity="one">%d overdue</item>
+        <item quantity="other">%d overdue</item>
+    </plurals>
 </resources>

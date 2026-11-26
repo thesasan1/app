@@ -6,6 +6,7 @@ All notable changes are documented here. Format based on [Keep a Changelog](http
 
 ### Added
 
+- Home shows today at a glance: tasks due and overdue, and habits done.
 - Detail screens use a back arrow instead of a "Back" text button.
 - Checking a habit off in the app now clears today's reminder notification.
 - Habits: set a daily reminder time in the New and Edit habit dialogs.
