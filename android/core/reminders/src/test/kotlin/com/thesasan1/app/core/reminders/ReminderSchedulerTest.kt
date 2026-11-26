@@ -305,4 +305,33 @@ class ReminderSchedulerTest {
         assertEquals(OccurrenceState.DELIVERED, dao.occurrences.getValue(todayId).state)
         assertEquals(mapOf(ReminderOccurrenceEntity.idFor("hr", tomorrow) to tomorrow), alarms.set)
     }
+
+    @Test
+    fun checkingInAHabitInTheAppTakesDownTodaysNotification() = runTest {
+        val noonUtc = 1_795_608_000_000L // 2026-11-25 12:00 UTC
+        val ringAt = noonUtc + 6 * 3_600_000L
+        tasks["h"] = ReminderTarget("Walk", null, null, dueDates = listOf("2026-11-25", "2026-11-26"))
+        dao.upsert(
+            ReminderEntity(
+                id = "hr",
+                targetType = ReminderTargetType.HABIT,
+                targetId = "h",
+                offsetMinutes = 18 * 60,
+                sync = SyncColumns.new(0),
+            ),
+        )
+        clock = Clock.fixed(Instant.ofEpochMilli(noonUtc), ZoneOffset.UTC)
+        scheduler.rebuild()
+        clock = Clock.fixed(Instant.ofEpochMilli(ringAt), ZoneOffset.UTC)
+        val todayId = ReminderOccurrenceEntity.idFor("hr", ringAt)
+        scheduler.deliver(todayId)
+
+        scheduler.rebuild()
+        assertTrue(todayId in notifier.visible, "still due today, so it stays")
+
+        tasks["h"] = tasks.getValue("h").copy(dueDates = listOf("2026-11-26"))
+        scheduler.rebuild()
+        assertTrue(todayId !in notifier.visible)
+        assertEquals(OccurrenceState.DISMISSED, dao.occurrences.getValue(todayId).state)
+    }
 }

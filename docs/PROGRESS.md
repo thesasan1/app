@@ -7,7 +7,7 @@ The GitHub repository is the source of truth. A checkpoint is added at the end o
 | Field | Value |
 |---|---|
 | Current phase | **Phase 2 — Core Productivity** (Phase 1 done except PR 5b, waiting on ADR-007) |
-| Status | Habit reminder picker in review |
+| Status | Habit notification clearing in review |
 | Code status | Phase 1 merged: Android skeleton (#2), backend skeleton (#3), design system (#4), CI hardening (#5), local database (#14), logging (#19), toolchain upgrade (#20), NestJS 12 / Node 26 (#21), debug APK pre-release (#22). notes data layer (#23), notes repository (#24) and notes list/editor (#27) and archive/trash (#28) tasks data layer (#29) and tasks repository (#30) and tasks list (#31) task detail/editor (#32) tasks shelves (#33) reminder storage (#34), scheduler (#35) and notification actions (#36) merged. Reminder picker in review |
 | Build status | `android-ci` and `backend-ci` green on `main` after #5 and the Dependabot action bumps |
 | Test status | Backend: 13 unit + 12 e2e (CI green). Android: unit tests, lint, screenshots run in CI |
@@ -371,10 +371,18 @@ The GitHub repository is the source of truth. A checkpoint is added at the end o
 
 **Recommended next task:** reminder time picker in the habit form (`HabitReminderRepository.set`).
 
-### Checkpoint 2.27 — 2026-11-26 — Habit reminder time picker (submitted)
+### Checkpoint 2.27 — 2026-11-26 — Habit reminder time picker (#51)
 
-**Completed (in review):** the New and Edit habit dialogs have a "Reminder" row: it shows the time or "Off", opens a Material 3 time picker (12/24-hour from the phone setting, default 9:00), and "Clear" removes it. Saving calls `HabitReminderRepository.set` (ADR-032); the Edit dialog loads the current time first. Habit reminders can now be set in the app.
+**Completed:** the New and Edit habit dialogs have a "Reminder" row: it shows the time or "Off", opens a Material 3 time picker (12/24-hour from the phone setting, default 9:00), and "Clear" removes it. Saving calls `HabitReminderRepository.set` (ADR-032); the Edit dialog loads the current time first. Habit reminders can now be set in the app.
+
+**Tested:** `HabitsViewModelTest` 6/6 and habits suites (local) → Passed; `android-ci`, `dependency-review` → Passed. On-device → Not run.
+
+**Recommended next task:** clear a shown habit notification when the habit is checked in inside the app.
+
+### Checkpoint 2.28 — 2026-11-26 — Clear habit notification on check-in (submitted)
+
+**Completed (in review):** a shown habit reminder is taken down once its day is done or rested in the app. `ReminderScheduler.clearStale` now also treats a habit occurrence as stale when its local date is no longer in the target's `dueDates` (the rebuild already follows `habit_events`, ADR-032). Tasks are unchanged.
 
 **Tested:** see the PR.
 
-**Recommended next task:** clear a shown habit notification when the habit is checked in inside the app.
+**Recommended next task:** freeze button once D-10 is answered; otherwise period streaks for weekly and monthly habits (HAB-03).

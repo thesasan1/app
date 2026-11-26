@@ -6,6 +6,7 @@ All notable changes are documented here. Format based on [Keep a Changelog](http
 
 ### Added
 
+- Checking a habit off in the app now clears today's reminder notification.
 - Habits: set a daily reminder time in the New and Edit habit dialogs.
 - Notes: a pill-shaped search field with a search icon.
 - Tasks: a rounded quick-add field with a built-in "+" button, and round check circles.
