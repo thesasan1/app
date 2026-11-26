@@ -7,7 +7,7 @@ The GitHub repository is the source of truth. A checkpoint is added at the end o
 | Field | Value |
 |---|---|
 | Current phase | **Phase 2 — Core Productivity** (Phase 1 done except PR 5b, waiting on ADR-007) |
-| Status | Icon back buttons in review |
+| Status | Home today summary in review |
 | Code status | Phase 1 merged: Android skeleton (#2), backend skeleton (#3), design system (#4), CI hardening (#5), local database (#14), logging (#19), toolchain upgrade (#20), NestJS 12 / Node 26 (#21), debug APK pre-release (#22). notes data layer (#23), notes repository (#24) and notes list/editor (#27) and archive/trash (#28) tasks data layer (#29) and tasks repository (#30) and tasks list (#31) task detail/editor (#32) tasks shelves (#33) reminder storage (#34), scheduler (#35) and notification actions (#36) merged. Reminder picker in review |
 | Build status | `android-ci` and `backend-ci` green on `main` after #5 and the Dependabot action bumps |
 | Test status | Backend: 13 unit + 12 e2e (CI green). Android: unit tests, lint, screenshots run in CI |
@@ -387,9 +387,17 @@ The GitHub repository is the source of truth. A checkpoint is added at the end o
 
 **Recommended next task:** freeze button once D-10 is answered; otherwise period streaks for weekly and monthly habits (HAB-03).
 
-### Checkpoint 2.29 — 2026-11-26 — Icon back buttons (submitted)
+### Checkpoint 2.29 — 2026-11-26 — Icon back buttons (#53)
 
-**Completed (in review):** UI refresh, step 5 (ADR-033). Detail screens (task detail, note editor, task and note shelves, archived habits) use a back-arrow `BackButton` (mirrors in RTL, "Back" for screen readers) instead of a text "Back" button. The unused `feature_*_back` strings are removed.
+**Completed:** UI refresh, step 5 (ADR-033). Detail screens (task detail, note editor, task and note shelves, archived habits) use a back-arrow `BackButton` (mirrors in RTL, "Back" for screen readers) instead of a text "Back" button. The unused `feature_*_back` strings are removed.
+
+**Tested:** habits, tasks, notes suites (local) → Passed; `android-ci`, `dependency-review` → Passed. On-device → Not run.
+
+**Recommended next task:** freeze button once D-10 is answered; otherwise period streaks for weekly and monthly habits (HAB-03).
+
+### Checkpoint 2.30 — 2026-11-26 — Home today summary (submitted)
+
+**Completed (in review):** Home replaces its placeholder text with a "Today" heading; the Tasks tile reads "N due today · M overdue" (or "Nothing due today") and the Habits tile "X of Y done" (or "All done for today" / "No habits due today"). The dashboard declares a `TodaySummarySource` port; the app module implements it from `TaskRepository` and `HabitRepository` (`TodaySummaryModule`), so features stay independent (ADR-003).
 
 **Tested:** see the PR.
 

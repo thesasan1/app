@@ -11,6 +11,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.heading
 import androidx.compose.ui.semantics.semantics
@@ -35,9 +36,11 @@ internal fun DashboardRoute(
     viewModel: DashboardViewModel = hiltViewModel(),
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val summary by viewModel.summary.collectAsStateWithLifecycle(initialValue = null)
     LifecycleEventEffect(Lifecycle.Event.ON_RESUME) { viewModel.refresh() }
     DashboardScreen(
         uiState = uiState,
+        summary = summary,
         onOpenNotes = onOpenNotes,
         onOpenTasks = onOpenTasks,
         onOpenHabits = onOpenHabits,
@@ -47,6 +50,7 @@ internal fun DashboardRoute(
 @Composable
 internal fun DashboardScreen(
     uiState: DashboardUiState,
+    summary: TodaySummary?,
     onOpenNotes: () -> Unit,
     onOpenTasks: () -> Unit,
     onOpenHabits: () -> Unit,
@@ -74,24 +78,49 @@ internal fun DashboardScreen(
             )
             Spacer(Modifier.height(Spacing.xxxl))
             Text(
-                text = stringResource(R.string.feature_dashboard_empty_title),
+                text = stringResource(R.string.feature_dashboard_today),
                 style = AppTheme.typography.titleMedium,
                 color = AppTheme.colors.textPrimary,
+                modifier = Modifier.semantics { heading() },
             )
-            Spacer(Modifier.height(Spacing.xs))
-            Text(
-                text = stringResource(R.string.feature_dashboard_empty_body),
-                style = AppTheme.typography.bodyMedium,
-                color = AppTheme.colors.textSecondary,
-            )
-            Spacer(Modifier.height(Spacing.xxl))
+            Spacer(Modifier.height(Spacing.md))
             Column(verticalArrangement = Arrangement.spacedBy(Spacing.md)) {
-                AppTile(AppIcons.Tasks, stringResource(R.string.feature_dashboard_open_tasks), onOpenTasks)
-                AppTile(AppIcons.Habits, stringResource(R.string.feature_dashboard_open_habits), onOpenHabits)
+                AppTile(
+                    icon = AppIcons.Tasks,
+                    title = stringResource(R.string.feature_dashboard_open_tasks),
+                    onClick = onOpenTasks,
+                    subtitle = summary?.let { tasksLine(it) },
+                )
+                AppTile(
+                    icon = AppIcons.Habits,
+                    title = stringResource(R.string.feature_dashboard_open_habits),
+                    onClick = onOpenHabits,
+                    subtitle = summary?.let { habitsLine(it) },
+                )
                 AppTile(AppIcons.Notes, stringResource(R.string.feature_dashboard_open_notes), onOpenNotes)
             }
         }
     }
+}
+
+@Composable
+private fun tasksLine(summary: TodaySummary): String {
+    val due = if (summary.tasksDue == 0) {
+        stringResource(R.string.feature_dashboard_tasks_none)
+    } else {
+        pluralStringResource(R.plurals.feature_dashboard_tasks_due, summary.tasksDue, summary.tasksDue)
+    }
+    if (summary.tasksOverdue == 0) return due
+    val overdue =
+        pluralStringResource(R.plurals.feature_dashboard_tasks_overdue, summary.tasksOverdue, summary.tasksOverdue)
+    return "$due  ·  $overdue"
+}
+
+@Composable
+private fun habitsLine(summary: TodaySummary): String = when {
+    summary.habitsDue == 0 -> stringResource(R.string.feature_dashboard_habits_none)
+    summary.habitsDone >= summary.habitsDue -> stringResource(R.string.feature_dashboard_habits_all_done)
+    else -> stringResource(R.string.feature_dashboard_habits_progress, summary.habitsDone, summary.habitsDue)
 }
 
 private fun DayPeriod.greetingRes(): Int = when (this) {
@@ -110,6 +139,7 @@ private fun DashboardScreenPreview() {
                 period = DayPeriod.Morning,
                 today = LocalDate.of(2026, 11, 24),
             ),
+            summary = TodaySummary(tasksDue = 3, tasksOverdue = 1, habitsDue = 4, habitsDone = 2),
             onOpenNotes = {},
             onOpenTasks = {},
             onOpenHabits = {},
@@ -126,6 +156,7 @@ private fun DashboardScreenPersianPreview() {
                 period = DayPeriod.Evening,
                 today = LocalDate.of(2026, 11, 24),
             ),
+            summary = null,
             onOpenNotes = {},
             onOpenTasks = {},
             onOpenHabits = {},

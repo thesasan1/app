@@ -4,9 +4,20 @@
     <string name="feature_dashboard_greeting_afternoon">ظهر بخیر</string>
     <string name="feature_dashboard_greeting_evening">عصر بخیر</string>
     <string name="feature_dashboard_greeting_night">شب بخیر</string>
-    <string name="feature_dashboard_empty_title">روز شما از اینجا شروع می‌شود</string>
-    <string name="feature_dashboard_empty_body">کارها، عادت‌ها و یادآورها پس از افزودن، اینجا نمایش داده می‌شوند.</string>
     <string name="feature_dashboard_open_tasks">کارها</string>
     <string name="feature_dashboard_open_habits">عادت‌ها</string>
     <string name="feature_dashboard_open_notes">یادداشت‌ها</string>
+    <string name="feature_dashboard_today">امروز</string>
+    <string name="feature_dashboard_tasks_none">امروز کاری سررسید نیست</string>
+    <string name="feature_dashboard_habits_none">امروز عادتی در برنامه نیست</string>
+    <string name="feature_dashboard_habits_all_done">همه برای امروز انجام شد</string>
+    <string name="feature_dashboard_habits_progress">%1$d از %2$d انجام شد</string>
+    <plurals name="feature_dashboard_tasks_due">
+        <item quantity="one">%d کار برای امروز</item>
+        <item quantity="other">%d کار برای امروز</item>
+    </plurals>
+    <plurals name="feature_dashboard_tasks_overdue">
+        <item quantity="one">%d عقب‌افتاده</item>
+        <item quantity="other">%d عقب‌افتاده</item>
+    </plurals>
 </resources>
