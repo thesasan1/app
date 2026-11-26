@@ -55,4 +55,5 @@
     <string name="feature_habits_edit">Edit</string>
     <string name="feature_habits_edit_title">Edit habit</string>
     <string name="feature_habits_save">Save</string>
+    <string name="feature_habits_more">More actions</string>
 </resources>

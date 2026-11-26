@@ -43,6 +43,16 @@ object AppIcons {
         icon("ChevronForward", "M10,6L8.59,7.41 13.17,12l-4.58,4.59L10,18l6,-6z", mirror = true)
     }
 
+    val Check: ImageVector by lazy { icon("Check", "M9,16.17L4.83,12l-1.42,1.41L9,19 21,7l-1.41,-1.41z") }
+
+    val More: ImageVector by lazy {
+        icon(
+            "More",
+            "M12,8c1.1,0 2,-0.9 2,-2s-0.9,-2 -2,-2 -2,0.9 -2,2 0.9,2 2,2zM12,10c-1.1,0 -2,0.9 -2,2s0.9,2 2,2 " +
+                "2,-0.9 2,-2 -0.9,-2 -2,-2zM12,16c-1.1,0 -2,0.9 -2,2s0.9,2 2,2 2,-0.9 2,-2 -0.9,-2 -2,-2z",
+        )
+    }
+
     val Add: ImageVector by lazy { icon("Add", "M19,13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z") }
 
     @Suppress("MagicNumber") // Material icons use a 24-unit canvas.
