@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="feature_habits_title">Habits</string>
-    <string name="feature_habits_back">Back</string>
     <string name="feature_habits_new">New habit</string>
     <string name="feature_habits_empty_title">No habits yet</string>
     <string name="feature_habits_empty_body">Add one you want to keep, like reading or a walk. Check it off here each day.</string>

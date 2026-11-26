@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="feature_notes_title">یادداشت‌ها</string>
-    <string name="feature_notes_back">بازگشت</string>
     <string name="feature_notes_new">یادداشت تازه</string>
     <string name="feature_notes_search_hint">جست‌وجو در یادداشت‌ها</string>
     <string name="feature_notes_section_pinned">سنجاق‌شده</string>

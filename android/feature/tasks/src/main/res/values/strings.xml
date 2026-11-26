@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="feature_tasks_title">Tasks</string>
-    <string name="feature_tasks_back">Back</string>
     <string name="feature_tasks_quick_add_hint">Add a task</string>
     <string name="feature_tasks_add">Add</string>
     <string name="feature_tasks_due_today">Due today</string>

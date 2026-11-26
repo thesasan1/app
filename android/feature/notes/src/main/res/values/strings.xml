@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="feature_notes_title">Notes</string>
-    <string name="feature_notes_back">Back</string>
     <string name="feature_notes_new">New note</string>
     <string name="feature_notes_search_hint">Search notes</string>
     <string name="feature_notes_section_pinned">Pinned</string>
