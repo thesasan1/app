@@ -9,6 +9,7 @@ import com.thesasan1.app.feature.habits.ui.HabitsViewModel
 import com.thesasan1.app.feature.habits.ui.NewHabitForm
 import com.thesasan1.app.feature.habits.ui.of
 import java.time.DayOfWeek
+import java.time.LocalTime
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.advanceUntilIdle
@@ -32,7 +33,8 @@ class HabitsViewModelTest {
     private val dao = FakeHabitDao()
     private val repository =
         OfflineHabitRepository(dao, FakeOutboxDao(), DirectTransactionRunner, SequentialIds(), clock)
-    private val vm by lazy { HabitsViewModel(repository, clock) }
+    private val reminders = FakeHabitReminders()
+    private val vm by lazy { HabitsViewModel(repository, reminders, clock) }
 
     @Test
     fun creatingAHabitClosesTheDialogAndListsIt() = runTest(main.dispatcher) {
@@ -106,6 +108,7 @@ class HabitsViewModelTest {
 
         val day = vm.uiState.value.days.single()
         vm.openEdit(day)
+        advanceUntilIdle()
         assertEquals(NewHabitForm(name = "Walk"), NewHabitForm.of(day.habit))
         vm.saveEdit(NewHabitForm(name = "", days = setOf(DayOfWeek.MONDAY)))
         advanceUntilIdle()
@@ -117,5 +120,22 @@ class HabitsViewModelTest {
         assertNull(vm.uiState.value.editing)
         assertEquals("Evening walk", edited.name)
         assertEquals(WeekdayMask.of(DayOfWeek.MONDAY), edited.scheduleDays)
+    }
+
+    @Test
+    fun reminderTimeIsSavedOnCreateAndClearedOnEdit() = runTest(main.dispatcher) {
+        backgroundScope.launch { vm.uiState.collect {} }
+        vm.create(NewHabitForm(name = "Stretch", reminder = LocalTime.of(7, 30)))
+        advanceUntilIdle()
+        val day = vm.uiState.value.days.single()
+        assertEquals(LocalTime.of(7, 30), reminders.times.value[day.habit.id])
+
+        vm.openEdit(day)
+        advanceUntilIdle()
+        assertEquals(LocalTime.of(7, 30), vm.uiState.value.editingReminder)
+        vm.saveEdit(NewHabitForm.of(day.habit).copy(reminder = null))
+        advanceUntilIdle()
+        assertNull(reminders.times.value[day.habit.id])
+        assertNull(vm.uiState.value.editing)
     }
 }

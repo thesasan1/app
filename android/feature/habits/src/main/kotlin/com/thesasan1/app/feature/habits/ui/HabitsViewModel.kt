@@ -8,6 +8,7 @@ import com.thesasan1.app.core.database.entity.HabitEntity
 import com.thesasan1.app.core.database.entity.HabitMeasurement
 import com.thesasan1.app.core.database.entity.HabitScheduleType
 import com.thesasan1.app.core.database.entity.WeekdayMask
+import com.thesasan1.app.core.reminders.domain.HabitReminderRepository
 import com.thesasan1.app.feature.habits.domain.HabitDay
 import com.thesasan1.app.feature.habits.domain.HabitDraft
 import com.thesasan1.app.feature.habits.domain.HabitRepository
@@ -15,12 +16,14 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import java.time.Clock
 import java.time.DayOfWeek
 import java.time.LocalDate
+import java.time.LocalTime
 import javax.inject.Inject
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
@@ -35,6 +38,8 @@ data class NewHabitForm(
     val target: String = "",
     val unit: String = "",
     val days: Set<DayOfWeek> = DayOfWeek.entries.toSet(),
+    /** Daily reminder time, or null for none (ADR-032). */
+    val reminder: LocalTime? = null,
 ) {
     companion object
 }
@@ -46,6 +51,8 @@ data class HabitsUiState(
     val isCreating: Boolean = false,
     /** The habit open in the Edit dialog. */
     val editing: HabitDay? = null,
+    /** The open habit's current reminder time, loaded with the Edit dialog. */
+    val editingReminder: LocalTime? = null,
     /** The habit whose amount is being entered (numeric and duration habits). */
     val logging: HabitDay? = null,
     val message: HabitMessage? = null,
@@ -56,6 +63,7 @@ data class HabitsUiState(
 private data class Dialogs(
     val creating: Boolean = false,
     val editing: HabitDay? = null,
+    val editingReminder: LocalTime? = null,
     val logging: HabitDay? = null,
     val message: HabitMessage? = null,
 )
@@ -63,8 +71,11 @@ private data class Dialogs(
 /** Today's habits: check in, undo, rest, archive, and create (HAB-01, HAB-02, HAB-06, HAB-07). */
 @OptIn(ExperimentalCoroutinesApi::class)
 @HiltViewModel
-class HabitsViewModel @Inject constructor(private val repository: HabitRepository, private val clock: Clock) :
-    ViewModel() {
+class HabitsViewModel @Inject constructor(
+    private val repository: HabitRepository,
+    private val reminders: HabitReminderRepository,
+    private val clock: Clock,
+) : ViewModel() {
     private val today = MutableStateFlow(LocalDate.now(clock))
     private val dialogs = MutableStateFlow(Dialogs())
 
@@ -76,6 +87,7 @@ class HabitsViewModel @Inject constructor(private val repository: HabitRepositor
                 isLoading = false,
                 isCreating = d.creating,
                 editing = d.editing,
+                editingReminder = d.editingReminder,
                 logging = d.logging,
                 message = d.message,
             )
@@ -126,14 +138,20 @@ class HabitsViewModel @Inject constructor(private val repository: HabitRepositor
     fun create(form: NewHabitForm) {
         viewModelScope.launch {
             when (val outcome = repository.create(form.toDraft(today.value))) {
-                is Outcome.Success -> dialogs.value = dialogs.value.copy(creating = false, message = null)
+                is Outcome.Success -> {
+                    form.reminder?.let { reminders.set(outcome.value.id, it) }
+                    dialogs.value = dialogs.value.copy(creating = false, message = null)
+                }
                 is Outcome.Failure -> dialogs.value = dialogs.value.copy(message = outcome.error.toMessage())
             }
         }
     }
 
     fun openEdit(day: HabitDay) {
-        dialogs.value = dialogs.value.copy(editing = day, message = null)
+        viewModelScope.launch {
+            val reminder = reminders.observe(day.habit.id).first()?.time
+            dialogs.value = dialogs.value.copy(editing = day, editingReminder = reminder, message = null)
+        }
     }
 
     fun dismissEdit() {
@@ -146,7 +164,10 @@ class HabitsViewModel @Inject constructor(private val repository: HabitRepositor
         val draft = form.copy(measurement = habit.measurementType).toDraft(LocalDate.parse(habit.startDate))
         viewModelScope.launch {
             when (val outcome = repository.update(habit.id, draft)) {
-                is Outcome.Success -> dialogs.value = dialogs.value.copy(editing = null, message = null)
+                is Outcome.Success -> {
+                    if (form.reminder != dialogs.value.editingReminder) reminders.set(habit.id, form.reminder)
+                    dialogs.value = dialogs.value.copy(editing = null, editingReminder = null, message = null)
+                }
                 is Outcome.Failure -> dialogs.value = dialogs.value.copy(message = outcome.error.toMessage())
             }
         }

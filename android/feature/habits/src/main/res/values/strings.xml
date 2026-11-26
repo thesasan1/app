@@ -56,4 +56,7 @@
     <string name="feature_habits_edit_title">Edit habit</string>
     <string name="feature_habits_save">Save</string>
     <string name="feature_habits_more">More actions</string>
+    <string name="feature_habits_reminder">Reminder</string>
+    <string name="feature_habits_reminder_off">Off</string>
+    <string name="feature_habits_reminder_clear">Clear</string>
 </resources>
