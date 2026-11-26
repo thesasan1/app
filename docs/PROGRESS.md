@@ -7,7 +7,7 @@ The GitHub repository is the source of truth. A checkpoint is added at the end o
 | Field | Value |
 |---|---|
 | Current phase | **Phase 2 — Core Productivity** (Phase 1 done except PR 5b, waiting on ADR-007) |
-| Status | App shell redesign in review |
+| Status | Habit row tidy-up in review |
 | Code status | Phase 1 merged: Android skeleton (#2), backend skeleton (#3), design system (#4), CI hardening (#5), local database (#14), logging (#19), toolchain upgrade (#20), NestJS 12 / Node 26 (#21), debug APK pre-release (#22). notes data layer (#23), notes repository (#24) and notes list/editor (#27) and archive/trash (#28) tasks data layer (#29) and tasks repository (#30) and tasks list (#31) task detail/editor (#32) tasks shelves (#33) reminder storage (#34), scheduler (#35) and notification actions (#36) merged. Reminder picker in review |
 | Build status | `android-ci` and `backend-ci` green on `main` after #5 and the Dependabot action bumps |
 | Test status | Backend: 13 unit + 12 e2e (CI green). Android: unit tests, lint, screenshots run in CI |
@@ -339,10 +339,18 @@ The GitHub repository is the source of truth. A checkpoint is added at the end o
 
 **Recommended next task:** reminder time in the habit form.
 
-### Checkpoint 2.23 — 2026-11-26 — Modern app shell (submitted)
+### Checkpoint 2.23 — 2026-11-26 — Modern app shell (#47)
 
-**Completed (in review):** UI refresh, step 1 (ADR-033). A bottom tab bar (Home, Tasks, Habits, Notes) shows on the four tab screens and hides on editors and shelves; each tab keeps its own back stack. The text "Back" buttons on the tab screens are gone; each tab opens with a large `ScreenHeader` title and its shelves as quiet actions at the end. Home shows Tasks, Habits and Notes as icon tiles (`AppTile`). Habits and Notes get a "+" floating button. Cards use the 20dp radius. Icons are drawn in `AppIcons` from Material Symbols paths (no icon library).
+**Completed:** UI refresh, step 1 (ADR-033). A bottom tab bar (Home, Tasks, Habits, Notes) shows on the four tab screens and hides on editors and shelves; each tab keeps its own back stack. The text "Back" buttons on the tab screens are gone; each tab opens with a large `ScreenHeader` title and its shelves as quiet actions at the end. Home shows Tasks, Habits and Notes as icon tiles (`AppTile`). Habits and Notes get a "+" floating button. Cards use the 20dp radius. Icons are drawn in `AppIcons` from Material Symbols paths (no icon library).
+
+**Tested:** habits, tasks, notes, dashboard unit suites, compile, spotless, detekt (local) → Passed; `android-ci`, `dependency-review` → Passed. On-device → Not run.
+
+**Recommended next task:** tidy habit rows (one primary action, the rest in a menu), then task and note rows.
+
+### Checkpoint 2.24 — 2026-11-26 — Habit rows tidied (submitted)
+
+**Completed (in review):** UI refresh, step 2 (ADR-033). Each habit row is one line of content: a round check-in button at the start (a check for yes/no habits, "+" for counted ones; it fills with the accent when the day is done), the name, and status and streak on one line. Undo, Rest today, Edit and Archive move into a "⋮" menu. Behaviour is unchanged.
 
 **Tested:** see the PR.
 
-**Recommended next task:** tidy habit rows (one primary action, the rest in a menu), then task and note rows.
+**Recommended next task:** task and note rows in the same style.

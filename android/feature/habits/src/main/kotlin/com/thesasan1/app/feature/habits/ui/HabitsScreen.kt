@@ -1,40 +1,55 @@
+@file:Suppress("TooManyFunctions") // The screen, its row, and the row's small parts belong together.
+
 package com.thesasan1.app.feature.habits.ui
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.ExperimentalLayoutApi
-import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LifecycleEventEffect
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.thesasan1.app.core.database.entity.HabitMeasurement
-import com.thesasan1.app.core.designsystem.component.AppButton
-import com.thesasan1.app.core.designsystem.component.AppButtonSize
-import com.thesasan1.app.core.designsystem.component.AppButtonVariant
 import com.thesasan1.app.core.designsystem.component.AppCard
 import com.thesasan1.app.core.designsystem.component.AppIcons
 import com.thesasan1.app.core.designsystem.component.EmptyState
 import com.thesasan1.app.core.designsystem.component.ScreenHeader
 import com.thesasan1.app.core.designsystem.theme.AppTheme
+import com.thesasan1.app.core.designsystem.theme.Radii
 import com.thesasan1.app.core.designsystem.theme.Spacing
 import com.thesasan1.app.feature.habits.R
 import com.thesasan1.app.feature.habits.domain.HabitDay
@@ -138,66 +153,93 @@ internal fun HabitsTodayScreen(
     }
 }
 
-@OptIn(ExperimentalLayoutApi::class)
 @Composable
 private fun HabitRow(day: HabitDay, actions: HabitActions) {
+    val colors = AppTheme.colors
+    val canAdd = !day.rested && !(day.isComplete && day.habit.measurementType == HabitMeasurement.BINARY)
     AppCard(modifier = Modifier.fillMaxWidth()) {
-        Text(
-            text = day.habit.name,
-            style = AppTheme.typography.titleMedium,
-            color = AppTheme.colors.textPrimary,
-            maxLines = 2,
-            overflow = TextOverflow.Ellipsis,
-        )
-        Text(
-            text = statusText(day),
-            style = AppTheme.typography.bodySmall,
-            color = if (day.isComplete) AppTheme.colors.success else AppTheme.colors.textSecondary,
-        )
-        day.streak?.takeIf { it.best > 0 }?.let { streak ->
-            Text(
-                text = streakText(streak),
-                style = AppTheme.typography.bodySmall,
-                color = AppTheme.colors.textSecondary,
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            CheckInButton(day, enabled = canAdd, onClick = { actions.onCheckIn(day) })
+            Spacer(Modifier.width(Spacing.md))
+            Column(Modifier.weight(1f)) {
+                Text(
+                    text = day.habit.name,
+                    style = AppTheme.typography.titleMedium,
+                    color = colors.textPrimary,
+                    maxLines = 2,
+                    overflow = TextOverflow.Ellipsis,
+                )
+                val streak = day.streak?.takeIf { it.best > 0 }?.let { streakText(it) }
+                Text(
+                    text = listOfNotNull(statusText(day), streak).joinToString("  ·  "),
+                    style = AppTheme.typography.bodySmall,
+                    color = if (day.isComplete) colors.success else colors.textSecondary,
+                )
+            }
+            HabitMenu(day, actions)
+        }
+    }
+}
+
+/** The one primary action: a round button that fills with the accent once the day is done. */
+@Composable
+private fun CheckInButton(day: HabitDay, enabled: Boolean, onClick: () -> Unit) {
+    val colors = AppTheme.colors
+    val done = day.isComplete
+    val label = stringResource(checkInRes(day))
+    Surface(
+        onClick = onClick,
+        enabled = enabled,
+        shape = Radii.full,
+        color = if (done) colors.accent else colors.surface,
+        contentColor = if (done) colors.onAccent else colors.accent,
+        border = if (done) null else BorderStroke(2.dp, if (enabled) colors.accent else colors.borderSubtle),
+        modifier = Modifier.size(Spacing.minTouchTarget).semantics { contentDescription = label },
+    ) {
+        Box(contentAlignment = Alignment.Center) {
+            val icon = if (done ||
+                day.habit.measurementType == HabitMeasurement.BINARY
+            ) {
+                AppIcons.Check
+            } else {
+                AppIcons.Add
+            }
+            if (done || enabled) Icon(icon, contentDescription = null)
+        }
+    }
+}
+
+/** Secondary actions live in an overflow menu so each row shows one clear action. */
+@Composable
+private fun HabitMenu(day: HabitDay, actions: HabitActions) {
+    var open by remember { mutableStateOf(false) }
+    Box {
+        IconButton(onClick = { open = true }) {
+            Icon(
+                AppIcons.More,
+                contentDescription = stringResource(R.string.feature_habits_more),
+                tint = AppTheme.colors.textSecondary,
             )
         }
-        FlowRow(horizontalArrangement = Arrangement.spacedBy(Spacing.xs), modifier = Modifier.fillMaxWidth()) {
-            val canAdd = !(day.isComplete && day.habit.measurementType == HabitMeasurement.BINARY)
-            if (canAdd && !day.rested) {
-                AppButton(
-                    text = stringResource(checkInRes(day)),
-                    onClick = { actions.onCheckIn(day) },
-                    size = AppButtonSize.Small,
+        DropdownMenu(expanded = open, onDismissRequest = { open = false }) {
+            val item: @Composable (Int, () -> Unit) -> Unit = { res, action ->
+                DropdownMenuItem(
+                    text = { Text(stringResource(res)) },
+                    onClick = {
+                        open = false
+                        action()
+                    },
                 )
             }
-            if (day.checkIns.isNotEmpty()) {
-                AppButton(
-                    text = stringResource(R.string.feature_habits_undo),
-                    onClick = { actions.onUndo(day) },
-                    variant = AppButtonVariant.Tertiary,
-                    size = AppButtonSize.Small,
-                )
+            if (day.checkIns.isNotEmpty()) item(R.string.feature_habits_undo) { actions.onUndo(day) }
+            if (day.scheduled &&
+                !day.rested &&
+                !day.isComplete
+            ) {
+                item(R.string.feature_habits_rest) { actions.onRest(day) }
             }
-            if (day.scheduled && !day.rested && !day.isComplete) {
-                AppButton(
-                    text = stringResource(R.string.feature_habits_rest),
-                    onClick = { actions.onRest(day) },
-                    variant = AppButtonVariant.Tertiary,
-                    size = AppButtonSize.Small,
-                )
-            }
-            AppButton(
-                text = stringResource(R.string.feature_habits_edit),
-                onClick = { actions.onEdit(day) },
-                variant = AppButtonVariant.Tertiary,
-                size = AppButtonSize.Small,
-            )
-            AppButton(
-                text = stringResource(R.string.feature_habits_archive),
-                onClick = { actions.onArchive(day) },
-                variant = AppButtonVariant.Tertiary,
-                size = AppButtonSize.Small,
-            )
+            item(R.string.feature_habits_edit) { actions.onEdit(day) }
+            item(R.string.feature_habits_archive) { actions.onArchive(day) }
         }
     }
 }
