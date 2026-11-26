@@ -1,5 +1,6 @@
 package com.thesasan1.app.feature.tasks.ui
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -8,27 +9,33 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material3.Checkbox
+import androidx.compose.material3.FilledIconButton
 import androidx.compose.material3.FilterChip
-import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.SnackbarResult
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
+import androidx.compose.material3.TextField
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.heading
@@ -36,15 +43,17 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LifecycleEventEffect
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.thesasan1.app.core.designsystem.component.AppButton
 import com.thesasan1.app.core.designsystem.component.AppCard
+import com.thesasan1.app.core.designsystem.component.AppIcons
 import com.thesasan1.app.core.designsystem.component.EmptyState
 import com.thesasan1.app.core.designsystem.component.ScreenHeader
 import com.thesasan1.app.core.designsystem.theme.AppTheme
+import com.thesasan1.app.core.designsystem.theme.Radii
 import com.thesasan1.app.core.designsystem.theme.Spacing
 import com.thesasan1.app.feature.tasks.R
 import com.thesasan1.app.feature.tasks.domain.Task
@@ -142,27 +151,41 @@ internal fun TasksListScreen(uiState: TasksUiState, actions: TasksListActions, m
 @Composable
 private fun QuickAddBar(state: QuickAddState, actions: TasksListActions) {
     Column(modifier = Modifier.fillMaxWidth().padding(vertical = Spacing.md)) {
-        OutlinedTextField(
+        val colors = AppTheme.colors
+        TextField(
             value = state.title,
             onValueChange = actions.onQuickAddChange,
             placeholder = { Text(stringResource(R.string.feature_tasks_quick_add_hint)) },
             singleLine = true,
+            shape = Radii.lg,
             keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
             keyboardActions = KeyboardActions(onDone = { actions.onAdd() }),
+            trailingIcon = {
+                FilledIconButton(
+                    onClick = actions.onAdd,
+                    enabled = state.canAdd,
+                    colors = IconButtonDefaults.filledIconButtonColors(
+                        containerColor = colors.accent,
+                        contentColor = colors.onAccent,
+                    ),
+                ) { Icon(AppIcons.Add, contentDescription = stringResource(R.string.feature_tasks_add)) }
+            },
+            colors = TextFieldDefaults.colors(
+                focusedContainerColor = colors.surface,
+                unfocusedContainerColor = colors.surface,
+                focusedIndicatorColor = Color.Transparent,
+                unfocusedIndicatorColor = Color.Transparent,
+                disabledIndicatorColor = Color.Transparent,
+            ),
             modifier = Modifier.fillMaxWidth(),
         )
-        Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(Spacing.sm)) {
-            FilterChip(
-                selected = state.dueToday,
-                onClick = { actions.onQuickAddDueTodayChange(!state.dueToday) },
-                label = { Text(stringResource(R.string.feature_tasks_due_today)) },
-            )
-            AppButton(
-                text = stringResource(R.string.feature_tasks_add),
-                onClick = actions.onAdd,
-                enabled = state.canAdd,
-            )
-        }
+        FilterChip(
+            selected = state.dueToday,
+            onClick = { actions.onQuickAddDueTodayChange(!state.dueToday) },
+            label = { Text(stringResource(R.string.feature_tasks_due_today)) },
+            shape = Radii.full,
+            modifier = Modifier.padding(top = Spacing.sm),
+        )
     }
 }
 
@@ -191,11 +214,16 @@ private fun TaskRow(task: Task, today: LocalDate, onClick: () -> Unit, onComplet
     val completeLabel = stringResource(R.string.feature_tasks_complete, task.title)
     AppCard(modifier = Modifier.fillMaxWidth().clickable(onClick = onClick)) {
         Row(verticalAlignment = Alignment.CenterVertically) {
-            Checkbox(
-                checked = false,
-                onCheckedChange = { onComplete() },
-                modifier = Modifier.semantics { contentDescription = completeLabel },
-            )
+            Surface(
+                onClick = onComplete,
+                shape = Radii.full,
+                color = AppTheme.colors.surface,
+                border = BorderStroke(2.dp, AppTheme.colors.accent),
+                modifier = Modifier
+                    .padding(end = Spacing.md)
+                    .size(CHECK_SIZE)
+                    .semantics { contentDescription = completeLabel },
+            ) {}
             Column(modifier = Modifier.weight(1f)) {
                 Text(
                     text = task.title,
@@ -220,6 +248,8 @@ private fun TaskRow(task: Task, today: LocalDate, onClick: () -> Unit, onComplet
         }
     }
 }
+
+private val CHECK_SIZE = 28.dp
 
 @Composable
 internal fun dueLabel(task: Task, today: LocalDate): String? {
