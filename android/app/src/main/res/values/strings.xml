@@ -2,4 +2,8 @@
 <resources>
     <!-- Provisional product name pending D-01. -->
     <string name="app_name">Personal OS</string>
+    <string name="app_tab_home">Home</string>
+    <string name="app_tab_tasks">Tasks</string>
+    <string name="app_tab_habits">Habits</string>
+    <string name="app_tab_notes">Notes</string>
 </resources>

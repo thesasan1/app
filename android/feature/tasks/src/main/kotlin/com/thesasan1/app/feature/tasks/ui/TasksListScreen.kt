@@ -5,7 +5,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -44,6 +43,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.thesasan1.app.core.designsystem.component.AppButton
 import com.thesasan1.app.core.designsystem.component.AppCard
 import com.thesasan1.app.core.designsystem.component.EmptyState
+import com.thesasan1.app.core.designsystem.component.ScreenHeader
 import com.thesasan1.app.core.designsystem.theme.AppTheme
 import com.thesasan1.app.core.designsystem.theme.Spacing
 import com.thesasan1.app.feature.tasks.R
@@ -59,7 +59,6 @@ import java.time.format.FormatStyle
 internal fun TasksListRoute(
     onOpenTask: (String) -> Unit,
     onOpenShelf: (TaskShelf) -> Unit,
-    onBack: () -> Unit,
     viewModel: TasksViewModel = hiltViewModel(),
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
@@ -67,7 +66,6 @@ internal fun TasksListRoute(
     TasksListScreen(
         uiState = uiState,
         actions = TasksListActions(
-            onBack = onBack,
             onOpenTask = onOpenTask,
             onOpenShelf = onOpenShelf,
             onQuickAddChange = viewModel::onQuickAddChange,
@@ -82,7 +80,6 @@ internal fun TasksListRoute(
 
 /** Everything the screen can ask for, kept together so the screen stays previewable. */
 internal data class TasksListActions(
-    val onBack: () -> Unit = {},
     val onOpenTask: (String) -> Unit = {},
     val onOpenShelf: (TaskShelf) -> Unit = {},
     val onQuickAddChange: (String) -> Unit = {},
@@ -115,19 +112,11 @@ internal fun TasksListScreen(uiState: TasksUiState, actions: TasksListActions, m
                 .padding(innerPadding)
                 .padding(horizontal = Spacing.screenHorizontal),
         ) {
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                TextButton(onClick = actions.onBack) { Text(stringResource(R.string.feature_tasks_back)) }
-                Spacer(Modifier.weight(1f))
+            ScreenHeader(title = stringResource(R.string.feature_tasks_title)) {
                 TaskShelf.entries.forEach { shelf ->
                     TextButton(onClick = { actions.onOpenShelf(shelf) }) { Text(stringResource(shelf.titleRes)) }
                 }
             }
-            Text(
-                text = stringResource(R.string.feature_tasks_title),
-                style = AppTheme.typography.headline,
-                color = AppTheme.colors.textPrimary,
-                modifier = Modifier.semantics { heading() },
-            )
             QuickAddBar(uiState.quickAdd, actions)
             if (uiState.isEmpty) {
                 EmptyState(

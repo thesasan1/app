@@ -22,7 +22,7 @@ fun AppCard(modifier: Modifier = Modifier, content: @Composable ColumnScope.() -
     val colors = AppTheme.colors
     Card(
         modifier = modifier,
-        shape = Radii.md,
+        shape = Radii.lg,
         colors = CardDefaults.cardColors(containerColor = colors.surface, contentColor = colors.textPrimary),
         border = if (colors.isDark) null else BorderStroke(1.dp, colors.borderSubtle),
         elevation = CardDefaults.cardElevation(defaultElevation = 0.dp),

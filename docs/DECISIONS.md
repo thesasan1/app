@@ -306,6 +306,15 @@ Architecture Decision Records (ADRs) and decisions pending the project owner. Fo
 
 ---
 
+### ADR-033 — App shell and visual direction
+
+- **Status:** Accepted (agent decision, 2026-11-26; the owner asked for a modern, cleaner UI and to keep developing)
+- **Decision:** clean Material 3: a bottom navigation bar with four tabs (Home, Tasks, Habits, Notes) using the standard save/restore-state tab pattern; no back buttons on tab screens; a large title header per tab; tappable icon tiles; cards at the 20dp radius; one accent color with light and dark themes from the existing tokens. Icons are a small in-house `AppIcons` set built from Material Symbols path data instead of the `material-icons-extended` library.
+- **Alternatives:** keep the dashboard of buttons (the owner found it cluttered); a navigation drawer (hides the main areas); the icons library (large, and unmaintained).
+- **Consequences:** feature list screens lose their `onBack` parameter. Later steps tidy the rows inside each screen.
+
+---
+
 ## Pending Decisions (owner input required)
 
 | ID | Decision | Recommendation | Blocks |

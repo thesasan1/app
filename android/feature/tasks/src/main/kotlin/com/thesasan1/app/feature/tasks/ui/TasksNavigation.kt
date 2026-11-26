@@ -37,7 +37,6 @@ fun NavGraphBuilder.tasksScreens(navController: NavController) {
                     TaskShelf.Trash -> navController.navigate(TasksTrashRoute)
                 }
             },
-            onBack = back,
         )
     }
     composable<TaskDetailRoute> { TaskDetailRoute(onOpenTask = openTask, onClose = back) }

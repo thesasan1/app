@@ -18,7 +18,6 @@ fun NavController.navigateToHabits() = navigate(HabitsTodayRoute)
 fun NavGraphBuilder.habitsScreens(navController: NavController) {
     composable<HabitsTodayRoute> {
         HabitsTodayRoute(
-            onBack = { navController.popBackStack() },
             onOpenArchive = { navController.navigate(HabitsArchiveRoute) },
         )
     }
