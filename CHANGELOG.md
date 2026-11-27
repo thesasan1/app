@@ -6,9 +6,9 @@ All notable changes are documented here. Format based on [Keep a Changelog](http
 
 ### Added
 
+- Habits can be "times a week" (for example, gym 3 times a week), with "2 of 3 this week" on the row.
 - Home shows today at a glance: tasks due and overdue, and habits done.
 - Detail screens use a back arrow instead of a "Back" text button.
-- Checking a habit off in the app now clears today's reminder notification.
 - Habits: set a daily reminder time in the New and Edit habit dialogs.
 - Notes: a pill-shaped search field with a search icon.
 - Tasks: a rounded quick-add field with a built-in "+" button, and round check circles.
@@ -49,6 +49,10 @@ All notable changes are documented here. Format based on [Keep a Changelog](http
 - ADR-012 (agent merge authority) and ADR-013 (Android skeleton baseline).
 - Phase 0 product and technical foundation: PRD, architecture, database model, API specification, design system, development roadmap, testing strategy, security model, decisions log, known issues and risks, progress tracking, release notes placeholder.
 - GitHub workflow conventions: `CONTRIBUTING.md`, Pull Request template, issue templates, `.gitignore`, `.editorconfig`.
+
+### Fixed
+
+- Checking a habit off in the app now clears today's reminder notification.
 
 ### Changed
 

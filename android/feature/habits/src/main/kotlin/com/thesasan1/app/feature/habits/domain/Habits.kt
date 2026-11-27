@@ -39,6 +39,8 @@ data class HabitDay(
     val isComplete: Boolean,
     /** Day streak up to this day; null for weekly and monthly targets. */
     val streak: HabitStreak? = null,
+    /** "N times a week" habits: completed days so far this week (Monday to this day); else null. */
+    val weekDone: Int? = null,
 )
 
 /** Habits and their check-ins. History is append-only: undo and corrections are new events (ADR-028). */

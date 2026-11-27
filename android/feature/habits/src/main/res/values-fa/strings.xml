@@ -58,4 +58,11 @@
     <string name="feature_habits_reminder">یادآور</string>
     <string name="feature_habits_reminder_off">خاموش</string>
     <string name="feature_habits_reminder_clear">پاک کردن</string>
+    <string name="feature_habits_specific_days">روزهای مشخص</string>
+    <string name="feature_habits_times_a_week">چند بار در هفته</string>
+    <string name="feature_habits_week_progress">%1$d از %2$d این هفته</string>
+    <plurals name="feature_habits_per_week">
+        <item quantity="one">%d بار در هفته</item>
+        <item quantity="other">%d بار در هفته</item>
+    </plurals>
 </resources>

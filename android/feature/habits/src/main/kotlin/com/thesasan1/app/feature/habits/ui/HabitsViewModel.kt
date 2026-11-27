@@ -38,6 +38,8 @@ data class NewHabitForm(
     val target: String = "",
     val unit: String = "",
     val days: Set<DayOfWeek> = DayOfWeek.entries.toSet(),
+    /** Set for "N times a week" (X_PER_WEEK); then [days] is ignored. */
+    val perWeek: Int? = null,
     /** Daily reminder time, or null for none (ADR-032). */
     val reminder: LocalTime? = null,
 ) {
@@ -198,8 +200,19 @@ private fun NewHabitForm.toDraft(startDate: LocalDate): HabitDraft {
         measurement = measurement,
         targetValue = target.takeIf { measurement != HabitMeasurement.BINARY },
         unit = unit.takeIf { measurement == HabitMeasurement.NUMERIC },
-        scheduleType = if (everyDay) HabitScheduleType.DAILY else HabitScheduleType.WEEKDAYS,
-        scheduleDays = if (everyDay) null else days.fold(0) { mask, day -> mask or WeekdayMask.of(day) },
+        scheduleType = when {
+            perWeek != null -> HabitScheduleType.X_PER_WEEK
+            everyDay -> HabitScheduleType.DAILY
+            else -> HabitScheduleType.WEEKDAYS
+        },
+        scheduleDays = if (everyDay ||
+            perWeek != null
+        ) {
+            null
+        } else {
+            days.fold(0) { mask, day -> mask or WeekdayMask.of(day) }
+        },
+        scheduleCount = perWeek,
     )
 }
 
@@ -214,6 +227,7 @@ internal fun NewHabitForm.Companion.of(habit: HabitEntity) = NewHabitForm(
     } else {
         DayOfWeek.entries.toSet()
     },
+    perWeek = habit.scheduleCount.takeIf { habit.scheduleType == HabitScheduleType.X_PER_WEEK },
 )
 
 internal fun HabitMeasurement.needsAmount(): Boolean =

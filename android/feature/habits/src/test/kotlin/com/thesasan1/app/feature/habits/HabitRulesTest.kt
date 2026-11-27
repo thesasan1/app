@@ -105,4 +105,16 @@ class HabitRulesTest {
         assertTrue(HabitRules.day(weekly, monday, listOf(event("a", HabitEventType.CHECK_IN, 10.0))).isComplete)
         assertTrue(HabitRules.day(habit(), monday, listOf(event("r", HabitEventType.REST))).rested)
     }
+
+    @Test
+    fun timesAWeekCountsCompletedDaysFromMonday() {
+        val gym = habit(HabitScheduleType.X_PER_WEEK).copy(scheduleCount = 3)
+        val sunday = monday.minusDays(1)
+        fun checkIn(id: String, date: LocalDate) = event(id, HabitEventType.CHECK_IN).copy(localDate = date.toString())
+        val events = listOf(checkIn("a", sunday), checkIn("b", monday), checkIn("c", monday.plusDays(2)))
+
+        assertEquals(1, HabitRules.weekDone(gym, events, monday.plusDays(1)))
+        assertEquals(2, HabitRules.weekDone(gym, events, monday.plusDays(2)))
+        assertEquals(null, HabitRules.weekDone(habit(), events, monday))
+    }
 }

@@ -58,4 +58,11 @@
     <string name="feature_habits_reminder">Reminder</string>
     <string name="feature_habits_reminder_off">Off</string>
     <string name="feature_habits_reminder_clear">Clear</string>
+    <string name="feature_habits_specific_days">Specific days</string>
+    <string name="feature_habits_times_a_week">Times a week</string>
+    <string name="feature_habits_week_progress">%1$d of %2$d this week</string>
+    <plurals name="feature_habits_per_week">
+        <item quantity="one">%d time a week</item>
+        <item quantity="other">%d times a week</item>
+    </plurals>
 </resources>

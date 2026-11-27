@@ -171,8 +171,11 @@ private fun HabitRow(day: HabitDay, actions: HabitActions) {
                     overflow = TextOverflow.Ellipsis,
                 )
                 val streak = day.streak?.takeIf { it.best > 0 }?.let { streakText(it) }
+                val week = day.weekDone?.let { done ->
+                    stringResource(R.string.feature_habits_week_progress, done, day.habit.scheduleCount ?: 0)
+                }
                 Text(
-                    text = listOfNotNull(statusText(day), streak).joinToString("  ·  "),
+                    text = listOfNotNull(statusText(day), week, streak).joinToString("  ·  "),
                     style = AppTheme.typography.bodySmall,
                     color = if (day.isComplete) colors.success else colors.textSecondary,
                 )

@@ -57,7 +57,10 @@ class OfflineHabitRepository @Inject constructor(
             habits.map { habit ->
                 val own = byHabit[habit.id].orEmpty()
                 HabitRules.day(habit, date, own.filter { it.localDate == date.toString() })
-                    .copy(streak = HabitStreaks.compute(habit, own, date))
+                    .copy(
+                        streak = HabitStreaks.compute(habit, own, date),
+                        weekDone = HabitRules.weekDone(habit, own, date),
+                    )
             }
         }
     }
