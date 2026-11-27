@@ -138,4 +138,21 @@ class HabitsViewModelTest {
         assertNull(reminders.times.value[day.habit.id])
         assertNull(vm.uiState.value.editing)
     }
+
+    @Test
+    fun aTimesAWeekHabitIsDueEveryDayAndShowsTheWeek() = runTest(main.dispatcher) {
+        backgroundScope.launch { vm.uiState.collect {} }
+        vm.create(NewHabitForm(name = "Gym", perWeek = 3))
+        advanceUntilIdle()
+        val gym = vm.uiState.value.days.single()
+        assertEquals(HabitScheduleType.X_PER_WEEK, gym.habit.scheduleType)
+        assertEquals(3, gym.habit.scheduleCount)
+        assertTrue(gym.scheduled)
+        assertEquals(0, gym.weekDone)
+        assertEquals(3, NewHabitForm.of(gym.habit).perWeek)
+
+        vm.checkIn(gym)
+        advanceUntilIdle()
+        assertEquals(1, vm.uiState.value.days.single().weekDone)
+    }
 }

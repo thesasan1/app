@@ -6,7 +6,9 @@ import com.thesasan1.app.core.database.entity.HabitEventType
 import com.thesasan1.app.core.database.entity.HabitMeasurement
 import com.thesasan1.app.core.database.entity.HabitScheduleType
 import com.thesasan1.app.core.database.entity.WeekdayMask
+import java.time.DayOfWeek
 import java.time.LocalDate
+import java.time.temporal.TemporalAdjusters
 
 /** Pure habit logic: schedules, the event log read back, and a day's progress (HAB-01, HAB-02, HAB-07). */
 object HabitRules {
@@ -61,6 +63,18 @@ object HabitRules {
             target == null -> progress > 0
             else -> progress >= target
         }
+    }
+
+    /**
+     * For an "N times a week" habit, the completed days from the Monday of [date]'s week up to
+     * [date]; null for other schedules. [events] may hold other days and other habits.
+     */
+    fun weekDone(habit: HabitEntity, events: List<HabitEventEntity>, date: LocalDate): Int? {
+        if (habit.scheduleType != HabitScheduleType.X_PER_WEEK) return null
+        val monday = date.with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY))
+        val byDate = events.filter { it.habitId == habit.id }.groupBy { it.localDate }
+        return generateSequence(monday) { it.plusDays(1) }.takeWhile { it <= date }
+            .count { day(habit, it, byDate[it.toString()].orEmpty()).isComplete }
     }
 
     /** One habit's [HabitDay] for [date] from that day's raw [events]. */

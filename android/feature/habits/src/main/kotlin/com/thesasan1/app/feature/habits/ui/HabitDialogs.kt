@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
@@ -17,8 +18,10 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import com.thesasan1.app.core.database.entity.HabitMeasurement
@@ -29,6 +32,7 @@ import com.thesasan1.app.feature.habits.domain.HabitDay
 import java.time.DayOfWeek
 import java.time.LocalTime
 import java.time.format.TextStyle
+import java.util.Locale
 
 private const val MAX_AMOUNT_CHARS = 7
 
@@ -116,14 +120,22 @@ private fun HabitFormDialog(
                 }
                 Text(stringResource(R.string.feature_habits_days), style = AppTheme.typography.bodySmall)
                 FlowRow(horizontalArrangement = Arrangement.spacedBy(Spacing.xs)) {
-                    DayOfWeek.entries.forEach { day ->
-                        val selected = day in form.days
-                        FilterChip(
-                            selected = selected,
-                            onClick = { form = form.copy(days = if (selected) form.days - day else form.days + day) },
-                            label = { Text(day.getDisplayName(TextStyle.SHORT, locale)) },
-                        )
-                    }
+                    FilterChip(
+                        selected = form.perWeek == null,
+                        onClick = { form = form.copy(perWeek = null) },
+                        label = { Text(stringResource(R.string.feature_habits_specific_days)) },
+                    )
+                    FilterChip(
+                        selected = form.perWeek != null,
+                        onClick = { form = form.copy(perWeek = form.perWeek ?: DEFAULT_PER_WEEK) },
+                        label = { Text(stringResource(R.string.feature_habits_times_a_week)) },
+                    )
+                }
+                form.perWeek?.let { count ->
+                    PerWeekStepper(count) { form = form.copy(perWeek = it) }
+                }
+                if (form.perWeek == null) {
+                    DayChips(form.days, locale) { form = form.copy(days = it) }
                 }
                 ReminderField(time = form.reminder, onChange = { form = form.copy(reminder = it) })
                 error?.let { Text(stringResource(it.formTextRes()), color = AppTheme.colors.danger) }
@@ -170,6 +182,38 @@ internal fun LogAmountDialog(day: HabitDay, onLog: (Double?) -> Unit, onDismiss:
 }
 
 private const val MAX_UNIT_CHARS = 20
+private const val DEFAULT_PER_WEEK = 3
+private const val MAX_PER_WEEK = 7
+
+/** One chip per weekday; tapping toggles it in [days]. */
+@OptIn(ExperimentalLayoutApi::class)
+@Composable
+private fun DayChips(days: Set<DayOfWeek>, locale: Locale, onChange: (Set<DayOfWeek>) -> Unit) {
+    FlowRow(horizontalArrangement = Arrangement.spacedBy(Spacing.xs)) {
+        DayOfWeek.entries.forEach { day ->
+            val selected = day in days
+            FilterChip(
+                selected = selected,
+                onClick = { onChange(if (selected) days - day else days + day) },
+                label = { Text(day.getDisplayName(TextStyle.SHORT, locale)) },
+            )
+        }
+    }
+}
+
+/** "N times a week": minus, the count, plus (1 to 7). */
+@Composable
+private fun PerWeekStepper(count: Int, onChange: (Int) -> Unit) {
+    Row(verticalAlignment = Alignment.CenterVertically) {
+        TextButton(onClick = { onChange(count - 1) }, enabled = count > 1) { Text("−") }
+        Text(
+            text = pluralStringResource(R.plurals.feature_habits_per_week, count, count),
+            style = AppTheme.typography.bodyMedium,
+            color = AppTheme.colors.textPrimary,
+        )
+        TextButton(onClick = { onChange(count + 1) }, enabled = count < MAX_PER_WEEK) { Text("+") }
+    }
+}
 
 /** Digits and one decimal point, at most a few characters. */
 private fun String.amountInput(): String {
